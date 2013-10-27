@@ -168,7 +168,32 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 									$og['article:author'] = 'Een onzer redacteuren';
 							}
 							elseif( $parsed['host'] == 'vorige.nrc.nl' )
+							{
+								// Okay, vorige is weird, die stuurt compressed zonder te zeggen dat 't compressed is!
+								// ofzo;
 								$og['article:section'] = 'vorige';
+								$ch = curl_init($share);
+								curl_setopt_array($ch, array(
+								                CURLOPT_FOLLOWLOCATION => TRUE,  // the magic sauce
+                                CURLOPT_RETURNTRANSFER => TRUE
+                                ));
+
+								$plaintext_html = curl_exec($ch);
+								curl_close($ch);
+								$plaintext_html = gzdecode($plaintext_html);
+								$html = str_get_html($plaintext_html);
+								$og['title'] = $html->find('title',0)->innertext;
+								// vorige is nog weirder, de html laat zich niet correct parsen met simple_html_dom
+								// de class is vindbaar, maar niet als object benaderbaar, dan maar met het handje ...
+								$author = explode('<div class="author">',$html->innertext);
+								$author = $author[1];
+								$author = explode('</div>', $author);
+								$author = $author[0];
+								$author = explode('span>', $author);
+								$author = substr(trim($author[1]), 0, strlen(trim($author[1])) - 2);
+								echo 'Found author: '.$author."\n";
+								$og['article:author'] = $author;
+							}
 							elseif( $parsed['host'] == 'retro.nrc.nl' )
 							{
 								$og['article:section'] = 'retro';
@@ -177,7 +202,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 							}
 							else
 							{
-								foreach($html->find('article[id=artikel]') as $artinfo)
+								if(is_object($html->find('article[id=artikel]'))) foreach($html->find('article[id=artikel]') as $artinfo)
 								{
 									$og['article:section'] = $artinfo->{"data-blog-slug"};
 								}

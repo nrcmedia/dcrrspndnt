@@ -63,8 +63,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 			$parsed = parse_url ($share);
 			if (isset($parsed['path']))
 			{
-				if (! strstr($parsed['host'], 'nrc.nl') || strstr($parsed['host'], 'actie.nrc.nl') || strstr($parsed['host'
-				], 'zoeken.nrc.nl' ))
+				if (!strstr($parsed['host'], 'nrc.nl') || strstr($parsed['host'], 'actie.nrc.nl') || strstr($parsed['host'], 'zoeken.nrc.nl' ))
 				{
 					echo 'skipping: '.$share."\n";
 					continue;
@@ -84,14 +83,16 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 					{
 						$clean_plus = $clean.'/';
 					}
-
+					$artikel_id = 0;
 					$query = 'select * from artikelen where clean_url in ("'.$clean.'", "'.$clean_plus.'")';
 					$res = mysql_query($query);
 					if(mysql_num_rows($res))
 					{
+						$art_row = mysql_fetch_array($res);
+						$artikel_id = $art_row['ID'];
+
 						if (COUNT_TWEETS == 1)
 						{
-							$art_row = mysql_fetch_array($res);
 							$tweet_res = mysql_query('select * from tweets where art_id = '.$art_row['ID'].' and tweet_id = "'.$tweet->id.'"');
 							if (mysql_num_rows($tweet_res) == 0)
 							{
@@ -100,7 +101,16 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 							}
 						}
 
-						continue; // hebben we al!
+						$og = unserialize(stripslashes($art_row['og']));
+						// deze staat al goed
+						if (! empty($og['article:author']))
+							continue;
+
+						echo 'Marked for update. id: '.$artikel_id."\n";
+
+						// 27-10-2013, door laten lopen en de artikelen updaten die geen auteur of sectie hebben
+						// verwijder de meta_artikel rijen van dit artikel
+						//mysql_query('delete meta_artikel where art_id = '.$artikel_id);
 					}
 					// even de url opvragen om de auteur te vinden
 					$html = file_get_html($share);
@@ -175,9 +185,16 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 					if( strstr($share,'m.nrc.nl') )
 						$share = str_replace('m.nrc.nl', 'www.nrc.nl', $share);
 					echo 'Found article: '.$clean."\n";
+					if($artikel_id > 0)
+					{
+						echo 'Updating!!'.$artikel_id."\n";
+						mysql_query('update artikelen set og = "'.addslashes($og).'" where id = '.$artikel_id);
+					}
+					else
+					{
 //					echo 'inserting: insert into artikelen (t_co, clean_url, share_url, og) values ("'.$tco.'", "'.$clean.'", "'.$share.'", "'.substr($og,0,20).'")'."\n";
-					mysql_query('insert into artikelen (t_co, clean_url, share_url, og) values ("'.$tco.'", "'.$clean.'", "'.$share.'", "'.addslashes($og).'")');
-
+						mysql_query('insert into artikelen (t_co, clean_url, share_url, og) values ("'.$tco.'", "'.$clean.'", "'.$share.'", "'.addslashes($og).'")');
+					}
 					if (COUNT_TWEETS == 1)
 					{
 						echo 'counting tweet '.$tweet->id."\n";

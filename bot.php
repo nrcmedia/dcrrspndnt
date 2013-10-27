@@ -112,6 +112,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 						// verwijder de meta_artikel rijen van dit artikel
 						mysql_query('delete from meta_artikel where art_id = '.$artikel_id);
 					}
+
 					// even de url opvragen om de auteur te vinden
 					$html = file_get_html($share);
 					$og = array();
@@ -163,7 +164,11 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 							elseif( $parsed['host'] == 'vorige.nrc.nl' )
 								$og['article:section'] = 'vorige';
 							elseif( $parsed['host'] == 'retro.nrc.nl' )
+							{
 								$og['article:section'] = 'retro';
+								if (empty($og['article:author']))
+									$og['article:author'] = 'Een onzer redacteuren';
+							}
 							else
 							{
 								foreach($html->find('article[id=artikel]') as $artinfo)

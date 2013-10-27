@@ -65,7 +65,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 			{
 				if (!strstr($parsed['host'], 'nrc.nl') || strstr($parsed['host'], 'actie.nrc.nl') || strstr($parsed['host'], 'zoeken.nrc.nl' ))
 				{
-					echo 'skipping: '.$share."\n";
+					echo 'skipping: '.substr($share,0,70)."\n";
 					continue;
 				}
 				$path = $parsed['path'];
@@ -110,7 +110,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 
 						// 27-10-2013, door laten lopen en de artikelen updaten die geen auteur of sectie hebben
 						// verwijder de meta_artikel rijen van dit artikel
-						mysql_query('delete meta_artikel where art_id = '.$artikel_id);
+						mysql_query('delete from meta_artikel where art_id = '.$artikel_id);
 					}
 					// even de url opvragen om de auteur te vinden
 					$html = file_get_html($share);
@@ -154,7 +154,6 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 								if($cat == 'Nieuws' || $cat == 'Beste van het web')
 									continue;
 								$og['article:section'] = $cat;
-								echo 'Assigned section: '.$cat."\n";
 							}
 						}
 						if (empty($og['article:section']))
@@ -172,6 +171,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 								if (empty($og['article:section']))
 									$og['article:section'] = $og['article:author'];
 							}
+							echo 'Assigned section: '.$og['article:section']."\n";
 						}
 						// herstel &amp;amp;
 						foreach($og as $key => $value)

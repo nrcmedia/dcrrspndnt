@@ -206,6 +206,20 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 								{
 									$og['article:section'] = $artinfo->{"data-blog-slug"};
 								}
+								if (empty($og['article:author']))
+								{ // een Berry! deze code werkt voor de kunsthal, niet voor Lehman of Berry ...
+									$author = explode('class="byline"', $html->innertext);
+									$author = $author[1];
+									$author = explode('</div>', $author);
+									$author = $author[0];
+									preg_match_all('/<h3>.*<a.*>(.*)<\/a><\/h3>/', $author, $matches);
+									if(! empty($matches[1][0]))
+									{
+										$og['article:author'] = $matches[1][0];
+										$og['article:section'] = 'Berry';
+									}
+								}
+
 								if (empty($og['article:section'])) // last resort
 									$og['article:section'] = $og['article:author'];
 							}

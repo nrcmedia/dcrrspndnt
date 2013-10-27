@@ -74,6 +74,9 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 				{
 					if($parsed['host'] == 'm.nrc.nl')
 						$parsed['host'] = 'www.nrc.nl';
+					if($parsed['host'] == 'nrc.nl')
+						$parsed['host'] = 'www.nrc.nl';
+
 					$clean = $parsed['scheme'].'://'.$parsed['host'].$path;
 					// en als 't laatste teken nou eens geen '/' is? anders krijgen we
 					// http://www.nrc.nl/boeken/2013/10/27/eerste-jan-wolkers-prijs-naar-simon-van-der-geest/ en
@@ -186,11 +189,18 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 							$og[$key] = str_replace('&amp;amp;', '&amp;', $value);
 						}
 					}
+					else
+					{ // geen html object? Skip this article!
+						echo 'Not an article!! '.$clean."\n";
+						continue;
+					}
 					// nu mogen we serializen
 					$og = serialize($og);
 					// share url ook van m.nrc.nl ontdoen...
 					if( strstr($share,'m.nrc.nl') )
 						$share = str_replace('m.nrc.nl', 'www.nrc.nl', $share);
+					if( strstr($share, 'http://nrc.nl/'))
+						$share = str_replace('http://nrc.nl', 'http://www.nrc.nl', $share);
 					echo 'Found article: '.$clean."\n";
 					if($artikel_id > 0)
 					{

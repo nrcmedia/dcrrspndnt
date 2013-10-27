@@ -63,7 +63,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 			$parsed = parse_url ($share);
 			if (isset($parsed['path']))
 			{
-				if (!strstr($parsed['host'], 'nrc.nl') || strstr($parsed['host'], 'actie.nrc.nl') || strstr($parsed['host'], 'zoeken.nrc.nl' ))
+				if (!strstr($parsed['host'], 'nrc.nl') || strstr($parsed['host'], 'actie.nrc.nl') || strstr($parsed['host'], 'zoeken.nrc.nl' ) || strstr($parsed['host'], 'login.nrc.nl') || strstr($parsed['host'], 'service.nrc.nl') || strstr($parsed['host'], 'klik.nrc.nl'))
 				{
 					echo 'skipping: '.substr($share,0,70)."\n";
 					continue;

@@ -162,6 +162,8 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 								$og['article:section'] = 'archief';
 							elseif( $parsed['host'] == 'vorige.nrc.nl' )
 								$og['article:section'] = 'vorige';
+							elseif( $parsed['host'] == 'retro.nrc.nl' )
+								$og['article:section'] = 'retro';
 							else
 							{
 								foreach($html->find('article[id=artikel]') as $artinfo)

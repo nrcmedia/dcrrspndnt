@@ -162,8 +162,11 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 						}
 						if (empty($og['article:section']))
 						{ // blog-slug dan als categorie gebruiken, als die er ook niet is, dan is er altijd nog een auteur
-							if( $parsed['host'] == 'archief.nrc.nl' )
+							if( $parsed['host'] == 'archief.nrc.nl' ) {
 								$og['article:section'] = 'archief';
+								if (empty($og['article:author']))
+									$og['article:author'] = 'Een onzer redacteuren';
+							}
 							elseif( $parsed['host'] == 'vorige.nrc.nl' )
 								$og['article:section'] = 'vorige';
 							elseif( $parsed['host'] == 'retro.nrc.nl' )

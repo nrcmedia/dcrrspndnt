@@ -110,7 +110,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 
 						// 27-10-2013, door laten lopen en de artikelen updaten die geen auteur of sectie hebben
 						// verwijder de meta_artikel rijen van dit artikel
-						//mysql_query('delete meta_artikel where art_id = '.$artikel_id);
+						mysql_query('delete meta_artikel where art_id = '.$artikel_id);
 					}
 					// even de url opvragen om de auteur te vinden
 					$html = file_get_html($share);

@@ -206,7 +206,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 								{
 									$og['article:section'] = $artinfo->{"data-blog-slug"};
 								}
-								if (empty($og['article:section']))
+								if (empty($og['article:section'])) // last resort
 									$og['article:section'] = $og['article:author'];
 							}
 							echo 'Assigned section: '.$og['article:section']."\n";
@@ -229,14 +229,14 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 						$share = str_replace('m.nrc.nl', 'www.nrc.nl', $share);
 					if( strstr($share, 'http://nrc.nl/'))
 						$share = str_replace('http://nrc.nl', 'http://www.nrc.nl', $share);
-					echo 'Found article: '.$clean."\n";
 					if($artikel_id > 0)
 					{
-						echo 'Updating!!'.$artikel_id."\n";
+						echo 'Updating article: '.$artikel_id."\n";
 						mysql_query('update artikelen set og = "'.addslashes($og).'" where id = '.$artikel_id);
 					}
 					else
 					{
+						echo 'Adding article: '.$clean."\n";
 //					echo 'inserting: insert into artikelen (t_co, clean_url, share_url, og) values ("'.$tco.'", "'.$clean.'", "'.$share.'", "'.substr($og,0,20).'")'."\n";
 						mysql_query('insert into artikelen (t_co, clean_url, share_url, og) values ("'.$tco.'", "'.$clean.'", "'.$share.'", "'.addslashes($og).'")');
 					}

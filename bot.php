@@ -115,7 +115,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 						$og = unserialize(stripslashes($art_row['og']));
 						// deze staat al goed, maar in het begin kwam de publicatietijd en de auteur of de sectie niet altijd goed door
 						// dat kunnen we rustig herstellen ...
-						if (! empty($og['article:published_time']) && ! empty($og['article:author']))
+						if (! empty($og['article:published_time']) && ! empty($og['article:author']) || $parsed['host'] == 'retro.nrc.nl')
 							continue;
 						echo 'Marked for update. id: '.$artikel_id."\n";
 

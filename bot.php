@@ -83,6 +83,8 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 					if($parsed['host'] == 'nrc.nl')
 						$parsed['host'] = 'www.nrc.nl';
 
+					$pudate = $path_p[2].'-'.$path_p[3].'-'.$path_p[4];
+
 					$clean = $parsed['scheme'].'://'.$parsed['host'].$path;
 					// en als 't laatste teken nou eens geen '/' is? anders krijgen we
 					// http://www.nrc.nl/boeken/2013/10/27/eerste-jan-wolkers-prijs-naar-simon-van-der-geest/ en
@@ -111,10 +113,10 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 						}
 
 						$og = unserialize(stripslashes($art_row['og']));
-						// deze staat al goed
-						if (! empty($og['article:author']))
+						// deze staat al goed, maar in het begin kwam de publicatietijd en de auteur of de sectie niet altijd goed door
+						// dat kunnen we rustig herstellen ...
+						if (! empty($og['article:published_time']) && ! empty($og['article:author']))
 							continue;
-
 						echo 'Marked for update. id: '.$artikel_id."\n";
 
 						// 27-10-2013, door laten lopen en de artikelen updaten die geen auteur of sectie hebben
@@ -206,7 +208,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 								if (empty($og['article:author']))
 									$og['article:author'] = 'Een onzer redacteuren';
 							}
-							else
+							else // gewoon op nrc.nl
 							{
 								if(is_object($html->find('article[id=artikel]'))) foreach($html->find('article[id=artikel]') as $artinfo)
 								{
@@ -231,6 +233,29 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 							}
 							echo 'Assigned section: '.$og['article:section']."\n";
 						}
+						// publicatiedatum en tijd:
+						// <strong><time datetime="2013-10-28">28 oktober 2013</time></strong>, 20:52</a>
+						$doc = $html->innertext;
+						// nieuwsartikelen op www.nrc.nl
+						preg_match_all('/<time.datetime="(.*)">.*<\/time><\/strong>..(.*)<\/a>/uU', $doc, $matches);
+						if (! empty($matches[1][0]) && ! empty ($matches[2][0]))
+						{
+							$pubdate = $matches[1][0].' '.$matches[2][0];
+						}
+						else
+						{ // op een weblog zitten we in een multiline datumstempel
+							//<div class="datumstempel" title="27 oktober">
+							//<time pubdate datetime="2013-10-27T01:00:00+02:00" itemprop="datePublished">
+							preg_match_all('/<time.pubdate.datetime="(.*)T(..:..).*".itemprop/uU', $doc, $matches);
+							if (! empty($matches[1][0]) && ! empty ($matches[2][0]))
+							{
+								$pubdate = $matches[1][0].' '.$matches[2][0];
+							}
+						}
+						// $pubdate, whichever value it has into og['article:publish_time']
+						echo 'Publicatietijd: '.$pubdate.' -> '.strtotime($pubdate)."\n";
+						$og['article:published_time'] = strtotime($pubdate);
+
 						// herstel &amp;amp;
 						foreach($og as $key => $value)
 						{

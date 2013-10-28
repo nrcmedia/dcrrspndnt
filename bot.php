@@ -83,7 +83,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 					if($parsed['host'] == 'nrc.nl')
 						$parsed['host'] = 'www.nrc.nl';
 
-					$pudate = $path_p[2].'-'.$path_p[3].'-'.$path_p[4];
+					$pubdate = $path_p[2].'-'.$path_p[3].'-'.$path_p[4];
 
 					$clean = $parsed['scheme'].'://'.$parsed['host'].$path;
 					// en als 't laatste teken nou eens geen '/' is? anders krijgen we
@@ -115,7 +115,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 						$og = unserialize(stripslashes($art_row['og']));
 						// deze staat al goed, maar in het begin kwam de publicatietijd en de auteur of de sectie niet altijd goed door
 						// dat kunnen we rustig herstellen ...
-						if (! empty($og['article:published_time']) && ! empty($og['article:author']) || $parsed['host'] == 'retro.nrc.nl')
+						if (! empty($og['article:published_time']) && ! empty($og['article:author']))
 							continue;
 						echo 'Marked for update. id: '.$artikel_id."\n";
 
@@ -252,10 +252,21 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 								$pubdate = $matches[1][0].' '.$matches[2][0];
 							}
 						}
+						if($parsed['host'] == 'retro.nrc.nl')
+						{
+							//<FONT SIZE=-3> NRC Webpagina's<BR> 10 JANUARI 2001 </FONT>
+							$months = array('januari' => 1 ,'februari' => 2, 'maart' => 3, 'april' => 4, 'mei' => 5, 'juni' => 6, 'juli' => 7, 'augustus' => 8, 'september' => 9, 'oktober' => 10,'november' => 11,'december' => 12);
+							preg_match_all('%<font size=-3>.*<br>.*(\d+)\s(.*)\s(\d+)\s</font>%imU', $doc, $matches);
+							if (! empty($matches[1][0]) && ! empty($matches[2][0]) && ! empty($matches[3][0]))
+							{
+								$maand = $months[strtolower($matches[2][0])];
+								$pubdate = $matches[3][0].'-'.$maand.'-'.$matches[1][0];
+							}
+						}
 						// $pubdate, whichever value it has into og['article:publish_time']
 						echo 'Publicatietijd: '.$pubdate.' -> '.strtotime($pubdate)."\n";
-						$og['article:published_time'] = strtotime($pubdate);
-
+						if($pubdate > '')
+							$og['article:published_time'] = strtotime($pubdate);
 						// herstel &amp;amp;
 						foreach($og as $key => $value)
 						{

@@ -49,7 +49,7 @@ while($row = mysql_fetch_array($r))
 ?>
 		</ul>
 	</li>
-	<li>
-		<a href="/top.html">terug naar klik</a>
+	<li class="small">
+		<a href="/top.html">naar klik</a>
 	</li>
 </ul>

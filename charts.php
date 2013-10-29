@@ -16,12 +16,19 @@
 require_once('settings.local.php');
 require_once('functions.php');
 include('db.php');
-$tot_tweets_res = mysql_query('select count(tweets.id) as tweet_count, day(tweets.created_at) as  dag, month(tweets.created_at) as maand from tweets where created_at > "2013-10-13 21:00" group by maand, dag');
+$tot_tweets_res = mysql_query('select count(tweets.id) as tweet_count, day(tweets.created_at) as  dag, month(tweets.created_at) as maand from tweets where created_at > "2013-10-13 21:00" group by maand, dag order by day(tweets.created_at) desc limit 0,30');
 
 $label = array();
 $tweets = array();
 $high = 0;
+$rows = array();
 while ($row = mysql_fetch_array($tot_tweets_res))
+{
+	$rows[] = $row;
+}
+$rows = array_reverse($rows);
+
+foreach($rows as $row)
 {
 	$label[] = $row['dag'];
 	$tweets[] = $row['tweet_count'];
@@ -47,6 +54,8 @@ $dagen = mysql_num_rows($dagen_res);
 
 $graph_res = mysql_query("select count(tweets.id) as tweet_count, hour(tweets.created_at) as per_uur from tweets  group by per_uur ");
 
+// Grafiek 2;
+// Tweets per uur en de dagtrend daar op afgezet
 $high = 0;
 $hour_label = '';
 $hour_tweet_data = '';
@@ -78,12 +87,70 @@ while ($row = mysql_fetch_array($res_today))
 	$hour_today_data .= $row['per_hour'].',';
 	$i++;
 }
-
 $hour_today_data = substr($hour_today_data, 0, strlen($hour_today_data) - 1);
 $scaleWidth2 = ceil($high / 10);
 
-$res_week_ago = mysql_query();
 
+//
+// Grafiek 3,
+// Tweets per 5 minuten, vandaag
+$minute_res = mysql_query("select count(*) as per_minute,
+ minute(tweets.created_at) as the_minute,
+ hour(tweets.created_at) as the_hour,
+ tweets.created_at
+ from tweets
+ where year(tweets.created_at) = year(now() )
+ and month(tweets.created_at) = month(now())
+ and day(tweets.created_at) = day(now() )
+ group by the_minute , the_hour
+ order by created_at ");
+
+// labels klaarzetten
+$labels = array();
+$values;
+// draaien om 24 uur vol te krijgen
+$hour = 0;
+while($hour < 24)
+{
+	$str_hour = str_pad($hour, 2, '0', STR_PAD_LEFT);
+	$minute = 0;
+	while($minute < 60)
+	{
+		$str_minute = str_pad($minute,2, '0', STR_PAD_LEFT);
+		if($minute == 0)
+			$label = $str_hour.'.'.$str_minute;
+		elseif($minute % 30 == 0)
+			$label = $minute;
+		else
+			$label = '';
+
+		$labels[$str_hour.':'.$str_minute] = $label;
+		$values[$str_hour.':'.$str_minute] = 0;
+		$minute = $minute + 5;
+	}
+	$hour++;
+}
+$tweets_pm_high = 0;
+while($row = mysql_fetch_array($minute_res))
+{
+	$str_hour   = str_pad($row['the_hour'], 2, '0', STR_PAD_LEFT);
+	$str_minute = str_pad($row['the_minute'], 2, '0', STR_PAD_LEFT);
+	$values[$str_hour.':'.$str_minute] = $row['per_minute'];
+	$tweets_pm_high = max($tweets_pm_high, $row['per_minute'] + 10);
+}
+// transform this to javascrript
+$i = 0;
+foreach($labels as $time => $label)
+{
+	$tweets_per_minute_label .= '"'.$label.'",';
+	$tweets_per_minute_value .= $values[$time].',';
+	$i++;
+	if ($i > 288)
+		break;
+}
+$tweets_per_minute_value = substr($tweets_per_minute_value, 0, strlen($tweets_per_minute_value) - 1);
+$tweets_per_minute_label = substr($tweets_per_minute_label, 0, strlen($tweets_per_minute_label) - 1);
+$scalewidth3 = ceil($tweets_pm_high / 10);
 ?>
 
 		<h1>nrc.nl tweets in grafieken </h1>
@@ -101,7 +168,6 @@ $res_week_ago = mysql_query();
 					scaleStepWidth : <?php echo $scaleWidth; ?>,
 					//Number - The scale starting value
 					scaleStartValue : 0
-
 				}
 				var barChartData = {
 					labels: [ <?php echo $bar_label;  ?>],
@@ -113,7 +179,7 @@ $res_week_ago = mysql_query();
 				}
 				var tweetTot = new Chart(document.getElementById("tot_tweets").getContext("2d")).Bar(barChartData, barOptions);
 			</script>
-
+			<p>De laatste 30 dagen</p>
 			<h2>Tweets per uur</h2>
 			<canvas id="hour_tweets" height="450" width="800"></canvas>
 			<script>
@@ -147,6 +213,45 @@ $res_week_ago = mysql_query();
 				var tweetHour = new Chart(document.getElementById("hour_tweets").getContext("2d")).Line(lineChartData, lineOptions);
 			</script>
 			<p>Grijs is de overall trend, rood geeft de tweets van vandaag weer</p>
+
+			<h2>Tweets vandaag</h2>
+			<canvas id="tweets_pm" height="450" width="800"></canvas>
+			<script>
+				var tweetspmOptions = {
+						barShowStroke: false, //bar
+						barValueSpacing : 0, // bar
+						barDatasetSpacing : 0, // bar
+
+						datasetStroke : false, //line
+						pointDot : false, //line
+
+						scaleOverride : 1,
+						scaleSteps : 10,
+						scaleFontSize: 10,
+						//Number - The value jump in the hard coded scale
+						scaleStepWidth : <?php echo $scalewidth3; ?>,
+						//Number - The scale starting value
+						scaleStartValue : 0
+				}
+				var tweetspmChartData = {
+					labels: [ <?php echo $tweets_per_minute_label;  ?>],
+					datasets : [ {
+										   	fillColor	  : "rgba(192,8,14,0.5)",
+										   	strokeColor : "rgba(192,8,14,1)",
+												data : [<?php echo $tweets_per_minute_value;?>]
+										 } ]
+				}
+				var tweetsPm = new Chart(document.getElementById("tweets_pm").getContext("2d")).Line(tweetspmChartData, tweetspmOptions);
+			</script>
+			<p>
+				gevonden tweets, per 5 minuten, van vandaag.<br />
+				Er is een issue met de grapher die ik gebruik, bug report is ingediend, de grafiek gebruikt helaas niet de volledige breedte van het canvas. Zowel de bar als de lijn heeft dit probleem.
+				labels: <?php echo count($labels); ?><br />
+				waardes: <?php echo count($values); ?><br />
+				javascript labels: <?php echo count(explode(',', $tweets_per_minute_label)); ?>
+				javascript waardes: <?php echo count(explode(',', $tweets_per_minute_value)); ?>
+			</p>
+
 		</div>
 		</div>
 <?php include('footer.php') ?>

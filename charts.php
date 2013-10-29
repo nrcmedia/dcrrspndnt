@@ -190,7 +190,9 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 			<canvas id="hour_tweets" height="450" width="800"></canvas>
 			<script>
 				var lineOptions = {
-					pointDot : false, //line
+					pointDot : true, //line
+					pointDotRadius : 1,
+					pointDotStrokeWidth : 0,
 					scaleOverride : 1,
 					scaleSteps : 10,
 					//Number - The value jump in the hard coded scale
@@ -205,14 +207,14 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 												fillColor   : "rgba(77,83,97,0.5)",
 												strokeColor : "rgba(77,83,97,1)",
 												pointColor : "rgba(77,83,97,1)",
-												pointStrokeColor : "#fff",
+												pointStrokeColor : "rgba(77,83,97,0.5)",
 												data : [<?php echo $hour_tweet_data;?>]
 										 },
 										   {
 										   	fillColor	  : "rgba(192,8,14,0.5)",
 										   	strokeColor : "rgba(192,8,14,1)",
 										   	pointColor : "rgba(192,8,14,1)",
-										   	pointStrokeColor : "#000",
+										   	pointStrokeColor : "rgba(192,8,14,1)",
 										   	data: [<?php echo $hour_today_data;?>]
 										  }
 										 ]
@@ -222,7 +224,7 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 			<p>Grijs is de overall trend, rood geeft de tweets van vandaag weer</p>
 
 			<h2>Tweets vandaag</h2>
-			<canvas id="tweets_pm" height="450" width="800"></canvas>
+			<canvas id="tweets_pm" height="450" width="960"></canvas>
 			<script>
 				var tweetspmOptions = {
 						barShowStroke: false, //bar
@@ -234,7 +236,8 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 
 						scaleOverride : 1,
 						scaleSteps : 10,
-						scaleFontSize: 10,
+						scaleFontSize: 9,
+						scaleOverlay : true,
 						//Number - The value jump in the hard coded scale
 						scaleStepWidth : <?php echo $scalewidth3; ?>,
 						//Number - The scale starting value

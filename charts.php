@@ -211,7 +211,7 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 												data : [<?php echo $hour_tweet_data;?>]
 										 },
 										   {
-										   	fillColor	  : "rgba(192,8,14,0.5)",
+										   	fillColor	  : "rgba(192,8,14,0.3)",
 										   	strokeColor : "rgba(192,8,14,1)",
 										   	pointColor : "rgba(192,8,14,1)",
 										   	pointStrokeColor : "rgba(192,8,14,1)",

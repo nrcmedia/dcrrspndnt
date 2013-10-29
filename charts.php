@@ -57,9 +57,29 @@ while ($row = mysql_fetch_array($graph_res))
 	$hour_tweet_data .= $tot.',';
 	$high = max($high, $tot + 30);
 }
-$scaleWidth2 = ceil($high / 10);
+
 $hour_label = substr($hour_label, 0, strlen($hour_label) - 1);
 $hour_tweet_data = substr($hour_tweet_data, 0, strlen($hour_tweet_data) - 1);
+
+// A la Chartbeat, de lijn wordt langer tijdens de dag
+// verschijnt in de uur-trend-grafiek
+// Eerst de tweets van vandaag
+$res_today = mysql_query("select count(tweets.ID) per_hour, hour(tweets.created_at) as the_hour, tweets.created_at from tweets
+where year(tweets.created_at) = year(now() )
+  and month(tweets.created_at) = month(now())
+  and day(tweets.created_at) = day(now() )
+group by the_hour
+order by created_at");
+// verwerken in grafiek-data
+while ($row = mysql_fetch_array($res_today))
+{
+	$high = max($high, $row['per_hour']);
+	$hour_today_data .= $row['per_hour'].',';
+}
+$hour_today_data = substr($hour_today_data, 0, strlen($hour_today_data) - 1);
+$scaleWidth2 = ceil($high / 10);
+
+$res_week_ago = mysql_query();
 
 ?>
 
@@ -67,6 +87,7 @@ $hour_tweet_data = substr($hour_tweet_data, 0, strlen($hour_tweet_data) - 1);
 <?php include ('menu.php'); ?>
 		<div class="center">
 		<div class="meta_graph">
+
 			<h2>Tweets per dag</h2>
 			<canvas id="tot_tweets" height="450" width="800"></canvas>
 			<script>
@@ -93,7 +114,7 @@ $hour_tweet_data = substr($hour_tweet_data, 0, strlen($hour_tweet_data) - 1);
 			<h2>Tweets per uur</h2>
 			<canvas id="hour_tweets" height="450" width="800"></canvas>
 			<script>
-				var barOptions = {
+				var lineOptions = {
 					scaleOverride : 1,
 					scaleSteps : 10,
 					//Number - The value jump in the hard coded scale
@@ -102,16 +123,23 @@ $hour_tweet_data = substr($hour_tweet_data, 0, strlen($hour_tweet_data) - 1);
 					scaleStartValue : 0
 
 				}
-				var barChartData = {
+				var lineChartData = {
 					labels: [ <?php echo $hour_label;  ?>],
 					datasets : [ {
 												fillColor   : "rgba(77,83,97,0.5)",
 												strokeColor : "rgba(77,83,97,1)",
 												data : [<?php echo $hour_tweet_data;?>]
-										 } ]
+										 },
+										   {
+										   	fillColor	  : "rgba(192,8,14,0.5)",
+										   	strokeColor : "rgba(192,8,14,1)",
+										   	data: [<?php echo $hour_today_data;?>]
+										  }
+										 ]
 				}
-				var tweetHour = new Chart(document.getElementById("hour_tweets").getContext("2d")).Bar(barChartData, barOptions);
+				var tweetHour = new Chart(document.getElementById("hour_tweets").getContext("2d")).Line(lineChartData, lineOptions);
 			</script>
+
 		</div>
 		</div>
 <?php include('footer.php') ?>

@@ -49,13 +49,13 @@ foreach($tweets as $tweet_data)
 }
 $bar_tweet_data = substr($bar_tweet_data, 0, strlen($bar_tweet_data) - 1);
 
+// Grafiek 2;
+// Tweets per uur en de dagtrend daar op afgezet
 $dagen_res = mysql_query("select day(tweets.created_at) as dagen from tweets group by dagen");
 $dagen = mysql_num_rows($dagen_res);
 
 $graph_res = mysql_query("select count(tweets.id) as tweet_count, hour(tweets.created_at) as per_uur from tweets  group by per_uur ");
 
-// Grafiek 2;
-// Tweets per uur en de dagtrend daar op afgezet
 $high = 0;
 $hour_label = '';
 $hour_tweet_data = '';
@@ -83,6 +83,12 @@ order by created_at");
 $i=0;
 while ($row = mysql_fetch_array($res_today))
 {
+	while ($i < (int)$row['the_hour'])
+	{
+		$hour_today_data .= '0,';
+		$i++;
+	}
+
 	$high = max($high, $row['per_hour']);
 	$hour_today_data .= $row['per_hour'].',';
 	$i++;

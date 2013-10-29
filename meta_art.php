@@ -73,6 +73,9 @@ while($row = mysql_fetch_array($art_res))
 	$titel = isset($og['title']) ? $og['title'] : substr($row['clean_url'],18,50);
 	$description = isset($og['description']) ? $og['description'] : 'Een mysterieus artikel';
 	$display_time = isset($og['article:published_time']) ? strftime('%e %b %H:%M', $og['article:published_time']) : substr($row['created_at'],8,2).'-'.substr($row['created_at'],5,2).' '.substr($row['created_at'],11,5);
+	if(isset($og['article:published_time']) && $og['article:published_time'] < time() - 360 * 24 * 60 * 60)
+		$display_time = strftime('%e %b %Y', $og['article:published_time']);
+
 	$found_at = substr($row['created_at'],8,2).'-'.substr($row['created_at'],5,2).' '.substr($row['created_at'],11,5);
 
 	$r = mysql_query ('select * from meta_artikel left join meta on meta.ID = meta_artikel.meta_id where meta_artikel.art_id = '.$row['ID'].' and meta.type = "'.$extra_query_var.'"');

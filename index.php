@@ -58,6 +58,8 @@ while($row = mysql_fetch_array($res) )
 	$section_res = mysql_query('select * from meta where meta.waarde = "'.$og['article:section'].'"');
 	$section = mysql_fetch_array($section_res);
 	$display_time = isset($og['article:published_time']) ? strftime('%e %b %H:%M', $og['article:published_time']) : substr($row['created_at'],8,2).'-'.substr($row['created_at'],5,2).' '.substr($row['created_at'],11,5);
+	if(isset($og['article:published_time']) && $og['article:published_time'] < time() - 360 * 24 * 60 * 60)
+		$display_time = strftime('%e %b %Y', $og['article:published_time']);
 	$found_at = substr($row['created_at'],8,2).'-'.substr($row['created_at'],5,2).' '.substr($row['created_at'],11,5);
 	?>
 

@@ -71,11 +71,14 @@ where year(tweets.created_at) = year(now() )
 group by the_hour
 order by created_at");
 // verwerken in grafiek-data
+$i=0;
 while ($row = mysql_fetch_array($res_today))
 {
 	$high = max($high, $row['per_hour']);
 	$hour_today_data .= $row['per_hour'].',';
+	$i++;
 }
+
 $hour_today_data = substr($hour_today_data, 0, strlen($hour_today_data) - 1);
 $scaleWidth2 = ceil($high / 10);
 
@@ -128,18 +131,22 @@ $res_week_ago = mysql_query();
 					datasets : [ {
 												fillColor   : "rgba(77,83,97,0.5)",
 												strokeColor : "rgba(77,83,97,1)",
+												pointColor : "rgba(77,83,97,1)",
+												pointStrokeColor : "#fff",
 												data : [<?php echo $hour_tweet_data;?>]
 										 },
 										   {
 										   	fillColor	  : "rgba(192,8,14,0.5)",
 										   	strokeColor : "rgba(192,8,14,1)",
+										   	pointColor : "rgba(192,8,14,1)",
+										   	pointStrokeColor : "#000",
 										   	data: [<?php echo $hour_today_data;?>]
 										  }
 										 ]
 				}
 				var tweetHour = new Chart(document.getElementById("hour_tweets").getContext("2d")).Line(lineChartData, lineOptions);
 			</script>
-
+			<p>Grijs is de overall trend, rood geeft de tweets van vandaag weer</p>
 		</div>
 		</div>
 <?php include('footer.php') ?>

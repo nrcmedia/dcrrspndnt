@@ -69,6 +69,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 						 || strstr($parsed['host'], 'login.nrc.nl')
 						 || strstr($parsed['host'], 'service.nrc.nl')
 						 || strstr($parsed['host'], 'klik.nrc.nl')
+						 || strstr($parsed['host'], 'abonnementen.nrc.nl')
 						 || strstr($parsed['host'], 'digitaleeditie.nrc.nl') )
 				{
 					echo 'skipping: '.substr($share,0,70)."\n";

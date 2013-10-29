@@ -190,6 +190,7 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 			<canvas id="hour_tweets" height="450" width="800"></canvas>
 			<script>
 				var lineOptions = {
+					pointDot : false, //line
 					scaleOverride : 1,
 					scaleSteps : 10,
 					//Number - The value jump in the hard coded scale

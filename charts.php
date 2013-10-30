@@ -224,8 +224,8 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 
 
 					pointDot : true, //line
-					pointDotRadius : 2,
-					pointDotStrokeWidth : 0,
+					pointDotRadius : 3,
+					pointDotStrokeWidth : 1,
 					scaleOverride : 1,
 					scaleSteps : 10,
 					//Number - The value jump in the hard coded scale
@@ -254,7 +254,7 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 										   	fillColor	  : "rgba(61,186,0,0.0)",
 										   	strokeColor : "#FFEB9D",
 										   	pointColor : "#FFEB9D",
-										   	pointStrokeColor : "#FFEB9D",
+										   	pointStrokeColor : "rgba(192,8,14,1)",
 										   	data: [<?php echo $projection_data;?>]
 										  }
 										 ]

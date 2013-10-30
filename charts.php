@@ -61,15 +61,19 @@ $bar_tweet_data = substr($bar_tweet_data, 0, strlen($bar_tweet_data) - 1);
 $dagen_res = mysql_query("select day(tweets.created_at) as dagen from tweets group by dagen");
 $dagen = mysql_num_rows($dagen_res);
 
-$graph_res = mysql_query("select count(tweets.id) as tweet_count, hour(tweets.created_at) as per_uur from tweets  group by per_uur ");
+$graph_res = mysql_query("select count(tweets.id) as tweet_count, hour(tweets.created_at) as the_uur from tweets  group by the_uur ");
 
 $high = 0;
 $hour_label = '';
 $hour_tweet_data = '';
+$uur_nu = date('H');
+$minuut_nu = date('i');
+
 while ($row = mysql_fetch_array($graph_res))
 {
-	$hour_label .= $row['per_uur'].',';
-	$tot = ceil($row['tweet_count'] / $dagen);
+	$hour_label .= $row['the_uur'].',';
+	$deler = (int)$row['the_uur'] > (int)$uur_nu ? $dagen - 1 : $dagen;
+	$tot = ceil($row['tweet_count'] / $deler);
 	$hour_tweet_data .= $tot.',';
 	$high = max($high, $tot + 10);
 }
@@ -97,6 +101,21 @@ while ($row = mysql_fetch_array($res_today))
 	$high = max($high, $row['per_hour'] + 10);
 	$hour_today_data .= $row['per_hour'].',';
 	$i++;
+	if( (int)$row['the_hour'] == (int)$uur_nu)
+	{ // make projection; 12 times per hour, which time are we?
+
+		$hour_part = floor($minuut_nu / 5) + 1;
+
+		$projection = floor((12 / $hour_part) * (int)$row['per_hour']);
+
+		$j = 0;
+		while($j < (int)$uur_nu) // naar de juiste plek brengen ...
+		{
+			$projection_data .= ' ,';
+			$j++;
+		}
+		$projection_data .= $projection;
+	}
 }
 
 $hour_today_data = substr($hour_today_data, 0, strlen($hour_today_data) - 1);
@@ -157,8 +176,6 @@ foreach($labels as $time => $label)
 	$tweets_per_minute_label .= '"'.$label.'",';
 	$tweets_per_minute_value .= $values[$time].',';
 	$i++;
-	if ($i > 288)
-		break;
 }
 $tweets_per_minute_value = substr($tweets_per_minute_value, 0, strlen($tweets_per_minute_value) - 1);
 $tweets_per_minute_label = substr($tweets_per_minute_label, 0, strlen($tweets_per_minute_label) - 1);
@@ -195,6 +212,7 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 				var tweetTot = new Chart(document.getElementById("tot_tweets").getContext("2d")).Bar(barChartData, barOptions);
 			</script>
 			<p>De laatste 30 dagen</p>
+
 			<h2>Tweets per uur</h2>
 			<canvas id="hour_tweets" height="450" width="800"></canvas>
 			<script>
@@ -206,7 +224,7 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 
 
 					pointDot : true, //line
-					pointDotRadius : 1,
+					pointDotRadius : 2,
 					pointDotStrokeWidth : 0,
 					scaleOverride : 1,
 					scaleSteps : 10,
@@ -231,6 +249,13 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 										   	pointColor : "rgba(192,8,14,1)",
 										   	pointStrokeColor : "rgba(192,8,14,1)",
 										   	data: [<?php echo $hour_today_data;?>]
+										  },
+										  	{
+										   	fillColor	  : "rgba(61,186,0,0.0)",
+										   	strokeColor : "#FFEB9D",
+										   	pointColor : "#FFEB9D",
+										   	pointStrokeColor : "#FFEB9D",
+										   	data: [<?php echo $projection_data;?>]
 										  }
 										 ]
 				}

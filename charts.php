@@ -125,6 +125,10 @@ $scaleWidth2 = ceil($high / 10);
 //
 // Grafiek 3,
 // Tweets per 5 minuten, vandaag
+// vergelijken met gisteren
+$comp_year  = date('Y', time()-86400);
+$comp_month = date('m', time()-86400);
+$comp_day   = date('d', time()-86400);
 $minute_res = mysql_query("select count(*) as per_minute,
  minute(tweets.created_at) as the_minute,
  hour(tweets.created_at) as the_hour,
@@ -135,7 +139,17 @@ $minute_res = mysql_query("select count(*) as per_minute,
  and day(tweets.created_at) = day(now() )
  group by the_minute , the_hour
  order by created_at ");
-
+$comp_minute_res = mysql_query("select count(*) as per_minute,
+ minute(tweets.created_at) as the_minute,
+ hour(tweets.created_at) as the_hour,
+ tweets.created_at
+ from tweets
+ where year(tweets.created_at) = ".$comp_year."
+ and month(tweets.created_at) = ".$comp_month."
+ and day(tweets.created_at) = ".$comp_day."
+ group by the_minute , the_hour
+ order by created_at
+");
 // labels klaarzetten
 $labels = array();
 $values;
@@ -169,17 +183,28 @@ while($row = mysql_fetch_array($minute_res))
 	$values[$str_hour.':'.$str_minute] = $row['per_minute'];
 	$tweets_pm_high = max($tweets_pm_high, $row['per_minute'] + 10);
 }
+while($comp_row = mysql_fetch_array($comp_minute_res))
+{
+	$str_hour   = str_pad($comp_row['the_hour'], 2, '0', STR_PAD_LEFT);
+	$str_minute = str_pad($comp_row['the_minute'], 2, '0', STR_PAD_LEFT);
+	$comp_values[$str_hour.':'.$str_minute] = $comp_row['per_minute'];
+	$tweets_pm_high = max($tweets_pm_high, $row['per_minute'] + 10);
+}
 // transform this to javascrript
 $i = 0;
 foreach($labels as $time => $label)
 {
 	$tweets_per_minute_label .= '"'.$label.'",';
 	$tweets_per_minute_value .= $values[$time].',';
+	$comp_tweets_per_minute_value .= $comp_values[$time].',';
 	$i++;
 }
 $tweets_per_minute_value = substr($tweets_per_minute_value, 0, strlen($tweets_per_minute_value) - 1);
 $tweets_per_minute_label = substr($tweets_per_minute_label, 0, strlen($tweets_per_minute_label) - 1);
+$comp_tweets_per_minute_value = substr($comp_tweets_per_minute_value, 0, strlen($comp_tweets_per_minute_value) - 1);
 $scalewidth3 = ceil($tweets_pm_high / 10);
+
+
 ?>
 
 		<h1>nrc.nl tweets in grafieken </h1>
@@ -286,7 +311,12 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 				var tweetspmChartData = {
 					labels: [ <?php echo $tweets_per_minute_label;  ?>],
 					datasets : [ {
-										   	fillColor	  : "rgba(192,8,14,0.5)",
+										   	fillColor	  : "rgba(77,83,97,0.3)",
+										   	strokeColor : "rgba(77,83,97,1)",
+												data : [<?php echo $comp_tweets_per_minute_value;?>]
+										 } ,
+										 {
+										   	fillColor	  : "rgba(192,8,14,0.3)",
 										   	strokeColor : "rgba(192,8,14,1)",
 												data : [<?php echo $tweets_per_minute_value;?>]
 										 } ]

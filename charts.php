@@ -32,7 +32,7 @@ foreach($rows as $row)
 {
 	$label[] = $row['dag'];
 	$tweets[] = $row['tweet_count'];
-	$high = max($high, $row['tweet_count'] + 50);
+	$high = max($high, $row['tweet_count'] + 10);
 }
 $scaleWidth = ceil($high / 10);
 
@@ -228,7 +228,7 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 			<p>Grijs is de overall trend, rood geeft de tweets van vandaag weer</p>
 
 			<h2>Tweets vandaag</h2>
-			<canvas id="tweets_pm" height="450" width="904"></canvas>
+			<canvas id="tweets_pm" height="450" width="909"></canvas>
 			<script>
 				var tweetspmOptions = {
 						barShowStroke: false, //bar

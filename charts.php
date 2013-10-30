@@ -28,9 +28,16 @@ while ($row = mysql_fetch_array($tot_tweets_res))
 }
 $rows = array_reverse($rows);
 
+$cur_month = '';
 foreach($rows as $row)
 {
-	$label[] = $row['dag'];
+	$lab = $row['dag'];
+	if (! $row['maand'] == $cur_month)
+	{
+		$lab .= '-'.$row['maand'];
+		$cur_month = $row['maand'];
+	}
+	$label[] = $lab;
 	$tweets[] = $row['tweet_count'];
 	$high = max($high, $row['tweet_count'] + 10);
 }
@@ -39,7 +46,7 @@ $scaleWidth = ceil($high / 10);
 $bar_label = '';
 foreach($label as $lab)
 {
-	$bar_label .= $lab.',';
+	$bar_label .= '"'.$lab.'",';
 }
 $bar_label = substr($bar_label, 0, strlen($bar_label) - 1);
 $bar_tweet_data = '';

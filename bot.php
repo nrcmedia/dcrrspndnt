@@ -99,7 +99,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 
 				$path = $parsed['path'];
 				$path_p = explode('/', $path);
-				if(isset($path_p[1]))
+				if(! empty($path_p[1]))
 				{
 					if($parsed['host'] == 'm.nrc.nl')
 						$parsed['host'] = 'www.nrc.nl';

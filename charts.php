@@ -188,7 +188,7 @@ while($comp_row = mysql_fetch_array($comp_minute_res))
 	$str_hour   = str_pad($comp_row['the_hour'], 2, '0', STR_PAD_LEFT);
 	$str_minute = str_pad($comp_row['the_minute'], 2, '0', STR_PAD_LEFT);
 	$comp_values[$str_hour.':'.$str_minute] = $comp_row['per_minute'];
-	$tweets_pm_high = max($tweets_pm_high, $row['per_minute'] + 10);
+	$tweets_pm_high = max($tweets_pm_high, $comp_row['per_minute'] + 10);
 }
 // transform this to javascrript
 $i = 0;

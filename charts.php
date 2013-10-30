@@ -91,6 +91,10 @@ while ($row = mysql_fetch_array($res_today))
 	$hour_today_data .= $row['per_hour'].',';
 	$i++;
 }
+// add one zero for the current hour if the day isn't full yet
+// specially for the night
+if($i < 23)
+	$hour_today_data .= '0,';
 $hour_today_data = substr($hour_today_data, 0, strlen($hour_today_data) - 1);
 $scaleWidth2 = ceil($high / 10);
 

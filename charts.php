@@ -182,14 +182,14 @@ while($row = mysql_fetch_array($minute_res))
 	$str_hour   = str_pad($row['the_hour'], 2, '0', STR_PAD_LEFT);
 	$str_minute = str_pad($row['the_minute'], 2, '0', STR_PAD_LEFT);
 	$values[$str_hour.':'.$str_minute] = $row['per_minute'];
-	$tweets_pm_high = max($tweets_pm_high, $row['per_minute'] + 10);
+	$tweets_pm_high = max($tweets_pm_high, $row['per_minute'] + 5);
 }
 while($comp_row = mysql_fetch_array($comp_minute_res))
 {
 	$str_hour   = str_pad($comp_row['the_hour'], 2, '0', STR_PAD_LEFT);
 	$str_minute = str_pad($comp_row['the_minute'], 2, '0', STR_PAD_LEFT);
 	$comp_values[$str_hour.':'.$str_minute] = $comp_row['per_minute'];
-	$tweets_pm_high = max($tweets_pm_high, $comp_row['per_minute'] + 10);
+	$tweets_pm_high = max($tweets_pm_high, $comp_row['per_minute'] + 5);
 
 }
 // transform this to javascrript
@@ -205,7 +205,6 @@ $tweets_per_minute_value = substr($tweets_per_minute_value, 0, strlen($tweets_pe
 $tweets_per_minute_label = substr($tweets_per_minute_label, 0, strlen($tweets_per_minute_label) - 1);
 $comp_tweets_per_minute_value = substr($comp_tweets_per_minute_value, 0, strlen($comp_tweets_per_minute_value) - 1);
 $scalewidth3 = ceil($tweets_pm_high / 10);
-echo $tweets_pm_high;
 
 ?>
 

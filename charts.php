@@ -32,7 +32,7 @@ foreach($rows as $row)
 {
 	$label[] = $row['dag'];
 	$tweets[] = $row['tweet_count'];
-	$high = max($high, $row['tweet_count'] + 100);
+	$high = max($high, $row['tweet_count'] + 50);
 }
 $scaleWidth = ceil($high / 10);
 

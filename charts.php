@@ -64,7 +64,7 @@ while ($row = mysql_fetch_array($graph_res))
 	$hour_label .= $row['per_uur'].',';
 	$tot = ceil($row['tweet_count'] / $dagen);
 	$hour_tweet_data .= $tot.',';
-	$high = max($high, $tot + 30);
+	$high = max($high, $tot + 10);
 }
 
 $hour_label = substr($hour_label, 0, strlen($hour_label) - 1);
@@ -190,6 +190,12 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 			<canvas id="hour_tweets" height="450" width="800"></canvas>
 			<script>
 				var lineOptions = {
+						barValueSpacing : 0, // bar
+						barDatasetSpacing : 0, // bar
+						barShowStroke: true, //bar
+						barStrokeWidth : 1,
+
+
 					pointDot : true, //line
 					pointDotRadius : 1,
 					pointDotStrokeWidth : 0,

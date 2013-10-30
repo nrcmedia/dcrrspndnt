@@ -75,12 +75,12 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 							$share = $arr[1];
 							$parsed = parse_url($share);
 							$continue = 1;
-							echo 'using: '.$share."\n";
+							echo 'using: '.substr($share,0,60)."\n";
 						}
 					}
 					if (! $continue )
 					{
-						echo 'skipping: '.$share."\n";
+						echo 'not us! skipping: '.substr($share,0,60)."\n";
 						continue;
 					}
 				}
@@ -93,7 +93,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 						 || strstr($parsed['host'], 'abonnementen.nrc.nl')
 						 || strstr($parsed['host'], 'digitaleeditie.nrc.nl') )
 				{
-					echo 'skipping: '.$share."\n";
+					echo 'skipping: '.substr($share,0,60)."\n";
 					continue;
 				}
 

@@ -2,8 +2,12 @@
 // functions used in more than one file
 function pager($tot_row, $qsa)
 {
+	$query = $_SERVER['PHP_SELF'];
+	$path = pathinfo( $query );
+
 	// how many pages?
 	$pages = ceil($tot_row / ITEMS_PER_PAGE);
+
 	$i = 0;
 	if ($pages > 1)
 	{
@@ -14,7 +18,7 @@ function pager($tot_row, $qsa)
 		while ($i < $pages)
 		{
 			$page = $i + 1;
-			echo '			<li><a href="./?page='.$page.$qsa.'">'.$page.'</a></li>';
+			echo '			<li><a href="./'.$path['basename'].'?page='.$page.$qsa.'">'.$page.'</a></li>';
 			$i++;
 		}
 ?>

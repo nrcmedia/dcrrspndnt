@@ -28,7 +28,7 @@ if(isset($_GET['page']))
 }
 
 $order_by = ' order by created_at desc ';
-$qsa = '';
+$qsa = '&amp;id='.$meta_id;
 $th_pubdate = '<th>Gepubliceerd</th>';
 $sep = strstr($_SERVER['REQUEST_URI'], '?') ? '&amp;' : '?';
 $th_tweets = '<th class="sortable"><a href="'.$_SERVER['REQUEST_URI'].$sep.'order=tweets" title="Sorteer op aantal maal gedeeld" >tweets</a>&#9660;</th>';
@@ -36,8 +36,8 @@ $th_tweets = '<th class="sortable"><a href="'.$_SERVER['REQUEST_URI'].$sep.'orde
 if(isset($_GET['order']) && $_GET['order'] == 'tweets')
 {
 	$order_by = ' order by tweet_count desc ';
-	$qsa = '&amp;order=tweets'; // voor de pager
-	$th_pubdate = '<th class="sortable"><a href="./?page='.$page.'" title="Sorteer op publicatiedatum">Gepubliceerd</a>&#9660;</th>';
+	$qsa .= '&amp;order=tweets'; // voor de pager
+	$th_pubdate = '<th class="sortable"><a href="./meta_art.php?id='.$meta_id.'&amp;page='.$page.'" title="Sorteer op publicatiedatum">Gepubliceerd</a>&#9660;</th>';
 	$th_tweets = '<th>tweets</th>';
 }
 

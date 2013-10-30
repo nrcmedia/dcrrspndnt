@@ -63,8 +63,29 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 			$parsed = parse_url ($share);
 			if (isset($parsed['path']))
 			{
-				if ( !strstr($parsed['host'], 'nrc.nl')
-						 || strstr($parsed['host'], 'actie.nrc.nl')
+				if ( !strstr($parsed['host'], 'nrc.nl') && ! empty($parsed['query']))
+				{ // google-news has the url in the query!
+					$q = explode('&', $parsed['query']);
+					$continue = 0;
+					foreach($q as $param)
+					{
+						$arr = explode('=', $param);
+						if($arr[0] == 'url' && strstr($arr[1], 'nrc.nl'))
+						{
+							$share = $arr[1];
+							$parsed = parse_url($share);
+							$continue = 1;
+							echo 'using: '.$share."\n";
+						}
+					}
+					if (! $continue )
+					{
+						echo 'skipping: '.$share."\n";
+						continue;
+					}
+				}
+
+				if (    strstr($parsed['host'], 'actie.nrc.nl')
 						 || strstr($parsed['host'], 'zoeken.nrc.nl' )
 						 || strstr($parsed['host'], 'login.nrc.nl')
 						 || strstr($parsed['host'], 'service.nrc.nl')
@@ -72,9 +93,10 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 						 || strstr($parsed['host'], 'abonnementen.nrc.nl')
 						 || strstr($parsed['host'], 'digitaleeditie.nrc.nl') )
 				{
-					echo 'skipping: '.substr($share,0,70)."\n";
+					echo 'skipping: '.$share."\n";
 					continue;
 				}
+
 				$path = $parsed['path'];
 				$path_p = explode('/', $path);
 				if(isset($path_p[1]))

@@ -298,7 +298,7 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 
 						datasetStroke : false, //line
 						pointDot : false, //line
-						bezierCurve : false, //
+						bezierCurve : false, // lelijk als die van lang op 0 naar een hoge waarde gaat
 
 						scaleOverride : 1,
 						scaleSteps : 10,

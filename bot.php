@@ -312,17 +312,24 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 					{
 						echo 'Updating article: '.$artikel_id."\n";
 						mysql_query('update artikelen set og = "'.addslashes($og).'" where id = '.$artikel_id);
+						// check the existence of the tweet
+						$check = mysql_query('select * from tweets where tweet_id = "'.$tweet->id.'" and art_id = '.$artikel_id);
+						if (mysql_num_rows($check) > 0)
+						{
+							echo 'Tweet exists'."\n";
+							continue;
+						}
 					}
 					else
 					{
 						echo 'Adding article: '.$clean."\n";
-//					echo 'inserting: insert into artikelen (t_co, clean_url, share_url, og) values ("'.$tco.'", "'.$clean.'", "'.$share.'", "'.substr($og,0,20).'")'."\n";
 						mysql_query('insert into artikelen (t_co, clean_url, share_url, og) values ("'.$tco.'", "'.$clean.'", "'.$share.'", "'.addslashes($og).'")');
+						$artikel_id = mysql_insert_id();
 					}
 					if (COUNT_TWEETS == 1)
 					{
 						echo 'counting tweet '.$tweet->id."\n";
-						mysql_query('insert into tweets (tweet_id, art_id) values ("'.$tweet->id.'", '.mysql_insert_id().')');
+						mysql_query('insert into tweets (tweet_id, art_id) values ("'.$tweet->id.'", '.$artikel_id.')');
 					}
 				}
 			}

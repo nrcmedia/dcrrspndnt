@@ -72,7 +72,6 @@ $hour_tweet_data = substr($hour_tweet_data, 0, strlen($hour_tweet_data) - 1);
 
 // A la Chartbeat, de lijn wordt langer tijdens de dag
 // verschijnt in de uur-trend-grafiek
-// Eerst de tweets van vandaag
 $res_today = mysql_query("select count(tweets.ID) per_hour, hour(tweets.created_at) as the_hour, tweets.created_at from tweets
 where year(tweets.created_at) = year(now() )
   and month(tweets.created_at) = month(now())
@@ -88,8 +87,7 @@ while ($row = mysql_fetch_array($res_today))
 		$hour_today_data .= '0,';
 		$i++;
 	}
-
-	$high = max($high, $row['per_hour']);
+	$high = max($high, $row['per_hour'] + 10);
 	$hour_today_data .= $row['per_hour'].',';
 	$i++;
 }

@@ -228,7 +228,7 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 			<p>Grijs is de overall trend, rood geeft de tweets van vandaag weer</p>
 
 			<h2>Tweets vandaag</h2>
-			<canvas id="tweets_pm" height="450" width="960"></canvas>
+			<canvas id="tweets_pm" height="450" width="904"></canvas>
 			<script>
 				var tweetspmOptions = {
 						barShowStroke: false, //bar
@@ -259,11 +259,6 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 			</script>
 			<p>
 				gevonden tweets, per 5 minuten, van vandaag.<br />
-				Er is een issue met de grapher die ik gebruik, bug report is ingediend, de grafiek gebruikt helaas niet de volledige breedte van het canvas. Zowel de bar als de lijn heeft dit probleem.
-				labels: <?php echo count($labels); ?><br />
-				waardes: <?php echo count($values); ?><br />
-				javascript labels: <?php echo count(explode(',', $tweets_per_minute_label)); ?>
-				javascript waardes: <?php echo count(explode(',', $tweets_per_minute_value)); ?>
 			</p>
 
 		</div>

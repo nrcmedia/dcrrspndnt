@@ -94,7 +94,6 @@ while($row = mysql_fetch_array($art_res))
 ?>
 		</table>
 <?php
-	echo 'paging'.$tot_row;
 	pager($tot_row, $qsa);
 ?>
 

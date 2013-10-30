@@ -16,7 +16,7 @@ $th_related = $mode == 'author' ? 'auteurs' : 'secties';
 $extra_query_var = $mode == 'author' ? 'article:section' : 'article:author';
 
 // paging dr. beat:
-$count_res = mysql_query('select count(artikelen.*) as amount from artikelen join meta_artikel on artikelen.ID = meta_artikel.art_id where meta_artikel.meta_id = '.$meta_id);
+$count_res = mysql_query('select count(artikelen.id*) as amount from artikelen join meta_artikel on artikelen.ID = meta_artikel.art_id where meta_artikel.meta_id = '.$meta_id);
 $count_arr = mysql_fetch_array($count_res);
 $tot_row = $count_arr['amount'];
 $start = 0;
@@ -94,6 +94,7 @@ while($row = mysql_fetch_array($art_res))
 ?>
 		</table>
 <?php
+	echo 'paging'.$tot_row;
 	pager($tot_row, $qsa);
 ?>
 
@@ -126,7 +127,7 @@ while ($row = mysql_fetch_array($graph_res))
 {
 	$bar_label .= $row['dag'].',';
 	$bar_tweet_data .= $row['tweet_count'].',';
-	$high = max($high, $row['tweet_count'] + 30);
+	$high = max($high, $row['tweet_count'] + 10);
 }
 $scaleWidth = ceil($high / 10);
 $bar_label = substr($bar_label, 0, strlen($bar_label) - 1);

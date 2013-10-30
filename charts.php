@@ -170,6 +170,9 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 			<canvas id="tot_tweets" height="450" width="800"></canvas>
 			<script>
 				var barOptions = {
+					barValueSpacing : 1, // bar
+					barDatasetSpacing : 1, // bar
+
 					scaleOverride : 1,
 					scaleSteps : 10,
 					//Number - The value jump in the hard coded scale

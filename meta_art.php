@@ -16,7 +16,7 @@ $th_related = $mode == 'author' ? 'auteurs' : 'secties';
 $extra_query_var = $mode == 'author' ? 'article:section' : 'article:author';
 
 // paging dr. beat:
-$count_res = mysql_query('select count(artikelen.id*) as amount from artikelen join meta_artikel on artikelen.ID = meta_artikel.art_id where meta_artikel.meta_id = '.$meta_id);
+$count_res = mysql_query('select count(artikelen.id) as amount from artikelen join meta_artikel on artikelen.ID = meta_artikel.art_id where meta_artikel.meta_id = '.$meta_id);
 $count_arr = mysql_fetch_array($count_res);
 $tot_row = $count_arr['amount'];
 $start = 0;

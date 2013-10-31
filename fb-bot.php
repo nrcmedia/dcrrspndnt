@@ -2,9 +2,6 @@
 
 // passwords, keys, db-settings
 require_once('settings.local.php');
-// Create our twitter API object
-require_once("twitteroauth.php");
-include_once ('simple_html_dom.php');
 
 // database, mysql, why not?
 include('db.php');

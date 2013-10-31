@@ -317,7 +317,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 						if ($og['title'] == 'The Big Board - wat lezen onze bezoekers op dit moment')
 						{
 							echo "\nBigboard!!\n\n";
-							$pubdate = '2011-03-14 09:14';
+							$pubdate = '2011-11-03 09:14';
 							$og['article:section'] = 'apps';
 							$og['article:author'] = 'Milo Vermeulen en Appie Verschoor';
 						}

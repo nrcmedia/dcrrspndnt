@@ -287,6 +287,9 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 							}
 						}
 						// $pubdate, whichever value it has into og['article:publish_time']
+						if($og['article:section'] == 'Berry' && $og['title'] == 'De kunst van het stelen')
+							$pubdate = '2013-10-16-12:30';
+
 						echo 'Publicatietijd: '.$pubdate.' -> '.strtotime($pubdate)."\n";
 						if($pubdate > '')
 							$og['article:published_time'] = strtotime($pubdate);

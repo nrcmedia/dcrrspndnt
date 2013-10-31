@@ -8,12 +8,12 @@ require_once('settings.local.php');
 include('db.php');
 
 // nieuwe artikelen eerst!
-$artikelen_res = mysql_query('select * from artikelen left outer join facebook on artikelen.id = facebook.art_id where facebook.art_id IS NULL');
-echo 'Indexing fresh articles. ('.mysql_num_rows($artikelen_res).')';
+$artikelen_res = mysql_query('select *, artikelen.ID as artikelid from artikelen left outer join facebook on artikelen.id = facebook.art_id where facebook.art_id IS NULL');
+echo 'Indexing fresh articles. ('.mysql_num_rows($artikelen_res).')'."\n";
 crawl($artikelen_res);
 // vervolgens artikelen die lang geleden een update kregen
-$artikelen_res = mysql_query('select * from artikelen left outer join facebook on artikelen.id = facebook.art_id where facebook.id > 0 order by facebook.last_crawl');
-echo 'Updating articles. ('.mysql_num_rows($artikelen_res).')';
+$artikelen_res = mysql_query('select *, artikelen.ID as artikelid from artikelen left outer join facebook on artikelen.id = facebook.art_id where facebook.id > 0 order by facebook.last_crawl');
+echo "\n".'Updating articles. ('.mysql_num_rows($artikelen_res).')'."\n";
 crawl($artikelen_res);
 
 function crawl($artikelen_res)
@@ -30,7 +30,7 @@ echo 'Querying facebook for: '.$artikel['clean_url']."\n";
 		$response = json_decode($json);
 
 		// now find the record for this article
-		$fb_res = mysql_query('select ID from facebook where art_id = '.$artikel['ID']);
+		$fb_res = mysql_query('select ID from facebook where art_id = '.$artikel['artikelid']);
 		if(mysql_num_rows($fb_res) > 0)
 		{
 			mysql_query('update facebook set share_count = '.$response[0]->share_count.', comment_count = '.$response[0]->comment_count.', like_count = '.$response[0]->like_count.', total_count = '.$response[0]->total_count.', click_count = '.$response[0]->click_count.' where art_id = '.$artikel['ID']);
@@ -39,7 +39,7 @@ echo 'Querying facebook for: '.$artikel['clean_url']."\n";
 		{
 			mysql_query('insert into facebook (art_id, share_count, comment_count, like_count, total_count, click_count)
 									 values
-									 ('.$artikel['ID'].', '.$response[0]->share_count.', '.$response[0]->comment_count.', '.$response[0]->like_count.', '.$response[0]->total_count.', '.$response[0]->click_count.')');
+									 ('.$artikel['artikelid'].', '.$response[0]->share_count.', '.$response[0]->comment_count.', '.$response[0]->like_count.', '.$response[0]->total_count.', '.$response[0]->click_count.')');
 		}
 
 	}

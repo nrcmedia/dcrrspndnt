@@ -1,4 +1,5 @@
 ﻿<?php
+/* oh gut, git git git */
 
 // passwords, keys, db-settings
 require_once('settings.local.php');

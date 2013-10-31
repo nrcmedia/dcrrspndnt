@@ -313,6 +313,16 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 								$pubdate = $matches[3][0].'-'.$maand.'-'.$matches[1][0];
 							}
 						}
+						// the big board, gewoon zo doen:
+						if ($og['title'] == 'The Big Board - wat lezen onze bezoekers op dit moment')
+						{
+							echo "\nBigboard!!\n\n";
+							$pubdate = '2011-03-14 09:14';
+							$og['article:section'] = 'apps';
+							$og['article:author'] = 'Milo Vermeulen en Appie Verschoor';
+						}
+
+
 						// $pubdate, whichever value it has into og['article:publish_time']
 						if($og['article:section'] == 'Berry' && $og['title'] == 'De kunst van het stelen')
 							$pubdate = '2013-10-16 12:30';

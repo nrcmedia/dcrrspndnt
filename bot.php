@@ -108,6 +108,11 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 					if($parsed['host'] == 'nrc.nl')
 						$parsed['host'] = 'www.nrc.nl';
 
+					if($path_p[1] == 'wp-contents' && ($path_p[2] == 'uploads'))
+					{
+						echo 'Skipping image: '.$path."\n";
+						continue;
+					}
 					$pubdate = $path_p[2].'-'.$path_p[3].'-'.$path_p[4];
 
 					$clean = $parsed['scheme'].'://'.$parsed['host'].$path;

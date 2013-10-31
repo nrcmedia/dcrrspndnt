@@ -23,7 +23,8 @@ function crawl($artikelen_res)
 		$fql  = "SELECT url, normalized_url, share_count, like_count, comment_count, ";
 		$fql .= "total_count, commentsbox_count, comments_fbid, click_count FROM ";
 		$fql .= "link_stat WHERE url = '".$artikel['clean_url']."'";
-echo 'Querying facebook for: '.$artikel['clean_url']."\n";
+		sleep(1); // niet te hard gaan!
+		echo 'Querying facebook for: '.$artikel['clean_url']."\n";
 		$apifql="https://api.facebook.com/method/fql.query?format=json&query=".urlencode($fql);
 		$json=file_get_contents($apifql);
 		//print_r($json);

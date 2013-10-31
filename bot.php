@@ -10,6 +10,8 @@ include_once ('simple_html_dom.php');
 // database, mysql, why not?
 include('db.php');
 
+$months = array('januari' => 1 ,'februari' => 2, 'maart' => 3, 'april' => 4, 'mei' => 5, 'juni' => 6, 'juli' => 7, 'augustus' => 8, 'september' => 9, 'oktober' => 10,'november' => 11,'december' => 12);
+
 
 $since = get_since();
 
@@ -231,6 +233,26 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 								if (empty($og['article:author']))
 									$og['article:author'] = 'Een onzer redacteuren';
 							}
+							elseif( $parsed['host'] == 'tv.nrc.nl' )
+							{
+								$og['article:section'] = 'nrc.tv';
+								$html_str = $html->innertext;
+								// auteur:
+								// <div class="videosection">\n<h2>Janneke Vreugdenhil</h2>
+								preg_match_all('%<div class="videosection">.*<h2>(.*)</h2>%uUm',$html_str, $matches);
+								if (! empty($matches[1][0]))
+									$og['article:author'] = $matches[1][0];
+								// nog even een datum vinden
+								// <p class="videodate">\n11 maart 2010, aflevering 96</p>
+								preg_match_all('%<p class="videodate">.*(\d\d?)\b(.*)(\d\d\d\d),.*</p>%uUm', $html_str, $matches);
+								$pubdate = $matches[3][0].'-'.$months[strtolower(trim($matches[2][0]))].'-'.$matches[1][0].' 10:13';
+								if(empty($og['title']))
+								{
+									preg_match_all('%<h2 id="title">(.*)</h2>%uUm', $html_str, $matches);
+									$og['title'] = $matches[1][0];
+									echo $og['title'];
+								}
+							}
 							else // gewoon op nrc.nl
 							{
 								if(is_object($html->find('article[id=artikel]'))) foreach($html->find('article[id=artikel]') as $artinfo)
@@ -278,7 +300,6 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 						if($parsed['host'] == 'retro.nrc.nl')
 						{
 							//<FONT SIZE=-3> NRC Webpagina's<BR> 10 JANUARI 2001 </FONT>
-							$months = array('januari' => 1 ,'februari' => 2, 'maart' => 3, 'april' => 4, 'mei' => 5, 'juni' => 6, 'juli' => 7, 'augustus' => 8, 'september' => 9, 'oktober' => 10,'november' => 11,'december' => 12);
 							preg_match_all('%<font size=-3>.*<br>.*(\d+)\s(.*)\s(\d+)\s</font>%imU', $doc, $matches);
 							if (! empty($matches[1][0]) && ! empty($matches[2][0]) && ! empty($matches[3][0]))
 							{

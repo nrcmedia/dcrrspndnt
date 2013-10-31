@@ -38,14 +38,14 @@ if(isset($_GET['order']) && $_GET['order'] == 'tweets')
 }
 
 $i = 0;
-$res = mysql_query('select artikelen.*, count(tweets.id) as tweet_count from artikelen left outer join tweets on tweets.art_id = artikelen.id group by artikelen.id '.$order_by.' limit '.$start.','.ITEMS_PER_PAGE);
+$res = mysql_query('select artikelen.*, count(tweets.id) as tweet_count, facebook.total_count as fb_total, facebook.share_count as fb_share, facebook.like_count as fb_like, facebook.comment_count as fb_comment from artikelen left outer join tweets on tweets.art_id = artikelen.id left outer join facebook on facebook.art_id = artikelen.id group by artikelen.id '.$order_by.' limit '.$start.','.ITEMS_PER_PAGE);
 ?>
 		<h1>Artikelen van <a href="http://www.nrc.nl/">nrc.nl</a> gevonden op Twitter</h1>
 <?php include ('menu.php'); ?>
 		<div class="center">
 		<table>
 			<tr>
-				<?php echo $th_pubdate;?><th>Titel / Artikel</th><th>Auteur</th><th>Sectie</th><?php echo $th_tweets;?>
+				<?php echo $th_pubdate;?><th>Titel / Artikel</th><th>Auteur</th><th>Sectie</th><?php echo $th_tweets;?><th>FB</fb>
 			</tr>
 <?php
 while($row = mysql_fetch_array($res) )
@@ -61,6 +61,7 @@ while($row = mysql_fetch_array($res) )
 	if(isset($og['article:published_time']) && $og['article:published_time'] < time() - 360 * 24 * 60 * 60)
 		$display_time = strftime('%e %b %Y', $og['article:published_time']);
 	$found_at = substr($row['created_at'],8,2).'-'.substr($row['created_at'],5,2).' '.substr($row['created_at'],11,5);
+	$fb_abbr = 'Facebook, likes: '.$row['fb_like'].' shares:'.$row['fb_share'].' comments:'.$row['fb_comment'];
 	?>
 
 			<tr <?php if($i % 2 == 1) echo 'class="odd"'?>>
@@ -69,6 +70,7 @@ while($row = mysql_fetch_array($res) )
 				<td><a href="./meta_art.php?id=<?php echo $author['ID'];?>" title="alle artikelen van deze auteur"><?php echo $author['waarde'];?></a></td>
 				<td><a href="./meta_art.php?id=<?php echo $section['ID'];?>" title="alle artikelen in deze sectie"><?php echo $section['waarde'];?></a></td>
 				<td align="right"><?php echo $row['tweet_count']?></td>
+				<td align="right"><abbr title="<?php echo $fb_abbr;?>"><?php echo $row['fb_total'];?></abbr></td>
 			</tr>
 	<?php
 	$i++;

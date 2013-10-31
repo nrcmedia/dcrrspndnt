@@ -61,7 +61,7 @@ while($row = mysql_fetch_array($res) )
 	if(isset($og['article:published_time']) && $og['article:published_time'] < time() - 360 * 24 * 60 * 60)
 		$display_time = strftime('%e %b %Y', $og['article:published_time']);
 	$found_at = substr($row['created_at'],8,2).'-'.substr($row['created_at'],5,2).' '.substr($row['created_at'],11,5);
-	$fb_abbr = 'Facebook, likes: '.$row['fb_like'].' shares:'.$row['fb_share'].' comments:'.$row['fb_comment'];
+	$fb_abbr = 'Facebook, likes: '.$row['fb_like'].' shares: '.$row['fb_share'].' comments: '.$row['fb_comment'];
 	?>
 
 			<tr <?php if($i % 2 == 1) echo 'class="odd"'?>>

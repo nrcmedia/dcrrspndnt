@@ -294,12 +294,22 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 							{
 								$og['article:section'] = 'nrcboeken';
 								$html_str = $html->innertext;
+								if(! strstr($html_str, '<html>'))
+								{
+									$ch = curl_init($share);
+									curl_setopt_array($ch, array(
+								                CURLOPT_FOLLOWLOCATION => TRUE,
+                                CURLOPT_RETURNTRANSFER => TRUE
+                                ));
+									$html_str = curl_exec($ch);
+									curl_close($ch);
+									$html_str = gzdecode($html_str);
+								}
+
 								// 2 in 1 :-) Datum en auteur...
-								preg_match_all('%<div class="submitted">.*<span>.*</span>.*(\d\d?)\b(.*)\b(\d\d\d\d).*door <a.*>(.*)</a>%uUm', $html_str, $matches);
-								//print_r($matches);
+								preg_match_all('%<span>.*dag</span>.*(\d\d?)\b(.*)\b(\d\d\d\d).*door <a.*>(.*)</a>%uUm', $html_str, $matches);
 								$pubdate = $matches[3][0].'-'.$months[strtolower(trim($matches[2][0]))].'-'.$matches[1][0].' 11:33';
 								$og['article:author'] = $matches[4][0];
-
 								if(empty($og['title']))
 								{
 									preg_match_all('%<title>(.*)</title>%uUm', $html_str, $matches);

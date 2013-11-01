@@ -99,7 +99,8 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 					continue;
 				}
 
-				if(strstr($parsed['path'], 'wp-content/uploads'))
+				if(strstr($parsed['path'], 'wp-content/uploads') ||
+					 preg_match('%/files/\d\d\d\d/\d\d/.*jpg%', $parsed['path']) )
 				{
 					echo 'Skipping image: '.$parsed['path']."\n";
 					continue;
@@ -221,7 +222,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 							elseif( $parsed['host'] == 'weblogs.nrc.nl' )
 							{
 								$og['article:section'] = $path_p[1];
-								$pubdate = $path_p[3].'-'.$path_p[4].'-'.$path_p[5];
+								$pubdate = $path_p[2].'-'.$path_p[3].'-'.$path_p[4].' 13:32';
 								$html_str = $html->innertext;
 								// auteur:
 								//<p class="postmetadata" style="margin-bottom: 0px;">donderdag 3 september 2009 door <a href="http://weblogs.nrc.nl/media/author/hansb/" title="Berichten van Hans Beerekamp">Hans Beerekamp</a> </p>

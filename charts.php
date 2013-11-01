@@ -310,7 +310,7 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 				}
 				var tweetHour = new Chart(document.getElementById("hour_tweets").getContext("2d")).Line(lineChartData, lineOptions);
 			</script>
-			<p>Grijs is de overall trend, rood geeft de tweets van vandaag weer</p>
+			<p>Grijs is de overall trend, rood geeft de tweets van vandaag weer, het gele bolletje is de projectie van wat er dit uur bij zou komen op basis van de nu getelde tweets.</p>
 
 			<h2>Tweets vandaag</h2>
 			<canvas id="tweets_pm" height="450" width="909"></canvas>

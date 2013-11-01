@@ -435,7 +435,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 		}
 	}
 }
-echo 'Batch ended'."\n\n";
+echo 'Batch ended, bye'."\n\n";
 
 // alle meta-waardes wegschrijven in de meta-table voor makkelijker cross-linken:
 // selecteer alle artikelen die geen meta_artikel rows bezitten

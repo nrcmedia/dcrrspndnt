@@ -335,6 +335,11 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 				var tweetspmChartData = {
 					labels: [ <?php echo $tweets_per_minute_label;  ?>],
 					datasets : [ {
+										   	fillColor	  : "rgba(50,255,50,0.3)",
+										   	strokeColor : "rgba(50,255,50,1)",
+												data : [<?php echo $avg_tweets_per_minute_value;?>]
+										 } ,
+										 {
 										   	fillColor	  : "rgba(77,83,97,0.3)",
 										   	strokeColor : "rgba(77,83,97,1)",
 												data : [<?php echo $comp_tweets_per_minute_value;?>]
@@ -343,11 +348,6 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 										   	fillColor	  : "rgba(192,8,14,0.3)",
 										   	strokeColor : "rgba(192,8,14,1)",
 												data : [<?php echo $tweets_per_minute_value;?>]
-										 } ,
-										 {
-										   	fillColor	  : "rgba(50,255,50,0.3)",
-										   	strokeColor : "rgba(50,255,50,1)",
-												data : [<?php echo $avg_tweets_per_minute_value;?>]
 										 } ]
 				}
 				var tweetsPm = new Chart(document.getElementById("tweets_pm").getContext("2d")).Line(tweetspmChartData, tweetspmOptions);

@@ -151,9 +151,21 @@ $comp_minute_res = mysql_query("select count(*) as per_minute,
  group by the_minute , the_hour
  order by created_at
 ");
+// vierde lijn, het gemiddelde van alle dagen op die minuut ....
+$avg_res = mysql_query('select avg(tweet_count) as per_minute,
+ minute(created_at) as the_minute,
+ hour(created_at) as the_hour,
+ created_at from
+	 (select count(*) as tweet_count, created_at from tweets group by hour(created_at), minute(created_at))
+ temp_table
+ group by created_at
+ order by hour(created_at), minute(created_at)');
+
 // labels klaarzetten
 $labels = array();
-$values;
+$values = array();
+$comp_values = array();
+$avg_values = array();
 // draaien om 24 uur vol te krijgen
 $hour = 0;
 while($hour < 24)
@@ -173,6 +185,7 @@ while($hour < 24)
 		$labels[$str_hour.':'.$str_minute] = $label;
 		$values[$str_hour.':'.$str_minute] = 0;
 		$comp_values[$str_hour.':'.$str_minute] = 0;
+		$avg_values[$str_hour.':'.$str_minute] = 0;
 		$minute = $minute + 5;
 	}
 	$hour++;
@@ -192,6 +205,13 @@ while($comp_row = mysql_fetch_array($comp_minute_res))
 	$comp_values[$str_hour.':'.$str_minute] = $comp_row['per_minute'];
 	$tweets_pm_high = max($tweets_pm_high, $comp_row['per_minute'] + 5);
 }
+while($avg_row = mysql_fetch_array($avg_res))
+{
+	$str_hour   = str_pad($avg_row['the_hour'], 2, '0', STR_PAD_LEFT);
+	$str_minute = str_pad($avg_row['the_minute'], 2, '0', STR_PAD_LEFT);
+	$avg_values[$str_hour.':'.$str_minute] = (int)$avg_row['per_minute'];
+	$tweets_pm_high = max($tweets_pm_high, (int)$avg_row['per_minute'] + 5);
+}
 // transform this to javascrript
 $i = 0;
 foreach($labels as $time => $label)
@@ -199,11 +219,13 @@ foreach($labels as $time => $label)
 	$tweets_per_minute_label .= '"'.$label.'",';
 	$tweets_per_minute_value .= $values[$time].',';
 	$comp_tweets_per_minute_value .= $comp_values[$time].',';
+	$avg_tweets_per_minute_value .= $avg_values[$time].',';
 	$i++;
 }
 $tweets_per_minute_value = substr($tweets_per_minute_value, 0, strlen($tweets_per_minute_value) - 1);
 $tweets_per_minute_label = substr($tweets_per_minute_label, 0, strlen($tweets_per_minute_label) - 1);
 $comp_tweets_per_minute_value = substr($comp_tweets_per_minute_value, 0, strlen($comp_tweets_per_minute_value) - 1);
+$avg_tweets_per_minute_value = substr($avg_tweets_per_minute_value, 0, strlen($avg_tweets_per_minute_value) - 1);
 $scalewidth3 = ceil($tweets_pm_high / 10);
 
 ?>
@@ -321,6 +343,11 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 										   	fillColor	  : "rgba(192,8,14,0.3)",
 										   	strokeColor : "rgba(192,8,14,1)",
 												data : [<?php echo $tweets_per_minute_value;?>]
+										 } ,
+										 {
+										   	fillColor	  : "rgba(50,255,50,0.3)",
+										   	strokeColor : "rgba(50,255,50,1)",
+												data : [<?php echo $avg_tweets_per_minute_value;?>]
 										 } ]
 				}
 				var tweetsPm = new Chart(document.getElementById("tweets_pm").getContext("2d")).Line(tweetspmChartData, tweetspmOptions);

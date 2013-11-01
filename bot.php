@@ -256,8 +256,26 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 								{
 									preg_match_all('%<h2 id="title">(.*)</h2>%uUm', $html_str, $matches);
 									$og['title'] = $matches[1][0];
-									echo $og['title'];
+									echo $og['title']."\n";
 								}
+							}
+							elseif( $parsed['host'] == 'nrcboeken.vorige.nrc.nl' )
+							{
+								$og['article:section'] = 'nrcboeken';
+								$html_str = $html->innertext;
+								// 2 in 1 :-) Datum en auteur...
+								preg_match_all('%<div class="submitted">.*<span>.*</span>.*(\d\d?)\b(.*)\b(\d\d\d\d).*door <a.*>(.*)</a>%uUm', $html_str, $matches);
+								//print_r($matches);
+								$pubdate = $matches[3][0].'-'.$months[strtolower(trim($matches[2][0]))].'-'.$matches[1][0].' 11:33';
+								$og['article:author'] = $matches[4][0];
+
+								if(empty($og['title']))
+								{
+									preg_match_all('%<title>(.*)</title>%uUm', $html_str, $matches);
+									$og['title'] = $matches[1][0];
+									echo $og['title']."\n";
+								}
+
 							}
 							else // gewoon op nrc.nl
 							{

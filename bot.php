@@ -298,14 +298,12 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 								{
 									$ch = curl_init($share);
 									echo 'Curling away';
-									curl_setopt_array($ch, array(
-								                CURLOPT_FOLLOWLOCATION => TRUE,
-                                CURLOPT_RETURNTRANSFER => TRUE
-                                ));
-									$html_str = curl_exec($ch);
-									curl_close($ch);
+									$html_str = file_get_contents($share);
 									echo ' ... Done curling.'."\n";
-									$html_str = gzdecode($html_str);
+
+									if (! strstr($html_str, 'html'))
+										$html_str = gzdecode($html_str);
+									echo $share."\n";
 								}
 
 								// 2 in 1 :-) Datum en auteur...

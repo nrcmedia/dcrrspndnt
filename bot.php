@@ -297,12 +297,14 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 								if(! strstr($html_str, '<html>'))
 								{
 									$ch = curl_init($share);
+									echo 'Curling away';
 									curl_setopt_array($ch, array(
 								                CURLOPT_FOLLOWLOCATION => TRUE,
                                 CURLOPT_RETURNTRANSFER => TRUE
                                 ));
 									$html_str = curl_exec($ch);
 									curl_close($ch);
+									echo ' ... Done curling.'."\n";
 									$html_str = gzdecode($html_str);
 								}
 

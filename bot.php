@@ -203,8 +203,20 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 						{ // blog-slug dan als categorie gebruiken, als die er ook niet is, dan is er altijd nog een auteur
 							if( $parsed['host'] == 'archief.nrc.nl' ) {
 								$og['article:section'] = 'archief';
-								if (empty($og['article:author']))
+								$html_str = $html->innertext;
+								preg_match_all('%<p id="article-info">.*</span>.*agina:.*</span>(.*)</p>%uUm', $html_str, $matches);
+								$og['article:author'] = $matches[1][0];
+
+								if(empty($og['title']))
+								{
+									preg_match_all('%<title>(.*)</title>%uUm', $html_str, $matches);
+									$og['title'] = $matches[1][0];
+									echo $og['title']."\n";
+								}
+								if (empty($og['article:author'])) // last resort ...
 									$og['article:author'] = 'Een onzer redacteuren';
+
+								$pubdate = $path_p[2].'-'.$months[strtolower($path_p[3])].'-'.$path_p[4];
 							}
 							elseif( $parsed['host'] == 'vorige.nrc.nl' )
 							{

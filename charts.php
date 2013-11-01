@@ -355,6 +355,7 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 			</script>
 			<p>
 				gevonden tweets, per 5 minuten, van vandaag.<br />
+				Rood, vandaag, Grijs gisteren, Groen gemiddelde van alle tweets
 			</p>
 
 		</div>

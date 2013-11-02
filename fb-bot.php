@@ -31,7 +31,7 @@ function crawl($artikelen_res)
 		$fb_res = mysql_query('select ID from facebook where art_id = '.$artikel['artikelid']);
 		if(mysql_num_rows($fb_res) > 0)
 		{
-			mysql_query('update facebook set share_count = '.$response[0]->share_count.', comment_count = '.$response[0]->comment_count.', like_count = '.$response[0]->like_count.', total_count = '.$response[0]->total_count.', click_count = '.$response[0]->click_count.' last_crawl = now() where art_id = '.$artikel['artikelid']);
+			mysql_query('update facebook set share_count = '.$response[0]->share_count.', comment_count = '.$response[0]->comment_count.', like_count = '.$response[0]->like_count.', total_count = '.$response[0]->total_count.', click_count = '.$response[0]->click_count.', last_crawl = now() where art_id = '.$artikel['artikelid']);
 		}
 		else
 		{
@@ -42,3 +42,4 @@ function crawl($artikelen_res)
 
 	}
 }
+echo "Done crawling facebook \n\n";

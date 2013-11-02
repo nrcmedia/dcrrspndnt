@@ -127,9 +127,9 @@ $scaleWidth2 = ceil($high / 10);
 // Grafiek 3,
 // Tweets per 5 minuten, vandaag
 // vergelijken met gisteren
-$comp_year  = date('Y', time()-86400);
-$comp_month = date('m', time()-86400);
-$comp_day   = date('d', time()-86400);
+$comp_year  = date('Y', time()-86400 * 7);
+$comp_month = date('m', time()-86400 * 7);
+$comp_day   = date('d', time()-86400 * 7);
 $minute_res = mysql_query("select count(*) as per_minute,
  minute(tweets.created_at) as the_minute,
  hour(tweets.created_at) as the_hour,
@@ -355,7 +355,9 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 			</script>
 			<p>
 				gevonden tweets, per 5 minuten, van vandaag.<br />
-				Rood, vandaag, Grijs gisteren, Groen gemiddelde van alle tweets
+				Rood vandaag, <br />
+				Grijs een week geleden, <br />
+				Groen gemiddelde van <em>alle</em> tweets
 			</p>
 
 		</div>

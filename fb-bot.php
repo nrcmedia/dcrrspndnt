@@ -17,6 +17,7 @@ $artikelen_res = mysql_query('select *, artikelen.ID as artikelid from artikelen
 echo "\n".'Updating articles. ('.mysql_num_rows($artikelen_res).')'."\n";
 
 crawl($artikelen_res);
+echo "Done crawling facebook \n\n";
 
 function crawl($artikelen_res)
 {
@@ -42,4 +43,3 @@ function crawl($artikelen_res)
 
 	}
 }
-echo "Done crawling facebook \n\n";

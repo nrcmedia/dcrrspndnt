@@ -29,12 +29,23 @@ $qsa = '';
 $th_pubdate = '<th>Gepubliceerd</th>';
 $sep = strstr($_SERVER['REQUEST_URI'], '?') ? '&amp;' : '?';
 $th_tweets = '<th class="sortable"><a href="'.$_SERVER['REQUEST_URI'].$sep.'order=tweets" title="Sorteer op aantal maal gedeeld" >tweets</a>&#9660;</th>';
+$th_facebook = '<th class="sortable"><a href="'.$_SERVER['REQUEST_URI'].$sep.'order=fb" title="Sorteer op aantal Facbook shares">FB</a>&#9660;</th>';
+
 if(isset($_GET['order']) && $_GET['order'] == 'tweets')
 {
 	$order_by = ' order by tweet_count desc ';
 	$qsa = '&amp;order=tweets'; // voor de pager
 	$th_pubdate = '<th class="sortable"><a href="./?page='.$page.'" title="Sorteer op publicatiedatum">Gepubliceerd</a>&#9660;</th>';
 	$th_tweets = '<th>tweets</th>';
+	$th_facebook = '<th>FB</th>';
+}
+elseif(isset($_GET['order']) && $_GET['order'] == 'fb')
+{
+	$order_by = ' order by facebook.total_count desc ';
+	$qsa = '&amp;order=fb'; // voor de pager
+	$th_pubdate = '<th class="sortable"><a href="./?page='.$page.'" title="Sorteer op publicatiedatum">Gepubliceerd</a>&#9660;</th>';
+	$th_tweets = '<th class="sortable"><a href="'.$_SERVER['REQUEST_URI'].$sep.'order=tweets" title="Sorteer op aantal maal gedeeld" >tweets</a>&#9660;</th>';
+	$th_facebook = '<th>FB</th>';
 }
 
 $i = 0;
@@ -45,7 +56,7 @@ $res = mysql_query('select artikelen.*, count(tweets.id) as tweet_count, faceboo
 		<div class="center">
 		<table>
 			<tr>
-				<?php echo $th_pubdate;?><th>Titel / Artikel</th><th>Auteur</th><th>Sectie</th><?php echo $th_tweets;?><th>FB</fb>
+				<?php echo $th_pubdate;?><th>Titel / Artikel</th><th>Auteur</th><th>Sectie</th><?php echo $th_tweets; echo $th_facebook;?>
 			</tr>
 <?php
 while($row = mysql_fetch_array($res) )

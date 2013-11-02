@@ -264,12 +264,6 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 								echo 'Found author: '.$author."\n";
 								$og['article:author'] = $author;
 							}
-							elseif( $parsed['host'] == 'retro.nrc.nl' )
-							{
-								$og['article:section'] = 'retro';
-								if (empty($og['article:author']))
-									$og['article:author'] = 'Een onzer redacteuren';
-							}
 							elseif( $parsed['host'] == 'tv.nrc.nl' )
 							{
 								$og['article:section'] = 'nrc.tv';
@@ -318,6 +312,37 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 								}
 
 							}
+							elseif($parsed['host'] == 'retro.nrc.nl')
+							{
+								echo 'Retro!!';
+								$html_str = file_get_contents($share);
+								//<FONT SIZE=-3> NRC Webpagina's<BR> 10 JANUARI 2001 </FONT>
+								preg_match_all('%<font size=-3>.*<br>.*(\d+)\s(.*)\s(\d+)\s</font>%imUu', $html_str, $matches);
+								if (! empty($matches[1][0]) && ! empty($matches[2][0]) && ! empty($matches[3][0]))
+								{
+									$maand = $months[strtolower($matches[2][0])];
+									$pubdate = $matches[3][0].'-'.$maand.'-'.$matches[1][0];
+								}
+								else
+								{
+									$date = explode('<FONT SIZE=-2>NRC Webpagina\'s<BR>',$html_str);
+									$date = $date[1];
+									$date = explode('<P>', $date);
+									$date = $date[0];
+									$date = explode(' ', trim($date));
+									$pubdate = $date[2].'-'.$months[strtolower(trim($date[1]))].'-'.$date[0].' 10:59';
+								}
+								if(empty($og['title']))
+								{
+									$title=explode('<TITLE>',$html_str);
+									$title=$title[1];
+									$title=explode('</TITLE>',$title);
+									$og['title'] = $title[0];
+									echo $og['title']."\n";
+								}
+								$og['article:section'] = 'Retro';
+								$og['article:author'] = 'Een onzer redacteuren';
+							}
 							else // gewoon op nrc.nl
 							{
 								if(is_object($html->find('article[id=artikel]'))) foreach($html->find('article[id=artikel]') as $artinfo)
@@ -362,16 +387,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 								$pubdate = $matches[1][0].' '.$matches[2][0];
 							}
 						}
-						if($parsed['host'] == 'retro.nrc.nl')
-						{
-							//<FONT SIZE=-3> NRC Webpagina's<BR> 10 JANUARI 2001 </FONT>
-							preg_match_all('%<font size=-3>.*<br>.*(\d+)\s(.*)\s(\d+)\s</font>%imU', $doc, $matches);
-							if (! empty($matches[1][0]) && ! empty($matches[2][0]) && ! empty($matches[3][0]))
-							{
-								$maand = $months[strtolower($matches[2][0])];
-								$pubdate = $matches[3][0].'-'.$maand.'-'.$matches[1][0];
-							}
-						}
+
 						// the big board, gewoon zo doen:
 						if ($og['title'] == 'The Big Board - wat lezen onze bezoekers op dit moment')
 						{

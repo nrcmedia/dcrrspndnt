@@ -22,7 +22,6 @@ function crawl($artikelen_res)
 {
 	while ($artikel = mysql_fetch_array($artikelen_res))
 	{
-		sleep(1); // niet te hard gaan!
 		echo 'Querying facebook for: '.$artikel['clean_url']."\n";
 		$apicall = "https://api.facebook.com/method/links.getStats?urls=".$artikel['clean_url']."&format=json";
 		$json=file_get_contents($apicall);

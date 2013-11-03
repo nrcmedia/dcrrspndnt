@@ -67,6 +67,7 @@ if(isset($_GET['mode']))
 
 $res = mysql_query('select artikelen.*, count(tweets.id) as tweet_count, facebook.total_count as fb_total, facebook.share_count as fb_share, facebook.like_count as fb_like, facebook.comment_count as fb_comment from artikelen left outer join tweets on tweets.art_id = artikelen.id left outer join facebook on facebook.art_id = artikelen.id '.$mode.' group by artikelen.id having tweet_count > 0 '.$order_by.' limit '.$start.',50');
 
+echo 'select artikelen.*, count(tweets.id) as tweet_count, facebook.total_count as fb_total, facebook.share_count as fb_share, facebook.like_count as fb_like, facebook.comment_count as fb_comment from artikelen left outer join tweets on tweets.art_id = artikelen.id left outer join facebook on facebook.art_id = artikelen.id '.$mode.' group by artikelen.id having tweet_count > 0 '.$order_by.' limit '.$start.',50';
 $th = $th_pubdate.'<th>Titel / Artikel</th><th>Auteur</th><th>Sectie</th>'.$th_tweets.$th_facebook;
 ?>
 
@@ -77,6 +78,8 @@ $th = $th_pubdate.'<th>Titel / Artikel</th><th>Auteur</th><th>Sectie</th>'.$th_t
 
 <?php
 show_table($res, $th, true);
+
+pager($tot_row, $qsa);
 
 include('search_box.php')
 ?>

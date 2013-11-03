@@ -15,7 +15,7 @@ $months = array('januari' => 1 ,'februari' => 2, 'maart' => 3, 'april' => 4, 'me
 
 $since = get_since();
 
-echo "\n\n".'sinds: '.$since."\n";
+echo "\n\n".strftime('%Y-%m-%d %H:%M').' sinds: '.$since."\n";
 // go to https://dev.twitter.com/apps and create new application
 // and obtain [CONSUMER_KEY], [CONSUMER_SECRET], [oauth_key], [oauth_secret]
 // then put them in settings.local.php
@@ -451,7 +451,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 		}
 	}
 }
-echo 'Batch ended, bye'."\n\n";
+echo strftime('%Y-%m-%d %H:%M').'Batch ended, bye'."\n\n";
 
 // alle meta-waardes wegschrijven in de meta-table voor makkelijker cross-linken:
 // selecteer alle artikelen die geen meta_artikel rows bezitten

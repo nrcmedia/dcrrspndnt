@@ -31,6 +31,7 @@ function pager($tot_row, $qsa)
 
 function show_table($res,
 									  $table_header,
+									  $show_selectors = false,
 									  $fields = array('pubdate', 'title', 'author', 'section', 'tweets', 'fb_count'),
 									  $extra_class = '')
 {
@@ -40,6 +41,8 @@ function show_table($res,
 				<?php echo $table_header;?>
 			</tr>
 <?php
+$tot_tweets = 0;
+$tot_fb = 0;
 while($row = mysql_fetch_array($res) )
 {
 	$og = unserialize(stripslashes($row['og']));
@@ -54,6 +57,7 @@ while($row = mysql_fetch_array($res) )
 	$display_time = strftime('%e %b %Y', $og['article:published_time']);
 	$found_at = substr($row['created_at'],8,2).'-'.substr($row['created_at'],5,2).' '.substr($row['created_at'],11,5);
 	$fb_abbr = 'Facebook, likes: '.$row['fb_like'].' shares: '.$row['fb_share'].' comments: '.$row['fb_comment'];
+	$tot_tweets += $row['tweet_count'];
 	?>
 			<tr <?php if($i % 2 == 1) echo 'class="odd"'?>>
 <?php
@@ -94,6 +98,62 @@ while($row = mysql_fetch_array($res) )
 			</tr>
 	<?php
 	$i++;
+}
+if ($show_selectors)
+{
+$disp = isset($_GET['disposition']) ? (int) $_GET['disposition'] : '';
+?>
+				<tr>
+					<td colspan="4" align="right">totaal tweets:</td><td align="right"><strong><?php echo $tot_tweets;?></strong></td>
+					<td align="right"></td>
+				</tr>
+			<tr>
+				<td></td>
+				<td colspan="4">per uur:
+					<script>
+						function goto_sel(selector) {
+							var sel = document.getElementById(selector).selectedIndex;
+							var uris = document.getElementById(selector).options;
+							var goto = uris[sel].value;
+							window.location=('top.php'+goto);
+							return;
+						}
+					</script>
+					<form class="disp_selector" method="GET" action="javascript:goto_sel('hour');" onsumbit="return goto_sel('hour')">
+					<select id="hour">
+						<option value="?mode=hour">afgelopen uur</option>
+						<?php
+						for ($i=1;$i<24;$i++)
+						{
+							$selected = ( $disp == $i ) ? ' selected="true" ' : '';
+						?>
+							<option value="?mode=hour&disposition=<?php echo $i;?>" <?php echo $selected;?>><?php echo $i;?> uur geleden</option>
+						<?php
+						}
+						?>
+					</select>
+					<input type="submit" value="Toon"/>
+					</form>
+					per dag:
+					<form class="disp_selector" method="GET" action="javascript:goto_sel('day');" onsumbit="return goto_sel('day')">
+					<select id="day">
+						<option value="?mode=day">afgelopen dag</option>
+						<?php
+						for ($i=1;$i<6;$i++)
+						{
+							$selected = ( $disp == $i ) ? ' selected="true" ' : '';
+						?>
+							<option value="?mode=day&disposition=<?php echo $i;?>" <?php echo $selected;?>><?php echo $i;?> dag geleden</option>
+						<?php
+						}
+						?>
+					</select>
+					<input type="submit" value="Toon"/>
+					</form>
+				</td>
+				<td></td>
+			</tr>
+<?php
 }
 ?>
 		</table>

@@ -10,10 +10,16 @@ include('db.php');
 // nieuwe artikelen eerst!
 $artikelen_res = mysql_query('select *, artikelen.ID as artikelid from artikelen left outer join facebook on artikelen.id = facebook.art_id where facebook.art_id IS NULL');
 echo 'Indexing fresh articles. ('.mysql_num_rows($artikelen_res).')'."\n";
-crawl($artikelen_res);
+$crawled = crawl($artikelen_res);
 
+// dan de verhalen van vandaag
+$artikelen_res = mysql_query('select *, artikelen.ID as artikelid from artikelen left outer join facebook on artikelen.id = facebook.art_id where year(artikelen.created_at) = year(now()) and month(artikelen.created_at) = month(now()) and day(artikelen.created_at) = day(now())');
+echo 'Indexing fresh articles. ('.mysql_num_rows($artikelen_res).')'."\n";
+$crawled += crawl($artikelen_res);
+
+$limit = FACEBOOK_MAX_CRAWL - $crawled;
 // vervolgens artikelen die lang geleden een update kregen
-$artikelen_res = mysql_query('select *, artikelen.ID as artikelid from artikelen left outer join facebook on artikelen.id = facebook.art_id where facebook.id > 0 order by facebook.last_crawl limit 0,200');
+$artikelen_res = mysql_query('select *, artikelen.ID as artikelid from artikelen left outer join facebook on artikelen.id = facebook.art_id where facebook.id > 0 order by facebook.last_crawl limit 0,'.$limit);
 echo "\n".'Updating articles. ('.mysql_num_rows($artikelen_res).')'."\n";
 
 crawl($artikelen_res);
@@ -45,4 +51,5 @@ function crawl($artikelen_res)
 		}
 
 	}
+	return $i;
 }

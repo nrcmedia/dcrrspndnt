@@ -13,7 +13,7 @@ echo 'Indexing fresh articles. ('.mysql_num_rows($artikelen_res).')'."\n";
 crawl($artikelen_res);
 
 // vervolgens artikelen die lang geleden een update kregen
-$artikelen_res = mysql_query('select *, artikelen.ID as artikelid from artikelen left outer join facebook on artikelen.id = facebook.art_id where facebook.id > 0 order by facebook.last_crawl limit 0,300');
+$artikelen_res = mysql_query('select *, artikelen.ID as artikelid from artikelen left outer join facebook on artikelen.id = facebook.art_id where facebook.id > 0 order by facebook.last_crawl limit 0,200');
 echo "\n".'Updating articles. ('.mysql_num_rows($artikelen_res).')'."\n";
 
 crawl($artikelen_res);

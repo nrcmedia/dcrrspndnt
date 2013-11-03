@@ -37,7 +37,7 @@ if(isset($_GET['order']) && $_GET['order'] == 'tweets')
 	$qsa = '&amp;order=tweets'; // voor de pager
 	$th_pubdate = '<th class="sortable"><a href="./?page='.$page.'" title="Sorteer op publicatiedatum">Gepubliceerd</a>&#9660;</th>';
 	$th_tweets = '<th>tweets</th>';
-	$th_facebook = '<th>FB</th>';
+	$th_facebook = '<th class="sortable"><a href="'.$_SERVER['REQUEST_URI'].$sep.'order=fb" title="Sorteer op aantal Facbook shares">FB</a>&#9660;</th>';
 }
 elseif(isset($_GET['order']) && $_GET['order'] == 'fb')
 {
@@ -54,41 +54,11 @@ $res = mysql_query('select artikelen.*, count(tweets.id) as tweet_count, faceboo
 		<h1>Artikelen van <a href="http://www.nrc.nl/">nrc.nl</a> gevonden op Twitter</h1>
 <?php include ('menu.php'); ?>
 		<div class="center">
-		<table>
-			<tr>
-				<?php echo $th_pubdate;?><th>Titel / Artikel</th><th>Auteur</th><th>Sectie</th><?php echo $th_tweets; echo $th_facebook;?>
-			</tr>
 <?php
-while($row = mysql_fetch_array($res) )
-{
-	$og = unserialize(stripslashes($row['og']));
-	$titel = isset($og['title']) ? $og['title'] : substr($row['clean_url'],18,50);
-	$description = isset($og['description']) ? $og['description'] : 'Een mysterieus artikel';
-	$auth_res = mysql_query('select * from meta where meta.waarde = "'.$og['article:author'].'"');
-	$author = mysql_fetch_array($auth_res);
-	$section_res = mysql_query('select * from meta where meta.waarde = "'.$og['article:section'].'"');
-	$section = mysql_fetch_array($section_res);
-	$display_time = isset($og['article:published_time']) ? strftime('%e %b %H:%M', $og['article:published_time']) : substr($row['created_at'],8,2).'-'.substr($row['created_at'],5,2).' '.substr($row['created_at'],11,5);
-	if(isset($og['article:published_time']) && $og['article:published_time'] < time() - 360 * 24 * 60 * 60)
-		$display_time = strftime('%e %b %Y', $og['article:published_time']);
-	$found_at = substr($row['created_at'],8,2).'-'.substr($row['created_at'],5,2).' '.substr($row['created_at'],11,5);
-	$fb_abbr = 'Facebook, likes: '.$row['fb_like'].' shares: '.$row['fb_share'].' comments: '.$row['fb_comment'];
-	?>
+$th = $th_pubdate.'<th>Titel / Artikel</th><th>Auteur</th><th>Sectie</th>'.$th_tweets.$th_facebook;
 
-			<tr <?php if($i % 2 == 1) echo 'class="odd"'?>>
-				<td><abbr title="gevonden op: <?php echo $found_at;?>"><?php echo $display_time ?></abbr></td>
-				<td style="max-width:400px"><strong><a href="<?php echo $row['share_url'];?>" title="<?php echo $description ?>"><?php echo $titel ;?></a></strong></td>
-				<td><a href="./meta_art.php?id=<?php echo $author['ID'];?>" title="alle artikelen van deze auteur"><?php echo $author['waarde'];?></a></td>
-				<td><a href="./meta_art.php?id=<?php echo $section['ID'];?>" title="alle artikelen in deze sectie"><?php echo $section['waarde'];?></a></td>
-				<td align="right"><?php echo $row['tweet_count']?></td>
-				<td align="right"><abbr title="<?php echo $fb_abbr;?>"><?php echo $row['fb_total'];?></abbr></td>
-			</tr>
-	<?php
-	$i++;
-}
-?>
-		</table>
-<?php
+show_table($res, $th);
+
 	pager($tot_row, $qsa);
 ?>
 

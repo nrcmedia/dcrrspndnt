@@ -451,7 +451,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 		}
 	}
 }
-echo strftime('%Y-%m-%d %H:%M').'Batch ended, bye'."\n";
+echo strftime('%Y-%m-%d %H:%M').' Batch ended, bye'."\n";
 
 // alle meta-waardes wegschrijven in de meta-table voor makkelijker cross-linken:
 // selecteer alle artikelen die geen meta_artikel rows bezitten

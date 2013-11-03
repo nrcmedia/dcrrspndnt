@@ -158,5 +158,8 @@ $disp = isset($_GET['disposition']) ? (int) $_GET['disposition'] : '';
 ?>
 		</table>
 <?php
+echo '<!-- ';
+print_r($fields);
 
+echo '-->';
 }

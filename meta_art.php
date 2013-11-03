@@ -9,7 +9,7 @@ $meta_res = mysql_query('select * from meta where ID = '.$meta_id);
 $meta_row = mysql_fetch_array($meta_res);
 // determine in what mode we are running; Author or Section?
 $mode = explode(':', $meta_row['type']);
-$mode = isset($mode[1]) ? $mode[1] : $mode;
+$mode = isset($mode[1]) ? $mode[1] : $meta_row['type'];
 $title_by_in = $mode == 'author' ? 'door' : 'in de sectie';
 $th_extra = $mode == 'author' ? '<th>sectie</th>' : '<th>auteur</th>';
 $th_related = $mode == 'author' ? 'auteurs' : 'secties';
@@ -63,7 +63,7 @@ $th = $th_pubdate.'<th>Title / Article</th>'.$th_extra.$th_tweets.'<th>FB</th>';
 <?php
 $res = mysql_query ('select artikelen.*, count(tweets.id) as tweet_count, facebook.total_count as fb_total, facebook.share_count as fb_share, facebook.like_count as fb_like, facebook.comment_count as fb_comment from artikelen join meta_artikel on artikelen.ID = meta_artikel.art_id left outer join tweets on tweets.art_id = artikelen.ID left outer join facebook on facebook.art_id = artikelen.id where meta_artikel.meta_id = '.$meta_id.' group by artikelen.ID '.$order_by.' limit '.$start.','.ITEMS_PER_PAGE);
 
-if($mode == 'auhor')
+if($mode == 'author')
 	$fields = array('pubdate', 'title', 'section', 'tweets', 'fb_count');
 else
 	$fields = array('pubdate', 'title', 'author', 'tweets', 'fb_count');

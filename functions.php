@@ -154,12 +154,18 @@ $disp = isset($_GET['disposition']) ? (int) $_GET['disposition'] : '';
 				<td></td>
 			</tr>
 <?php
-}
+	}
 ?>
 		</table>
 <?php
-echo '<!-- ';
-print_r($fields);
 
-echo '-->';
+}
+
+
+if (! function_exists('gzdecode'))
+{
+	function gzdecode($data)
+	{
+		return gzinflate(substr($data,10,-8));
+	}
 }

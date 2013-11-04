@@ -7,7 +7,7 @@ require_once('settings.local.php');
 require_once("twitteroauth.php");
 // functions, which contains teh gzdecode alternative
 require_once('functions.php');
-// html-dom parser, but it sucks too, lot's of preg_match_all 
+// html-dom parser, but it sucks too, lot's of preg_match_all
 include_once ('simple_html_dom.php');
 
 // database, mysql, why not?
@@ -371,6 +371,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 							}
 							echo 'Assigned section: '.$og['article:section']."\n";
 						}
+
 						// publicatiedatum en tijd:
 						// <strong><time datetime="2013-10-28">28 oktober 2013</time></strong>, 20:52</a>
 						$doc = $html->innertext;
@@ -389,6 +390,13 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 							{
 								$pubdate = $matches[1][0].' '.$matches[2][0];
 							}
+						}
+						// maar op vorige vangen we nu veel te veel
+						if ($parsed['host'] == 'vorige.nrc.nl')
+						{
+							preg_match_all('%<time.datetime="(\d\d?)-(\d\d?)-(\d\d\d\d)">.*</time></strong>%uU', $doc, $matches);
+							print_r($matches);
+							$pubdate = $matches[3][0].'-'.$matches[2][0].'-'.$macthes[1][0];
 						}
 
 						// the big board, gewoon zo doen:

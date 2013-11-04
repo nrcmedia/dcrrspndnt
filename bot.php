@@ -395,8 +395,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 						if ($parsed['host'] == 'vorige.nrc.nl')
 						{
 							preg_match_all('%<time.datetime="(\d\d?)-(\d\d?)-(\d\d\d\d)">.*</time></strong>%uU', $doc, $matches);
-							print_r($matches);
-							$pubdate = $matches[3][0].'-'.$matches[2][0].'-'.$macthes[1][0];
+							$pubdate = $matches[3][0].'-'.$matches[2][0].'-'.$matches[1][0];
 						}
 
 						// the big board, gewoon zo doen:

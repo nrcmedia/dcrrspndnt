@@ -5,6 +5,9 @@ $query = 'nrc.nl/';
 require_once('settings.local.php');
 // Create our twitter API object
 require_once("twitteroauth.php");
+// functions, which contains teh gzdecode alternative
+require_once('functions.php');
+// html-dom parser, but it sucks too, lot's of preg_match_all 
 include_once ('simple_html_dom.php');
 
 // database, mysql, why not?

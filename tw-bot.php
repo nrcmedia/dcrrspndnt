@@ -33,9 +33,8 @@ function crawl($artikelen_res)
 	{
 		$i++;
 
-		echo str_pad($i, 3, ' ', STR_PAD_LEFT).' Querying facebook for: '.$artikel['clean_url']."\n";
+		echo str_pad($i, 3, ' ', STR_PAD_LEFT).' Querying twitter for: '.$artikel['clean_url']."\n";
 		$apicall = 'http://urls.api.twitter.com/1/urls/count.json?url='.$artikel['clean_url'];
-		//$apicall = "https://api.facebook.com/method/links.getStats?urls=".$artikel['clean_url']."&format=json";
 		$json=file_get_contents($apicall);
 		$response = json_decode($json);
 

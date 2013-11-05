@@ -265,6 +265,10 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 								$author = explode('span>', $author);
 								$author = substr(trim($author[1]), 0, strlen(trim($author[1])) - 2);
 								echo 'Found author: '.$author."\n";
+								if (stristr($og['article:author'], 'Door '))
+								{
+									$author = substr($author,5);
+								}
 								$og['article:author'] = $author;
 							}
 							elseif( $parsed['host'] == 'tv.nrc.nl' )

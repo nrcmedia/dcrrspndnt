@@ -85,7 +85,7 @@ while($row = mysql_fetch_array($res) )
 			if(in_array('tweets', $fields))
 			{
 ?>
-				<td align="right"><?php echo $row['tweet_count']?></td>
+				<td align="right"><abbr title="All time twitter: <?php echo $row['twitter_alltime'];?>"><?php echo $row['tweet_count']?></abbr></td>
 <?php
 			}
 			if(in_array('fb_count', $fields))

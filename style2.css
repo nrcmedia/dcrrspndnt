@@ -153,6 +153,7 @@ label {
 ul#pager {
 	margin: 10px auto;
 	padding: 5px;
+	width: 100%;
 	background-color: #fff;
 	height: 24px;
 }

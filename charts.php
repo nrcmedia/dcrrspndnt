@@ -234,24 +234,22 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 // Grafiek; de artikelen van vandaag, totaal tweets en een 'benchmark'
 // beperk tot de 30 beste artikelen van de dag
 //
-$art_res = mysql_query('select count(tweets.id) as tweets_today, artikelen.*
-from artikelen
-left join tweets on tweets.art_id = artikelen.id
-where year(artikelen.created_at) = year(now() ) and month(artikelen.created_at) = month(now()) and day(artikelen.created_at) = day(now() )
-group by artikelen.id
-order by count(tweets.id) desc
-limit 0,30' );
-$artids = array();
-while ($row = mysql_fetch_array($art_res))
-{
-	$artids[] = $row['ID'];
-}
-$art_res = mysql_query('select count(tweets.id) as tweets_today, artikelen.*
-from artikelen
-left join tweets on tweets.art_id = artikelen.id
-where artikelen.ID in ('. implode(',', $artids) .')
-group by artikelen.id
-order by artikelen.created_at' );
+$art_res = mysql_query('
+select count(tweets.id) as tweets_today, artikelen.*
+	from artikelen
+		left join tweets on tweets.art_id = artikelen.id
+	join (
+    select artikelen.id
+			from artikelen
+			left join tweets on tweets.art_id = artikelen.id
+		where year(artikelen.created_at) = year(now() ) and month(artikelen.created_at) = month(now()) and day(artikelen.created_at) = day(now() )
+		group by artikelen.id
+		order by count(tweets.id) desc
+		limit 0,30
+	) top_arts
+where artikelen.ID = top_arts.ID
+group by artikelen.ID
+order by artikelen.created_at	' );
 
 
 

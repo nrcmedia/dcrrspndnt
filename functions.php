@@ -46,15 +46,14 @@ $tot_fb = 0;
 while($row = mysql_fetch_array($res) )
 {
 	$og = unserialize(stripslashes($row['og']));
-	$titel = isset($og['title']) ? $og['title'] : substr($row['clean_url'],18,50);
+	$titel = empty($og['title']) ? substr($row['clean_url'],18,50) : $og['title'];
 	$description = isset($og['description']) ? $og['description'] : 'Een mysterieus artikel';
 	$auth_res = mysql_query('select * from meta where meta.waarde = "'.$og['article:author'].'" and meta.type="article:author"');
 	$author = mysql_fetch_array($auth_res);
 	$section_res = mysql_query('select * from meta where meta.waarde = "'.$og['article:section'].'" and meta.type="article:section"');
 	$section = mysql_fetch_array($section_res);
-	$display_time = isset($og['article:published_time']) ? strftime('%e %b %H:%M', $og['article:published_time']) : substr($row['created_at'],8,2).'-'.substr($row['created_at'],5,2).' '.substr($row['created_at'],11,5);
+	$display_time = ! empty($og['article:published_time']) ? strftime('%e %b %H:%M', $og['article:published_time']) : substr($row['created_at'],8,2).'-'.substr($row['created_at'],5,2).' '.substr($row['created_at'],11,5);
 	if(isset($og['article:published_time']) && $og['article:published_time'] < time() - 360 * 24 * 60 * 60)
-	$display_time = strftime('%e %b %Y', $og['article:published_time']);
 	$found_at = substr($row['created_at'],8,2).'-'.substr($row['created_at'],5,2).' '.substr($row['created_at'],11,5);
 	$fb_abbr = 'Facebook, likes: '.$row['fb_like'].' shares: '.$row['fb_share'].' comments: '.$row['fb_comment'];
 	$tot_tweets += $row['tweet_count'];
@@ -161,6 +160,16 @@ $disp = isset($_GET['disposition']) ? (int) $_GET['disposition'] : '';
 
 }
 
+function get_tweet_benchmark()
+{
+	static $fenton;
+	if (empty($fenton))
+	{
+		$arr = mysql_fetch_array(mysql_query('select cast(avg(twitter.twitter_count) as unsigned) as fenton from twitter'));
+		$fenton = $arr['fenton'];
+	}
+	return $fenton;
+}
 
 if (! function_exists('gzdecode'))
 {

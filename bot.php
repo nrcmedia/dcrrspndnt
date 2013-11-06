@@ -370,6 +370,12 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 									}
 								}
 
+								if (trim($og['title']) == 'De dag dat Berry van Aerle Europees kampioen werd')
+								{
+									$og['article:section'] = 'Berry';
+									$og['article:author'] = 'Peter Zantingh';
+								}
+
 								if (empty($og['article:section'])) // last resort
 									$og['article:section'] = $og['article:author'];
 							}

@@ -372,7 +372,7 @@ $scalewidth4 = ceil($max_art_today / 10);
 					labels: [ <?php echo $tweets_per_minute_label;  ?>],
 					datasets : [ {
 										   	fillColor	  : "rgba(50,255,50,0.3)",
-										   	strokeColor : "rgba(50,255,50,1)",
+										   	strokeColor : "#46A645",
 												data : [<?php echo $avg_tweets_per_minute_value;?>]
 										 } ,
 										 {

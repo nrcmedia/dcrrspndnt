@@ -241,6 +241,20 @@ where year(artikelen.created_at) = year(now() ) and month(artikelen.created_at) 
 group by artikelen.id
 order by count(tweets.id) desc
 limit 0,30' );
+$artids = array();
+while ($row = mysql_fetch_array($art_res))
+{
+	$artids[] = $row['ID'];
+}
+$art_res = mysql_query('select count(tweets.id) as tweets_today, artikelen.*
+from artikelen
+left join tweets on tweets.art_id = artikelen.id
+where artikelen.ID in ('. implode(',', $artids) .')
+group by artikelen.id
+order by artikelen.created_at' );
+
+
+
 // hiermee zetten we de labels en de x-as waardes
 $num_arts = mysql_num_rows($art_res);
 $art_today_label = '';

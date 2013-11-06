@@ -229,6 +229,36 @@ $comp_tweets_per_minute_value = substr($comp_tweets_per_minute_value, 0, strlen(
 $avg_tweets_per_minute_value = substr($avg_tweets_per_minute_value, 0, strlen($avg_tweets_per_minute_value) - 1);
 $scalewidth3 = ceil($tweets_pm_high / 10);
 
+
+//
+// Grafiek; de artikelen van vandaag, totaal tweets en een 'benchmark'
+// beperk tot de 30 beste artikelen van de dag
+//
+$art_res = mysql_query('select count(tweets.id) as tweets_today, artikelen.*
+from artikelen
+left join tweets on tweets.art_id = artikelen.id
+where year(artikelen.created_at) = year(now() ) and month(artikelen.created_at) = month(now()) and day(artikelen.created_at) = day(now() )
+group by artikelen.id
+order by count(tweets.id) desc
+limit 0,30' );
+// hiermee zetten we de labels en de x-as waardes
+$num_arts = mysql_num_rows($art_res);
+$art_today_label = '';
+$art_today_count = '';
+$max_art_today = get_tweet_benchmark();
+while ($row = mysql_fetch_array($art_res))
+{
+	$og = unserialize($row['og']);
+	$art_today_label .= '"'.substr($og['title'],0,30).'",';
+	$art_today_count .= $row['tweets_today'].',';
+	$max_art_today = max($max_art_today, $row['tweets_today'] + 5);
+	$art_today_fenton .= floor(get_tweet_benchmark()).',';
+}
+$art_today_label  = substr($art_today_label,  0, strlen($art_today_label)  - 1);
+$art_today_count  = substr($art_today_count,  0, strlen($art_today_count)  - 1);
+$art_today_fenton = substr($art_today_fenton, 0, strlen($art_today_fenton) - 1);
+$scalewidth4 = ceil($max_art_today / 10);
+
 ?>
 
 		<h1>nrc.nl tweets in grafieken </h1>
@@ -266,12 +296,6 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 			<canvas id="hour_tweets" height="450" width="800"></canvas>
 			<script>
 				var lineOptions = {
-						barValueSpacing : 0, // bar
-						barDatasetSpacing : 0, // bar
-						barShowStroke: true, //bar
-						barStrokeWidth : 1,
-
-
 					pointDot : true, //line
 					pointDotRadius : 3,
 					pointDotStrokeWidth : 1,
@@ -281,7 +305,6 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 					scaleStepWidth : <?php echo $scaleWidth2; ?>,
 					//Number - The scale starting value
 					scaleStartValue : 0
-
 				}
 				var lineChartData = {
 					labels: [ <?php echo $hour_label;  ?>],
@@ -359,6 +382,40 @@ $scalewidth3 = ceil($tweets_pm_high / 10);
 				Grijs een week geleden, <br />
 				Groen gemiddelde van <em>alle</em> tweets
 			</p>
+
+			<h2>Artikelen van vandaag</h2>
+			<canvas id="today_tweets" height="850" width="1000"></canvas>
+			<script>
+				var barOptions = {
+					datasetStroke : false, //line
+					pointDot : false, //line
+					bezierCurve : true, // lelijk als die van lang op 0 naar een hoge waarde gaat
+
+					scaleOverride : 1,
+					scaleSteps : 10,
+					//Number - The value jump in the hard coded scale
+					scaleStepWidth : <?php echo $scalewidth4; ?>,
+					//Number - The scale starting value
+					scaleStartValue : 0,
+					scaleFontSize: 11,
+				}
+				var barChartData = {
+					labels: [ <?php echo $art_today_label;  ?>],
+					datasets : [ {
+												fillColor   : "rgba(77,83,97,0.5)",
+												strokeColor : "rgba(77,83,97,1)",
+												data : [<?php echo $art_today_count;?>]
+										 },
+										 {
+										   	fillColor	  : "rgba(192,8,14,0.1)",
+										   	strokeColor : "rgba(192,8,14,1)",
+												data: [<?php echo $art_today_fenton;?>]
+										 } ]
+				}
+				var tweetTot = new Chart(document.getElementById("today_tweets").getContext("2d")).Line(barChartData, barOptions);
+			</script>
+			<p>De hoogst scorende artikelen van vandaag, maximaal 30</p>
+
 
 		</div>
 		</div>

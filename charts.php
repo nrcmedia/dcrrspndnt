@@ -245,32 +245,58 @@ select count(tweets.id) as tweets_today, artikelen.*
 		where year(artikelen.created_at) = year(now() ) and month(artikelen.created_at) = month(now()) and day(artikelen.created_at) = day(now() )
 		group by artikelen.id
 		order by count(tweets.id) desc
-		limit 0,30
+		limit 0,25
 	) top_arts
 where artikelen.ID = top_arts.ID
 group by artikelen.ID
 order by artikelen.created_at	' );
-
-
-
+$today_tweets_title = 'Artikelen van vandaag';
 // hiermee zetten we de labels en de x-as waardes
 $num_arts = mysql_num_rows($art_res);
+// zolang we nog niks terugkrijgen ('snacht ;-))
+// gisteren halen
+if($num_arts ==0)
+{
+	$art_res = mysql_query('
+	select count(tweets.id) as tweets_today, artikelen.*
+		from artikelen
+			left join tweets on tweets.art_id = artikelen.id
+		join (
+  	  select artikelen.id
+				from artikelen
+				left join tweets on tweets.art_id = artikelen.id
+			where year(artikelen.created_at) = year(now() ) and month(artikelen.created_at) = month(now()) and 	day(artikelen.created_at) = day(now() ) - 1
+			group by artikelen.id
+			order by count(tweets.id) desc
+			limit 0,25
+		) top_arts
+	where artikelen.ID = top_arts.ID
+	group by artikelen.ID
+	order by artikelen.created_at	' );
+	$today_tweets_title = 'Artikelen van gisteren';
+}
+
+
 $art_today_label = '';
 $art_today_count = '';
 $max_art_today = get_tweet_benchmark();
+$i = 1;
+$today_table_row = array();
 while ($row = mysql_fetch_array($art_res))
 {
 	$og = unserialize($row['og']);
-	$art_today_label .= '"'.substr($og['title'],0,30).'",';
+	$art_today_label .= '"'.$i.'",';
+	$today_table_row[] = '<tr><td>'.$i.'</td><td>'.$og['title'].' ('.$row['tweets_today'].')</td></tr>';
+	$i++;
 	$art_today_count .= $row['tweets_today'].',';
 	$max_art_today = max($max_art_today, $row['tweets_today'] + 5);
 	$art_today_fenton .= floor(get_tweet_benchmark()).',';
 }
+$today_table_row[] = '<tr><td>*</td><td>Gemiddeld aantal tweets per artikel (alle artikelen): <strong>'.get_tweet_benchmark().'</strong></td></tr>';
 $art_today_label  = substr($art_today_label,  0, strlen($art_today_label)  - 1);
 $art_today_count  = substr($art_today_count,  0, strlen($art_today_count)  - 1);
 $art_today_fenton = substr($art_today_fenton, 0, strlen($art_today_fenton) - 1);
 $scalewidth4 = ceil($max_art_today / 10);
-
 ?>
 
 		<h1>nrc.nl tweets in grafieken </h1>
@@ -395,8 +421,8 @@ $scalewidth4 = ceil($max_art_today / 10);
 				Groen gemiddelde van <em>alle</em> tweets
 			</p>
 
-			<h2>Artikelen van vandaag</h2>
-			<canvas id="today_tweets" height="850" width="1000"></canvas>
+			<h2><?php echo $today_tweets_title;?></h2>
+			<canvas id="today_tweets" height="650" width="909"></canvas>
 			<script>
 				var barOptions = {
 					datasetStroke : false, //line
@@ -409,7 +435,7 @@ $scalewidth4 = ceil($max_art_today / 10);
 					scaleStepWidth : <?php echo $scalewidth4; ?>,
 					//Number - The scale starting value
 					scaleStartValue : 0,
-					scaleFontSize: 11,
+					scaleFontSize: 12,
 				}
 				var barChartData = {
 					labels: [ <?php echo $art_today_label;  ?>],
@@ -426,7 +452,15 @@ $scalewidth4 = ceil($max_art_today / 10);
 				}
 				var tweetTot = new Chart(document.getElementById("today_tweets").getContext("2d")).Line(barChartData, barOptions);
 			</script>
-			<p>De hoogst scorende artikelen van vandaag, maximaal 30</p>
+			<p>De hoogst scorende artikelen van vandaag, maximaal 25</p>
+			<table>
+			<?php
+				foreach($today_table_row as $row)
+				{
+					echo $row."\n";
+				}
+			?>
+			</table>
 
 
 		</div>

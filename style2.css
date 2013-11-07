@@ -79,6 +79,9 @@ h1 .twitter-follow-button {
 	color: #fff;
 	font-size: 16px;
 	}
+#topmenu, #topmenu * {
+	z-index: 2000;
+	}
 ul#topmenu {
 	margin: 0;
 	padding: 0;

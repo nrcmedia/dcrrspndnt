@@ -306,7 +306,9 @@ $scalewidth4 = ceil($max_art_today / 10);
 		<div class="center full">
 
 			<h2>Tweets per dag</h2>
-			<div id="tot_tweets" style="z-index: -11; position:relative; margin: 0 10px" ></div>
+			<div class="graphcontainer" style="z-index: -11;">
+			<div id="tot_tweets" style="position: relative;"></div>
+			</div>
 			<script>
 				$(function () {
         	$('#tot_tweets').highcharts({

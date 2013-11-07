@@ -110,6 +110,7 @@ ul#topmenu {
 	}
 ul#topmenu ul {
 	display: none;
+	z-index: 100;
 	}
 ul#topmenu ul li {
 	background: #D30910;
@@ -117,6 +118,7 @@ ul#topmenu ul li {
 	width: 300px;
 	height: 25px;
 	margin: 0 -10px;
+		z-index: 100;
 	}
 ul#topmenu ul li:last-child {
 	border-bottom:5px solid #D30910;
@@ -161,6 +163,10 @@ ul#pager {
 	clear:left;
 	float: left;
 	max-width: 60%;
+	}
+.center.full {
+	margin: 0 20px;
+	width: auto;
 	}
 .meta_graph {
 	width: 800px;

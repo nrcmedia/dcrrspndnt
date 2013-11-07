@@ -303,10 +303,10 @@ $scalewidth4 = ceil($max_art_today / 10);
 
 		<h1>nrc.nl tweets in grafieken </h1>
 <?php include ('menu.php'); ?>
-		<div class="center">
+		<div class="center full">
 
 			<h2>Tweets per dag</h2>
-			<div id="tot_tweets" height="450" width="90%"></div>
+			<div id="tot_tweets" style="z-index: -11; position:relative; margin: 0 10px" ></div>
 			<script>
 				$(function () {
         	$('#tot_tweets').highcharts({
@@ -344,7 +344,7 @@ $scalewidth4 = ceil($max_art_today / 10);
 			<p>De laatste 30 dagen</p>
 
 			<h2>Tweets per uur</h2>
-			<div id="hour_tweets" height="450" width="90%"></div>
+			<div id="hour_tweets" style="z-index: -11; position:relative; margin: 0 10px"></div>
 			<script>
 				$(function () {
 					$('#hour_tweets').highcharts({

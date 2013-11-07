@@ -279,7 +279,7 @@ if($num_arts ==0)
 
 $art_today_label = '';
 $art_today_count = '';
-$max_art_today = get_tweet_benchmark();
+$max_art_today = get_tweet_benchmark() + 4;
 $i = 1;
 $today_table_row = array();
 while ($row = mysql_fetch_array($art_res))

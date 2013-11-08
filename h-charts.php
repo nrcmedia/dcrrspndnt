@@ -112,7 +112,7 @@ while ($row = mysql_fetch_array($res_today))
 		$j = 0;
 		while($j < (int)$uur_nu) // naar de juiste plek brengen ...
 		{
-			$projection_data .= '0,';
+			$projection_data .= 'null,';
 			$j++;
 		}
 		$projection_data .= $projection;
@@ -375,7 +375,8 @@ $scalewidth4 = ceil($max_art_today / 10);
             },
 
             tooltip: {
-                valueSuffix: ' tweets '
+                valueSuffix: ' tweets ',
+                shared: true
             },
             legend: {
                 layout: 'vertical',
@@ -395,8 +396,13 @@ $scalewidth4 = ceil($max_art_today / 10);
                 name: 'Vandaag',
                 data: [<?php echo $hour_today_data;?>]
             }, {
+            		type: 'line',
             		name: 'Voorspelling',
-            		data: [<?php echo $projection_data;?>]
+            		data: [<?php echo $projection_data;?>],
+            		marker: {
+                	radius: 5
+                },
+                lineWidth: 1
             } ]
         	});
         });
@@ -427,7 +433,9 @@ $scalewidth4 = ceil($max_art_today / 10);
                 min: 0
             },
             tooltip: {
-                valueSuffix: ' tweets '
+            		headerFormat: '<div style="font-size: 10px;line-height:14px">{point.key}  _</div><br/>',
+                valueSuffix: ' tweets ',
+                shared: true
             },
             legend: {
                 layout: 'vertical',

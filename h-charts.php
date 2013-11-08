@@ -441,9 +441,14 @@ $scalewidth4 = ceil($max_art_today / 10);
                 backgroundColor: '#FCFFC5'
             },
             series: [{
-            		type: 'column',
+            		type: 'area',
             		name: 'Vorige week',
-            		data: [<?php echo $comp_tweets_per_minute_value;?>]
+            		data: [<?php echo $comp_tweets_per_minute_value;?>],
+            		fillOpacity: 0.2,
+                marker: {
+                	radius: 2
+                },
+                lineWidth: 2
             }, {
             		type: 'area',
                 name: 'Gemiddeld',

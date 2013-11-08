@@ -403,7 +403,7 @@ $scalewidth4 = ceil($max_art_today / 10);
        </script>
 
 			<h2>Tweets vandaag</h2>
-			<div id="tweets_pm" style="height:500px;"></div>
+			<div id="tweets_pm" style="height:600px;"></div>
 			<script>
 				$(function () {
 					$('#tweets_pm').highcharts({
@@ -418,7 +418,7 @@ $scalewidth4 = ceil($max_art_today / 10);
             },
 
 						//chart: {zoomType: 'xy'},
-            title: { text: 'Tweets per 5 minuten -vandaag, vorige week, gemiddeld-' },
+            title: { text: 'Tweets per 5 minuten' },
             xAxis: { categories: [<?php echo $tweets_per_minute_label;  ?>] },
             yAxis: { title: { text: 'Tweets per 5 minuten' },
                 plotLines: [{ value: 0, width: 1, color: '#808080' }],
@@ -474,19 +474,40 @@ $scalewidth4 = ceil($max_art_today / 10);
                 plotLines: [{ value: 0, width: 1, color: '#808080' }],
                 min: 0
             },
+            plotOptions: {
+            	column: {
+            		pointPadding: 0,
+            		borderWidth: 0,
+            		groupPadding: 0,
+            		shadow: false
+            	}
+            },
+
             tooltip: {
                 valueSuffix: ' tweets '
             },
             legend: {
                 layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle',
-                borderWidth: 0
+                align: 'left',
+                floating: true,
+                shadow: true,
+                x: 80,
+                y: 20,
+                verticalAlign: 'top',
+                borderWidth: 1,
+                backgroundColor: '#FCFFC5'
             },
             series: [{
+								type: 'area',
                 name: 'Gemiddeld',
+                fillOpacity: 0.2,
+                marker: {
+                	radius: 2
+                },
+                lineWidth: 2,
                 data: [<?php echo $art_today_fenton;?>]
             }, {
+            		type: 'column',
                 name: 'Vandaag',
                 data: [<?php echo $art_today_count;?>]
             } ]

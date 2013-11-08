@@ -182,7 +182,7 @@ while($hour < 24)
 		elseif($minute % 30 == 0)
 			$label = $minute;
 		else
-			$label = '';
+			$label = ' ';
 
 		$labels[$str_hour.':'.$str_minute] = $label;
 		$values[$str_hour.':'.$str_minute] = 0;
@@ -306,9 +306,9 @@ $scalewidth4 = ceil($max_art_today / 10);
 		<div class="center full">
 
 			<h2>Tweets per dag</h2>
-			<div class="graphcontainer" style="z-index: -11;">
+
 			<div id="tot_tweets" style="position: relative;"></div>
-			</div>
+
 			<script>
 				$(function () {
         	$('#tot_tweets').highcharts({
@@ -320,6 +320,14 @@ $scalewidth4 = ceil($max_art_today / 10);
                 title: {
                     text: 'Tweets per dag'
                 }
+            },
+            plotOptions: {
+            	column: {
+            		pointPadding: 0,
+            		borderWidth: 0,
+            		groupPadding: 0,
+            		shadow: false
+            	}
             },
             tooltip: {
                 headerFormat: '<table>',
@@ -346,25 +354,39 @@ $scalewidth4 = ceil($max_art_today / 10);
 			<p>De laatste 30 dagen</p>
 
 			<h2>Tweets per uur</h2>
-			<div id="hour_tweets" style="z-index: -11; position:relative; margin: 0 10px"></div>
+			<div id="hour_tweets"></div>
 			<script>
 				$(function () {
 					$('#hour_tweets').highcharts({
-						chart: { type: 'area' },
+						chart: { type: 'column' },
             title: { text: 'Tweets per uur' },
             xAxis: { categories: [<?php echo $hour_label;  ?>] },
             yAxis: { title: { text: 'Tweets per uur' },
                 plotLines: [{ value: 0, width: 1, color: '#808080' }],
                 min: 0
             },
+            plotOptions: {
+            	column: {
+            		pointPadding: 0,
+            		borderWidth: 0,
+            		groupPadding: 0,
+            		shadow: false
+            	}
+            },
+
             tooltip: {
                 valueSuffix: ' tweets '
             },
             legend: {
                 layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle',
-                borderWidth: 0
+                align: 'left',
+                floating: true,
+                shadow: true,
+                x: 80,
+                y: 20,
+                verticalAlign: 'top',
+                borderWidth: 1,
+                backgroundColor: '#FCFFC5'
             },
             series: [{
                 name: 'Gemiddeld',
@@ -381,11 +403,21 @@ $scalewidth4 = ceil($max_art_today / 10);
        </script>
 
 			<h2>Tweets vandaag</h2>
-			<div id="tweets_pm" height="450" width="90%"></div>
+			<div id="tweets_pm" style="height:500px;"></div>
 			<script>
 				$(function () {
 					$('#tweets_pm').highcharts({
-						chart: { type: 'area' },
+						chart: { type: 'line' },
+            plotOptions: {
+            	column: {
+            		pointPadding: 0,
+            		borderWidth: 0,
+            		groupPadding: 0,
+            		shadow: false
+            	}
+            },
+
+						//chart: {zoomType: 'xy'},
             title: { text: 'Tweets per 5 minuten -vandaag, vorige week, gemiddeld-' },
             xAxis: { categories: [<?php echo $tweets_per_minute_label;  ?>] },
             yAxis: { title: { text: 'Tweets per 5 minuten' },
@@ -397,17 +429,30 @@ $scalewidth4 = ceil($max_art_today / 10);
             },
             legend: {
                 layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle',
-                borderWidth: 0
+                align: 'left',
+                floating: true,
+                shadow: true,
+                x: 80,
+                y: 20,
+                verticalAlign: 'top',
+                borderWidth: 1,
+                backgroundColor: '#FCFFC5'
             },
             series: [{
+            		type: 'area',
                 name: 'Gemiddeld',
-                data: [<?php echo $avg_tweets_per_minute_value;?>]
+                data: [<?php echo $avg_tweets_per_minute_value;?>],
+                fillOpacity: 0.2,
+                marker: {
+                	radius: 2
+                },
+                lineWidth: 2
             }, {
+            		type: 'column',
             		name: 'Vorige week',
             		data: [<?php echo $comp_tweets_per_minute_value;?>]
             }, {
+            		type: 'column',
                 name: 'Vandaag',
                 data: [<?php echo $tweets_per_minute_value;?>]
             } ]
@@ -447,6 +492,113 @@ $scalewidth4 = ceil($max_art_today / 10);
             } ]
         	});
         });
+
+
+
+
+/**
+ * Grid theme for Highcharts JS
+ * @author Torstein Hønsi
+ */
+
+Highcharts.theme = {
+   colors: ['#058DC7', '#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4'],
+   chart: {
+      backgroundColor: {
+         linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+         stops: [
+            [0, 'rgb(255, 255, 255)'],
+            [1, 'rgb(240, 240, 255)']
+         ]
+      },
+      borderWidth: 2,
+      plotBackgroundColor: 'rgba(255, 255, 255, .9)',
+      plotShadow: true,
+      plotBorderWidth: 1
+   },
+   title: {
+      style: {
+         color: '#000',
+         font: 'bold 16px "Trebuchet MS", Verdana, sans-serif'
+      }
+   },
+   subtitle: {
+      style: {
+         color: '#666666',
+         font: 'bold 12px "Trebuchet MS", Verdana, sans-serif'
+      }
+   },
+   xAxis: {
+      gridLineWidth: 1,
+      lineColor: '#000',
+      tickColor: '#000',
+      labels: {
+         style: {
+            color: '#000',
+            font: '11px Trebuchet MS, Verdana, sans-serif'
+         }
+      },
+      title: {
+         style: {
+            color: '#333',
+            fontWeight: 'bold',
+            fontSize: '12px',
+            fontFamily: 'Trebuchet MS, Verdana, sans-serif'
+
+         }
+      }
+   },
+   yAxis: {
+      minorTickInterval: 'auto',
+      lineColor: '#000',
+      lineWidth: 1,
+      tickWidth: 1,
+      tickColor: '#000',
+      labels: {
+         style: {
+            color: '#000',
+            font: '11px Trebuchet MS, Verdana, sans-serif'
+         }
+      },
+      title: {
+         style: {
+            color: '#333',
+            fontWeight: 'bold',
+            fontSize: '12px',
+            fontFamily: 'Trebuchet MS, Verdana, sans-serif'
+         }
+      }
+   },
+   legend: {
+      itemStyle: {
+         font: '9pt Trebuchet MS, Verdana, sans-serif',
+         color: 'black'
+
+      },
+      itemHoverStyle: {
+         color: '#039'
+      },
+      itemHiddenStyle: {
+         color: 'gray'
+      }
+   },
+   labels: {
+      style: {
+         color: '#99b'
+      }
+   },
+
+   navigation: {
+      buttonOptions: {
+         theme: {
+            stroke: '#CCCCCC'
+         }
+      }
+   }
+};
+
+// Apply the theme
+var highchartsOptions = Highcharts.setOptions(Highcharts.theme);
        </script>
 
 			<p>De hoogst scorende artikelen van vandaag, maximaal 25</p>

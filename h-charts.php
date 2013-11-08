@@ -517,6 +517,13 @@ $scalewidth4 = ceil($max_art_today / 10);
 
 
 
+       </script>
+
+			<p>De hoogst scorende artikelen van vandaag, maximaal 25. De laagst scorende valt uit de grafiek zodra er meer dan 25 artikelen zijn gepubliceerd / gevonden.</p>
+
+		</div>
+<?php include('footer.php') ?>
+		<script>
 /**
  * Grid theme for Highcharts JS
  * @author Torstein Hønsi
@@ -620,11 +627,6 @@ Highcharts.theme = {
 
 // Apply the theme
 var highchartsOptions = Highcharts.setOptions(Highcharts.theme);
-       </script>
-
-			<p>De hoogst scorende artikelen van vandaag, maximaal 25</p>
-
-		</div>
-<?php include('footer.php') ?>
+</script>
 	</body>
 </html>

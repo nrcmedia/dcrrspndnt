@@ -419,7 +419,9 @@ $scalewidth4 = ceil($max_art_today / 10);
 
 						//chart: {zoomType: 'xy'},
             title: { text: 'Tweets per 5 minuten' },
-            xAxis: { categories: [<?php echo $tweets_per_minute_label;  ?>] },
+            xAxis: { categories: [<?php echo $tweets_per_minute_label;  ?>],
+            				 labels: { rotation: -60, style: {fontSize: 11} }
+            			 },
             yAxis: { title: { text: 'Tweets per 5 minuten' },
                 plotLines: [{ value: 0, width: 1, color: '#808080' }],
                 min: 0
@@ -439,6 +441,10 @@ $scalewidth4 = ceil($max_art_today / 10);
                 backgroundColor: '#FCFFC5'
             },
             series: [{
+            		type: 'column',
+            		name: 'Vorige week',
+            		data: [<?php echo $comp_tweets_per_minute_value;?>]
+            }, {
             		type: 'area',
                 name: 'Gemiddeld',
                 data: [<?php echo $avg_tweets_per_minute_value;?>],
@@ -447,10 +453,6 @@ $scalewidth4 = ceil($max_art_today / 10);
                 	radius: 2
                 },
                 lineWidth: 2
-            }, {
-            		type: 'column',
-            		name: 'Vorige week',
-            		data: [<?php echo $comp_tweets_per_minute_value;?>]
             }, {
             		type: 'column',
                 name: 'Vandaag',

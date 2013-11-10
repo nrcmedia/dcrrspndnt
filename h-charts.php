@@ -486,7 +486,7 @@ $scalewidth4 = ceil($max_art_today / 10);
             				 labels: {
             				 		formatter: function () {
             				 			var text = this.value,
-            				 			formatted = text.length > 30 ? text.substring(0, 30) + '...' : text;
+            				 			formatted = text.length > 30 ? text.substring(0, 40) : text;
             				 			return '<div class="js-ellipse" style="width:150px; overflow:hidden" title="' + text + '">' +
             				 							formatted + '</div>';
                     		},
@@ -497,7 +497,7 @@ $scalewidth4 = ceil($max_art_today / 10);
             				 					 }
             				 	}
             			 },
-            yAxis: { title: { text: 'Tweets per 5 minuten' },
+            yAxis: { title: { text: 'Tweets per artikel' },
                 plotLines: [{ value: 0, width: 1, color: '#808080' }],
                 min: 0
             },

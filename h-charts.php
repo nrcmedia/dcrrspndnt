@@ -426,7 +426,7 @@ $scalewidth4 = ceil($max_art_today / 10);
 						//chart: {zoomType: 'xy'},
             title: { text: 'Tweets per 5 minuten' },
             xAxis: { categories: [<?php echo $tweets_per_minute_label;  ?>],
-            				 labels: { rotation: -60, style: {fontSize: 11} }
+            				 labels: { rotation: -90, style: {fontSize: 11} }
             			 },
             yAxis: { title: { text: 'Tweets per 5 minuten' },
                 plotLines: [{ value: 0, width: 1, color: '#808080' }],
@@ -483,7 +483,19 @@ $scalewidth4 = ceil($max_art_today / 10);
 						chart: { type: 'line' },
             title: { text: 'Meest getweete <?php echo $today_tweets_title;?>' },
             xAxis: { categories: [<?php echo $art_today_label;  ?>],
-            				 labels: { rotation: -60, style: {fontSize: 11} }
+            				 labels: {
+            				 		formatter: function () {
+            				 			var text = this.value,
+            				 			formatted = text.length > 30 ? text.substring(0, 30) + '...' : text;
+            				 			return '<div class="js-ellipse" style="width:150px; overflow:hidden" title="' + text + '">' +
+            				 							formatted + '</div>';
+                    		},
+                    		rotation: -60,
+            				 		style: {
+            				 					 		color: '#000',
+            				 					 		font: '12px Trebuchet MS, Verdana, sans-serif'
+            				 					 }
+            				 	}
             			 },
             yAxis: { title: { text: 'Tweets per 5 minuten' },
                 plotLines: [{ value: 0, width: 1, color: '#808080' }],

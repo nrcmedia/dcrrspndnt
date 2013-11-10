@@ -182,3 +182,126 @@ if (! function_exists('gzdecode'))
 		return gzinflate(substr($data,10,-8));
 	}
 }
+
+/**
+ * tweets_per_dag
+ * geeft van de laatste 30 dagen de labels en de labels terug
+ * optioneel: $mode = 'JSON', geeft enkel de data terug
+ * Dit is grafiek 1 op de h-charts.php pagina
+ */
+function tweets_per_day($mode = '')
+{
+	$tot_tweets_res = mysql_query('select count(tweets.id) as tweet_count, day(tweets.created_at) as dag, month(tweets.created_at) as maand from tweets where created_at > "2013-10-13 21:00"  group by maand, dag order by year(tweets.created_at) desc, month(tweets.created_at) desc, day(tweets.created_at) desc limit 0,30');
+
+	$label = array();
+	$tweets = array();
+	$rows = array();
+
+	while ($row = mysql_fetch_array($tot_tweets_res))
+	{
+		$rows[] = $row;
+	}
+	$rows = array_reverse($rows);
+
+	$cur_month = '';
+	foreach($rows as $row)
+	{
+		$lab = $row['dag'];
+
+		if ( (int)$row['maand'] != (int)$cur_month)
+		{
+			$lab .= '-'.$row['maand'];
+			$cur_month = $row['maand'];
+		}
+		$label[] = $lab;
+		$tweets[] = $row['tweet_count'];
+	}
+
+	$bar_label = '';
+	foreach($label as $lab)
+	{
+		$bar_label .= '"'.$lab.'",';
+	}
+	$bar_label = substr($bar_label, 0, strlen($bar_label) - 1);
+
+	$bar_tweet_data = '';
+	foreach($tweets as $tweet_data)
+	{
+		$bar_tweet_data .= $tweet_data.',';
+	}
+	$bar_tweet_data = substr($bar_tweet_data, 0, strlen($bar_tweet_data) - 1);
+
+	$chart_data = array('data' => $bar_tweet_data, 'label' => $bar_label);
+	if (!$mode == 'JSON')
+		return $chart_data;
+	else
+		return json_encode($chart_data['data']);
+}
+
+/** tweets_today
+
+*/
+function tweets_today()
+{
+	$dagen_res = mysql_query("select day(tweets.created_at) as dagen from tweets group by dagen");
+	$dagen = mysql_num_rows($dagen_res);
+
+	$graph_res = mysql_query("select count(tweets.id) as tweet_count, hour(tweets.created_at) as the_uur from tweets  group by the_uur ");
+
+	$hour_label = '';
+	$hour_tweet_data = '';
+	$uur_nu = date('H');
+	$minuut_nu = date('i');
+
+	while ($row = mysql_fetch_array($graph_res))
+	{
+		$hour_label .= $row['the_uur'].',';
+		$deler = (int)$row['the_uur'] > (int)$uur_nu ? $dagen - 1 : $dagen;
+		$tot = ceil($row['tweet_count'] / $deler);
+		$hour_tweet_data .= $tot.',';
+	}
+
+	$hour_label = substr($hour_label, 0, strlen($hour_label) - 1);
+	$hour_tweet_data = substr($hour_tweet_data, 0, strlen($hour_tweet_data) - 1);
+
+	// A la Chartbeat, de lijn wordt langer tijdens de dag
+	// verschijnt in de uur-trend-grafiek
+	$res_today = mysql_query("select count(tweets.ID) per_hour, hour(tweets.created_at) as the_hour, tweets.created_at from tweets
+	where year(tweets.created_at) = year(now() )
+	  and month(tweets.created_at) = month(now())
+	  and day(tweets.created_at) = day(now() )
+	group by the_hour
+	order by created_at");
+
+	// verwerken in grafiek-data
+	$i=0;
+	while ($row = mysql_fetch_array($res_today))
+	{
+		while ($i < (int)$row['the_hour'])
+		{
+			$hour_today_data .= '0,';
+			$i++;
+		}
+		$hour_today_data .= $row['per_hour'].',';
+		$i++;
+		if( (int)$row['the_hour'] == (int)$uur_nu)
+		{ // make projection; 12 times per hour, which time are we?
+			$hour_part = floor($minuut_nu / 5) + 1;
+			$projection = floor((12 / $hour_part) * (int)$row['per_hour']);
+			$j = 0;
+			while($j < (int)$uur_nu) // naar de juiste plek brengen ...
+			{
+				$projection_data .= 'null,';
+				$j++;
+			}
+			$projection_data .= $projection;
+		}
+	}
+
+	$hour_today_data = substr($hour_today_data, 0, strlen($hour_today_data) - 1);
+
+	$chart_data = array('label'           => $hour_label,
+	                    'average_data'    => $hour_tweet_data,
+	                    'current_data'    => $hour_today_data,
+	                    'projection_data' => $projection_data);
+}

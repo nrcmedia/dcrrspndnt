@@ -287,7 +287,7 @@ $scalewidth4 = ceil($max_art_today / 10);
             }, {
             		type: 'line',
             		name: 'Voorspelling',
-            		data: [<?php echo $chart_data['projection_data'];?>],
+            		data: [<?php echo $chart2_data['projection_data'];?>],
             		marker: {
                 	radius: 5
                 },

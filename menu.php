@@ -6,8 +6,7 @@
 			<li><a href="./top.php?mode=week"><div> Populiare artikelen (deze week)</div></a></li>
 			<li><a href="./top.php?mode=day"><div> Populiare artikelen (vandaag)</div></a></li>
 			<li><a href="./top.php?mode=hour"><div> Populiare artikelen (dit uur)</div></a></li>
-			<li><a href="./charts.php"><div> Grafiekjes </div></a></li>
-			<li><a href="./h-charts.php"><div> Grafiekjes (experimenteel)</div></a></li>
+			<li><a href="./h-charts.php"><div> Grafiekjes </div></a></li>
 		</ul>
 	</li>
 	<li><strong> Auteurs</strong> &#9660;

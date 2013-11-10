@@ -490,7 +490,7 @@ $scalewidth4 = ceil($max_art_today / 10);
             				 			return '<div class="js-ellipse" style="width:150px; overflow:hidden" title="' + text + '">' +
             				 							formatted + '</div>';
                     		},
-                    		rotation: -60,
+                    		rotation: -70,
             				 		style: {
             				 					 		color: '#000',
             				 					 		font: '12px Trebuchet MS, Verdana, sans-serif'

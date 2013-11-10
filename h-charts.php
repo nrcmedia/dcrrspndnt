@@ -177,13 +177,8 @@ while($hour < 24)
 	while($minute < 60)
 	{
 		$str_minute = str_pad($minute,2, '0', STR_PAD_LEFT);
-		if($minute == 0)
-			$label = $str_hour.'.'.$str_minute;
-		elseif($minute % 30 == 0)
-			$label = $minute;
-		else
-			$label = ' ';
 
+		$label = $str_hour.'.'.$str_minute;
 		$labels[$str_hour.':'.$str_minute] = $label;
 		$values[$str_hour.':'.$str_minute] = 0;
 		$comp_values[$str_hour.':'.$str_minute] = 0;
@@ -324,9 +319,7 @@ $scalewidth4 = ceil($max_art_today / 10);
             plotOptions: {
             	column: {
             		pointPadding: 0,
-            		borderWidth: 0,
-            		groupPadding: 0,
-            		shadow: false
+            		borderWidth: 0
             	}
             },
             tooltip: {
@@ -336,12 +329,6 @@ $scalewidth4 = ceil($max_art_today / 10);
                 footerFormat: '</table>',
                 shared: true,
                 useHTML: true
-            },
-            plotOptions: {
-                column: {
-                    pointPadding: 0.2,
-                    borderWidth: 0
-                }
             },
             series: [{
             		name: 'Tweets',
@@ -426,14 +413,35 @@ $scalewidth4 = ceil($max_art_today / 10);
 						//chart: {zoomType: 'xy'},
             title: { text: 'Tweets per 5 minuten' },
             xAxis: { categories: [<?php echo $tweets_per_minute_label;  ?>],
-            				 labels: { rotation: -90, style: {fontSize: 11} }
+            				 labels: {
+            				 		rotation: -90,
+            				 		style: {fontSize: 11},
+            				 		formatter: function () {
+            				 			var text = this.value;
+            				 			if(text.substr(3,2) == '00')
+            				 			{
+            				 				formatted = text;
+            				 			}
+            				 			else if(text.substr(3,2) == '30')
+            				 			{
+            				 				formatted = '30';
+            				 			}
+            				 			else
+            				 			{
+            				 				formatted =  ' ';
+            				 			}
+            				 			return '<div class="js-ellipse" title="' + text + '">' +
+            				 							formatted + '</div>';
+                    		},
+
+            				 	}
             			 },
             yAxis: { title: { text: 'Tweets per 5 minuten' },
                 plotLines: [{ value: 0, width: 1, color: '#808080' }],
                 min: 0
             },
             tooltip: {
-            		headerFormat: '<div style="font-size: 10px;line-height:14px">{point.key}  _</div><br/>',
+            		headerFormat: '<div style="font-size: 10px;line-height:14px">{point.key}</div><br/>',
                 valueSuffix: ' tweets ',
                 shared: true
             },

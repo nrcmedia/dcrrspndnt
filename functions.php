@@ -304,4 +304,5 @@ function tweets_today()
 	                    'average_data'    => $hour_tweet_data,
 	                    'current_data'    => $hour_today_data,
 	                    'projection_data' => $projection_data);
+	return $chart_data;
 }

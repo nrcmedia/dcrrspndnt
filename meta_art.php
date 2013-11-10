@@ -53,7 +53,9 @@ $th = $th_pubdate.'<th>Title / Article</th>'.$th_extra.$th_tweets.'<th>FB</th>';
 
 		<title>nrc.nl, artikelen <?php echo $title_by_in; ?>: <?php echo $meta_row['waarde'].' ('.$mode.')';?></title>
 		<link rel="stylesheet" href="./style2.css" />
-		<script src="Chart.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+		<script src="highcharts.js"></script>
+
 	</head>
 	<body id="meta_art">
 		<h1>Artikelen geschreven <?php echo $title_by_in; ?>: <?php echo $meta_row['waarde']?></h1>
@@ -100,26 +102,40 @@ $bar_tweet_data = substr($bar_tweet_data, 0, strlen($bar_tweet_data) - 1);
 
 			<div class="meta_graph" style="float:left;">
 
-			<canvas id="tot_tweets" height="450" width="650"></canvas>
+			<div id="tot_tweets" style="height:450px; width:650px"></div>
 			<script>
-				var barOptions = {
-					scaleOverride : 1,
-					scaleSteps : 10,
-					//Number - The value jump in the hard coded scale
-					scaleStepWidth : <?php echo $scaleWidth; ?>,
-					//Number - The scale starting value
-					scaleStartValue : 0
+				$(function () {
+        	$('#tot_tweets').highcharts({
+            chart: { type: 'column' },
+            title: { text: 'Totaal aantal tweets per dag' },
+            xAxis: { categories: [<?php echo $bar_label;  ?>] },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Tweets per dag'
+                }
+            },
+            plotOptions: {
+            	column: {
+            		pointPadding: 0,
+            		borderWidth: 0
+            	}
+            },
+            tooltip: {
+                headerFormat: '<table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"> <b>{point.y}</b> </td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            series: [{
+            		name: 'Tweets',
+                data: [<?php echo $bar_tweet_data;?>]
 
-				}
-				var barChartData = {
-					labels: [ <?php echo $bar_label;  ?>],
-					datasets : [ {
-												fillColor   : "rgba(77,83,97,0.5)",
-												strokeColor : "rgba(77,83,97,1)",
-												data : [<?php echo $bar_tweet_data;?>]
-										 } ]
-				}
-				var tweetTot = new Chart(document.getElementById("tot_tweets").getContext("2d")).Bar(barChartData, barOptions);
+            }]
+        });
+      });
 			</script>
 		</div>
 		</div>

@@ -103,7 +103,8 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 				}
 
 				if(strstr($parsed['path'], 'wp-content/uploads') ||
-					 preg_match('%/files/\d\d\d\d/\d\d/.*jpg%', $parsed['path']) )
+					 preg_match('%/files/\d\d\d\d/\d\d/.*jpg%', $parsed['path']) ||
+					preg_match('%/files/\d\d\d\d/\d\d/.*gif%', $parsed['path']) )
 				{
 					echo 'Skipping image: '.$parsed['path']."\n";
 					continue;

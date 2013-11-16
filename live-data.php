@@ -23,7 +23,7 @@ if(isset($_REQUEST['type']))
 			$data = tweets_per_minute('JSON');
 			break;
 		case 'per_article':
-			$data = tweets_per_article('');
+			$data = tweets_per_article('JSON');
 			break;
 
 		deafult:

@@ -282,8 +282,8 @@ $chart4_data = tweets_per_article();
 			<div id="today_tweets" style="height: 800px"></div>
 			<script>
 				$(function () {
-					$('#today_tweets').highcharts({
-						chart: { type: 'line' },
+					article_chart = new Highcharts.Chart ({
+						chart: { type: 'line', renderTo: 'today_tweets', events: { load: tweets_per_articlerequestData } },
             title: { text: 'Meest getweete artikelen van vandaag' },
             xAxis: { categories: [<?php echo $chart4_data['label'];  ?>],
             				 labels: {
@@ -342,6 +342,19 @@ $chart4_data = tweets_per_article();
                 data: [<?php echo $chart4_data['today_value'];?>]
             } ]
         	});
+        	function tweets_per_articlerequestData()
+  	      {
+  	      	$.ajax({
+  	      		url: 'live-data.php?type=per_article',
+  	      		success: function(data)
+  	      		{
+  	      			article_chart.series[0].setData(data[2]);
+  	      			article_chart.series[1].setData(data[1]);
+								article_chart.xAxis[0].setCategories(data[0]);
+  	      			setTimeout(tweets_per_articlerequestData, 60000); // eens per minuut
+  	      		}
+  	      	});
+  	      }
         });
 
 

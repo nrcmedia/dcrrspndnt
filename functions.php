@@ -506,7 +506,7 @@ function tweets_per_article($mode = '')
 		$art_today_count .= $row['tweets_today'].',';
 		$art_today_count_json[] = (int)$row['tweets_today'];
 		$art_today_fenton .= floor(get_tweet_benchmark()).',';
-		$art_today_fenton_json = (int) floor(get_tweet_benchmark());
+		$art_today_fenton_json[] = (int) floor(get_tweet_benchmark());
 	}
 
 	$art_today_label  = substr($art_today_label,  0, strlen($art_today_label)  - 1);
@@ -520,5 +520,5 @@ function tweets_per_article($mode = '')
 	if (!$mode == 'JSON')
 		return $chart_data;
 	else
-		return array($art_today_labels_json, $art_today_count_json, $art_today_fenton_json);
+		return array($art_today_label_json, $art_today_count_json, $art_today_fenton_json);
 }

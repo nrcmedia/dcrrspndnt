@@ -32,71 +32,8 @@ $chart3_data = tweets_per_minute();
 //
 // Grafiek 4; de artikelen van vandaag, totaal tweets en een 'benchmark'
 // beperk tot de 30 beste artikelen van de dag
-//
-$art_res = mysql_query('
-select count(tweets.id) as tweets_today, artikelen.*
-	from artikelen
-		left join tweets on tweets.art_id = artikelen.id
-	join (
-    select artikelen.id
-			from artikelen
-			left join tweets on tweets.art_id = artikelen.id
-		where year(artikelen.created_at) = year(now() ) and month(artikelen.created_at) = month(now()) and day(artikelen.created_at) = day(now() )
-		group by artikelen.id
-		order by count(tweets.id) desc
-		limit 0,25
-	) top_arts
-where artikelen.ID = top_arts.ID
-group by artikelen.ID
-order by artikelen.created_at	' );
-$today_tweets_title = 'Artikelen van vandaag';
-// hiermee zetten we de labels en de x-as waardes
-$num_arts = mysql_num_rows($art_res);
-// zolang we nog niks terugkrijgen ('snacht ;-))
-// gisteren halen
-if($num_arts ==0)
-{
-	$art_res = mysql_query('
-	select count(tweets.id) as tweets_today, artikelen.*
-		from artikelen
-			left join tweets on tweets.art_id = artikelen.id
-		join (
-  	  select artikelen.id
-				from artikelen
-				left join tweets on tweets.art_id = artikelen.id
-			where year(artikelen.created_at) = year(now() ) and month(artikelen.created_at) = month(now()) and 	day(artikelen.created_at) = day(now() ) - 1
-			group by artikelen.id
-			order by count(tweets.id) desc
-			limit 0,25
-		) top_arts
-	where artikelen.ID = top_arts.ID
-	group by artikelen.ID
-	order by artikelen.created_at	' );
-	$today_tweets_title = 'Artikelen van gisteren';
-}
+$chart4_data = tweets_per_article();
 
-
-$art_today_label = '';
-$art_today_count = '';
-$max_art_today = get_tweet_benchmark() + 4;
-$i = 1;
-$today_table_row = array();
-while ($row = mysql_fetch_array($art_res))
-{
-
-	$og = unserialize($row['og']);
-	$art_today_label .= '"'.trim(preg_replace('/\s\s+/', ' ', $og['title'])).'",';
-
-	$i++;
-	$art_today_count .= $row['tweets_today'].',';
-	$max_art_today = max($max_art_today, $row['tweets_today'] + 5);
-	$art_today_fenton .= floor(get_tweet_benchmark()).',';
-}
-$today_table_row[] = '<tr><td>*</td><td>Gemiddeld aantal tweets per artikel (alle artikelen): <strong>'.get_tweet_benchmark().'</strong></td></tr>';
-$art_today_label  = substr($art_today_label,  0, strlen($art_today_label)  - 1);
-$art_today_count  = substr($art_today_count,  0, strlen($art_today_count)  - 1);
-$art_today_fenton = substr($art_today_fenton, 0, strlen($art_today_fenton) - 1);
-$scalewidth4 = ceil($max_art_today / 10);
 ?>
 
 		<h1>nrc.nl tweets in grafieken </h1>
@@ -341,14 +278,14 @@ $scalewidth4 = ceil($max_art_today / 10);
         });
        </script>
 
-			<h2><?php echo $today_tweets_title;?></h2>
+			<h2>Meest getweete artikelen van vandaag</h2>
 			<div id="today_tweets" style="height: 800px"></div>
 			<script>
 				$(function () {
 					$('#today_tweets').highcharts({
 						chart: { type: 'line' },
-            title: { text: 'Meest getweete <?php echo $today_tweets_title;?>' },
-            xAxis: { categories: [<?php echo $art_today_label;  ?>],
+            title: { text: 'Meest getweete artikelen van vandaag' },
+            xAxis: { categories: [<?php echo $chart4_data['label'];  ?>],
             				 labels: {
             				 		formatter: function () {
             				 			var text = this.value,
@@ -398,11 +335,11 @@ $scalewidth4 = ceil($max_art_today / 10);
                 	radius: 2
                 },
                 lineWidth: 2,
-                data: [<?php echo $art_today_fenton;?>]
+                data: [<?php echo $chart4_data['average_value'];?>]
             }, {
             		type: 'column',
                 name: 'Vandaag',
-                data: [<?php echo $art_today_count;?>]
+                data: [<?php echo $chart4_data['today_value'];?>]
             } ]
         	});
         });

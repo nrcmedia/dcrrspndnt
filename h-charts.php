@@ -114,7 +114,7 @@ while($avg_row = mysql_fetch_array($avg_res))
 $i = 0;
 foreach($labels as $time => $label)
 {
-	$tweets_per_minute_label .= '"'.$label.'",';
+	$tweets_per_minute_label .= '"'.htmlspecialchars($label).'",';
 	$tweets_per_minute_value .= $values[$time].',';
 	$comp_tweets_per_minute_value .= $comp_values[$time].',';
 	$avg_tweets_per_minute_value .= $avg_values[$time].',';
@@ -181,11 +181,10 @@ $i = 1;
 $today_table_row = array();
 while ($row = mysql_fetch_array($art_res))
 {
-	$og = unserialize($row['og']);
-	//$art_today_label .= '"'.$i.'",';
-	$art_today_label .= '"'.$og['title'].'",';
 
-	$today_table_row[] = '<tr><td>'.$i.'</td><td>'.$og['title'].' ('.$row['tweets_today'].')</td></tr>';
+	$og = unserialize($row['og']);
+	$art_today_label .= '"'.trim(preg_replace('/\s\s+/', ' ', $og['title'])).'",';
+
 	$i++;
 	$art_today_count .= $row['tweets_today'].',';
 	$max_art_today = max($max_art_today, $row['tweets_today'] + 5);

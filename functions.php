@@ -241,7 +241,7 @@ function tweets_per_day($mode = '')
 /** tweets_today
 
 */
-function tweets_today()
+function tweets_today($mode = '')
 {
 	$dagen_res = mysql_query("select day(tweets.created_at) as dagen from tweets group by dagen");
 	$dagen = mysql_num_rows($dagen_res);
@@ -249,9 +249,13 @@ function tweets_today()
 	$graph_res = mysql_query("select count(tweets.id) as tweet_count, hour(tweets.created_at) as the_uur from tweets  group by the_uur ");
 
 	$hour_label = '';
+	$hour_label_array = array();
 	$hour_tweet_data = '';
+	$hour_tweet_data_array = array();
 	$uur_nu = date('H');
 	$minuut_nu = date('i');
+	$projection_data_array = array();
+	$hour_today_data_array = array();
 
 	while ($row = mysql_fetch_array($graph_res))
 	{
@@ -259,6 +263,8 @@ function tweets_today()
 		$deler = (int)$row['the_uur'] > (int)$uur_nu ? $dagen - 1 : $dagen;
 		$tot = ceil($row['tweet_count'] / $deler);
 		$hour_tweet_data .= $tot.',';
+		$hour_tweet_data_array[] = $tot;
+		$hour_label_array[] = $row['the_uur'];
 	}
 
 	$hour_label = substr($hour_label, 0, strlen($hour_label) - 1);
@@ -280,9 +286,11 @@ function tweets_today()
 		while ($i < (int)$row['the_hour'])
 		{
 			$hour_today_data .= '0,';
+			$hour_today_data_array[] = 0;
 			$i++;
 		}
 		$hour_today_data .= $row['per_hour'].',';
+		$hour_today_data_array[] = (int)$row['per_hour'];
 		$i++;
 		if( (int)$row['the_hour'] == (int)$uur_nu)
 		{ // make projection; 12 times per hour, which time are we?
@@ -292,9 +300,11 @@ function tweets_today()
 			while($j < (int)$uur_nu) // naar de juiste plek brengen ...
 			{
 				$projection_data .= 'null,';
+				$projection_data_array[] = NULL;
 				$j++;
 			}
 			$projection_data .= $projection;
+			$projection_data_array[] = $projection;
 		}
 	}
 
@@ -304,5 +314,8 @@ function tweets_today()
 	                    'average_data'    => $hour_tweet_data,
 	                    'current_data'    => $hour_today_data,
 	                    'projection_data' => $projection_data);
-	return $chart_data;
+	if (!$mode == 'JSON')
+		return $chart_data;
+	else
+		return array($hour_label_array, $hour_tweet_data_array, $hour_today_data_array,$projection_data_array);
 }

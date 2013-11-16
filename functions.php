@@ -214,7 +214,7 @@ function tweets_per_day($mode = '')
 			$cur_month = $row['maand'];
 		}
 		$label[] = $lab;
-		$tweets[] = $row['tweet_count'];
+		$tweets[] = (int)$row['tweet_count'];
 	}
 
 	$bar_label = '';
@@ -235,7 +235,7 @@ function tweets_per_day($mode = '')
 	if (!$mode == 'JSON')
 		return $chart_data;
 	else
-		return json_encode($chart_data['data']);
+		return array($label, $tweets);
 }
 
 /** tweets_today

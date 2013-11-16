@@ -14,7 +14,7 @@ if(isset($_REQUEST['type']))
 	switch($type)
 	{
 		case 'per_day':
-			$data = tweets_per_day();
+			$data = tweets_per_day('JSON');
 			break;
 		case 'per_hour':
 			$data = tweets_today('JSON');

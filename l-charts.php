@@ -207,8 +207,11 @@ $scalewidth4 = ceil($max_art_today / 10);
 
 			<script>
 				$(function () {
-        	$('#tot_tweets').highcharts({
-            chart: { type: 'column' },
+        	day_chart = new Highcharts.Chart({
+            chart: { type: 'column',
+            	       renderTo: 'tot_tweets',
+            	       events: { load: tweets_per_dayRequestData}
+            	     },
             title: { text: 'Totaal aantal tweets per dag' },
             xAxis: { categories: [<?php echo $chart1_data['label'];  ?>] },
             yAxis: {
@@ -224,12 +227,20 @@ $scalewidth4 = ceil($max_art_today / 10);
             	}
             },
             tooltip: {
-                headerFormat: '<table>',
-                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"> <b>{point.y}</b> </td></tr>',
-                footerFormat: '</table>',
+								valueSuffix: ' tweets',
                 shared: true,
                 useHTML: true
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'left',
+                floating: true,
+                shadow: true,
+                x: 80,
+                y: 20,
+                verticalAlign: 'top',
+                borderWidth: 1,
+                backgroundColor: '#FCFFC5'
             },
             series: [{
             		name: 'Tweets',
@@ -237,6 +248,19 @@ $scalewidth4 = ceil($max_art_today / 10);
 
             }]
         });
+        function tweets_per_dayRequestData()
+        {
+  	      	$.ajax({
+  	      		url: 'live-data.php?type=per_day',
+  	      		success: function(data)
+  	      		{
+  	      			hour_chart.series[0].setData(data[1]);
+
+  	      			setTimeout(tweets_per_dayrequestData, 60000); // eens per minuut
+  	      		}
+						});
+
+        }
       });
 			</script>
 			<p>De laatste 30 dagen</p>

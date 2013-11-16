@@ -19,6 +19,9 @@ if(isset($_REQUEST['type']))
 		case 'per_hour':
 			$data = tweets_today('JSON');
 			break;
+		case 'per_minute':
+			$data = tweets_per_minute('JSON');
+			break;
 		deafult:
 			$data = array();
 	}

@@ -26,106 +26,8 @@ $chart1_data = tweets_per_day();
 $chart2_data = tweets_today();
 
 //
-// Grafiek 3,
-// Tweets per 5 minuten, vandaag
-// vergelijken met gisteren
-$comp_year  = date('Y', time()-86400 * 7);
-$comp_month = date('m', time()-86400 * 7);
-$comp_day   = date('d', time()-86400 * 7);
-$minute_res = mysql_query("select count(*) as per_minute,
- minute(tweets.created_at) as the_minute,
- hour(tweets.created_at) as the_hour,
- tweets.created_at
- from tweets
- where year(tweets.created_at) = year(now() )
- and month(tweets.created_at) = month(now())
- and day(tweets.created_at) = day(now() )
- group by the_minute , the_hour
- order by created_at ");
-$comp_minute_res = mysql_query("select count(*) as per_minute,
- minute(tweets.created_at) as the_minute,
- hour(tweets.created_at) as the_hour,
- tweets.created_at
- from tweets
- where year(tweets.created_at) = ".$comp_year."
- and month(tweets.created_at) = ".$comp_month."
- and day(tweets.created_at) = ".$comp_day."
- group by the_minute , the_hour
- order by created_at
-");
-// vierde lijn, het gemiddelde van alle dagen op die minuut ....
-$avg_res = mysql_query('select avg(tweet_count) as per_minute,
- minute(created_at) as the_minute,
- hour(created_at) as the_hour,
- created_at
-from  (select count(*) as tweet_count, created_at
-       from tweets
-       group by year(created_at), month(created_at), day(created_at), hour(created_at), minute(created_at)
-) temp_table
-group by hour(created_at), minute(created_at)
-order by hour(created_at), minute(created_at)');
-
-// labels klaarzetten
-$labels = array();
-$values = array();
-$comp_values = array();
-$avg_values = array();
-// draaien om 24 uur vol te krijgen
-$hour = 0;
-while($hour < 24)
-{
-	$str_hour = str_pad($hour, 2, '0', STR_PAD_LEFT);
-	$minute = 0;
-	while($minute < 60)
-	{
-		$str_minute = str_pad($minute,2, '0', STR_PAD_LEFT);
-
-		$label = $str_hour.'.'.$str_minute;
-		$labels[$str_hour.':'.$str_minute] = $label;
-		$values[$str_hour.':'.$str_minute] = 0;
-		$comp_values[$str_hour.':'.$str_minute] = 0;
-		$avg_values[$str_hour.':'.$str_minute] = 0;
-		$minute = $minute + 5;
-	}
-	$hour++;
-}
-$tweets_pm_high = 0;
-while($row = mysql_fetch_array($minute_res))
-{
-	$str_hour   = str_pad($row['the_hour'], 2, '0', STR_PAD_LEFT);
-	$str_minute = str_pad($row['the_minute'], 2, '0', STR_PAD_LEFT);
-	$values[$str_hour.':'.$str_minute] = $row['per_minute'];
-	$tweets_pm_high = max($tweets_pm_high, $row['per_minute'] + 5);
-}
-while($comp_row = mysql_fetch_array($comp_minute_res))
-{
-	$str_hour   = str_pad($comp_row['the_hour'], 2, '0', STR_PAD_LEFT);
-	$str_minute = str_pad($comp_row['the_minute'], 2, '0', STR_PAD_LEFT);
-	$comp_values[$str_hour.':'.$str_minute] = $comp_row['per_minute'];
-	$tweets_pm_high = max($tweets_pm_high, $comp_row['per_minute'] + 5);
-}
-while($avg_row = mysql_fetch_array($avg_res))
-{
-	$str_hour   = str_pad($avg_row['the_hour'], 2, '0', STR_PAD_LEFT);
-	$str_minute = str_pad($avg_row['the_minute'], 2, '0', STR_PAD_LEFT);
-	$avg_values[$str_hour.':'.$str_minute] = $avg_row['per_minute'];
-}
-// transform this to javascrript
-$i = 0;
-foreach($labels as $time => $label)
-{
-	$tweets_per_minute_label .= '"'.htmlspecialchars($label).'",';
-	$tweets_per_minute_value .= $values[$time].',';
-	$comp_tweets_per_minute_value .= $comp_values[$time].',';
-	$avg_tweets_per_minute_value .= $avg_values[$time].',';
-	$i++;
-}
-$tweets_per_minute_value = substr($tweets_per_minute_value, 0, strlen($tweets_per_minute_value) - 1);
-$tweets_per_minute_label = substr($tweets_per_minute_label, 0, strlen($tweets_per_minute_label) - 1);
-$comp_tweets_per_minute_value = substr($comp_tweets_per_minute_value, 0, strlen($comp_tweets_per_minute_value) - 1);
-$avg_tweets_per_minute_value = substr($avg_tweets_per_minute_value, 0, strlen($avg_tweets_per_minute_value) - 1);
-$scalewidth3 = ceil($tweets_pm_high / 10);
-
+// Grafiek 3;
+$chart3_data = tweets_per_minute();
 
 //
 // Grafiek; de artikelen van vandaag, totaal tweets en een 'benchmark'
@@ -190,7 +92,7 @@ while ($row = mysql_fetch_array($art_res))
 	$max_art_today = max($max_art_today, $row['tweets_today'] + 5);
 	$art_today_fenton .= floor(get_tweet_benchmark()).',';
 }
-$today_table_row[] = '<tr><td>*</td><td>Gemiddeld aantal tweets per artikel (alle artikelen): <strong>'.get_tweet_benchmark().'</strong></td></tr>';
+
 $art_today_label  = substr($art_today_label,  0, strlen($art_today_label)  - 1);
 $art_today_count  = substr($art_today_count,  0, strlen($art_today_count)  - 1);
 $art_today_fenton = substr($art_today_fenton, 0, strlen($art_today_fenton) - 1);
@@ -313,7 +215,7 @@ $scalewidth4 = ceil($max_art_today / 10);
 
 						//chart: {zoomType: 'xy'},
             title: { text: 'Tweets per 5 minuten' },
-            xAxis: { categories: [<?php echo $tweets_per_minute_label;  ?>],
+            xAxis: { categories: [<?php echo $chart3_data['label'];  ?>],
             				 labels: {
             				 		rotation: -90,
             				 		style: {fontSize: 11},
@@ -360,7 +262,7 @@ $scalewidth4 = ceil($max_art_today / 10);
             series: [{
             		type: 'area',
             		name: 'Vorige week',
-            		data: [<?php echo $comp_tweets_per_minute_value;?>],
+            		data: [<?php echo $chart3_data['last_week_value'];?>],
             		fillOpacity: 0.2,
                 marker: {
                 	radius: 2
@@ -369,7 +271,7 @@ $scalewidth4 = ceil($max_art_today / 10);
             }, {
             		type: 'area',
                 name: 'Gemiddeld',
-                data: [<?php echo $avg_tweets_per_minute_value;?>],
+                data: [<?php echo $chart3_data['average_value'];?>],
                 fillOpacity: 0.2,
                 marker: {
                 	radius: 2
@@ -378,7 +280,7 @@ $scalewidth4 = ceil($max_art_today / 10);
             }, {
             		type: 'column',
                 name: 'Vandaag',
-                data: [<?php echo $tweets_per_minute_value;?>]
+                data: [<?php echo $chart3_data['today_value'];?>]
             } ]
         	});
         });

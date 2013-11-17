@@ -80,10 +80,15 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 							$share = $arr[1];
 							$parsed = parse_url($share);
 							if (empty($parsed['host']))
-								$parsed = parse_url(urldecode($share));
-
+							{
+								$share = urldecode($share);
+								$parsed = parse_url($share);
+							}
 							$continue = 1;
-							echo 'using: '.substr($share,0,60)."\n";
+							if (!empty($parsed['host']))
+								echo 'using: '.substr($parsed['host'].$parsed['path'],0,60)."\n";
+							else
+								$continue = 0;
 						}
 					}
 					if (! $continue )

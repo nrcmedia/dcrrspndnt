@@ -62,7 +62,8 @@ $chart4_data = tweets_per_article();
             plotOptions: {
             	column: {
             		pointPadding: 0,
-            		borderWidth: 0
+            		borderWidth: 0,
+            		groupPadding: 0.04
             	}
             },
             tooltip: {

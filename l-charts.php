@@ -314,7 +314,8 @@ $chart4_data = tweets_per_article();
             },
 
             tooltip: {
-                valueSuffix: ' tweets '
+                valueSuffix: ' tweets ',
+                shared: true
             },
             legend: {
                 layout: 'vertical',

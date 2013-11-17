@@ -79,6 +79,9 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 						{
 							$share = $arr[1];
 							$parsed = parse_url($share);
+							if (empty($parsed['host']))
+								$parsed = parse_url(urldecode($share));
+
 							$continue = 1;
 							echo 'using: '.substr($share,0,60)."\n";
 						}
@@ -119,7 +122,9 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 					if($parsed['host'] == 'nrc.nl')
 						$parsed['host'] = 'www.nrc.nl';
 
-					$pubdate = $path_p[2].'-'.$path_p[3].'-'.$path_p[4];
+					if(! empty($path_p[2]) &&
+					   ! empty($path_p[3]) &&
+					   ! empty($path_p[4])) $pubdate = $path_p[2].'-'.$path_p[3].'-'.$path_p[4];
 
 					$clean = $parsed['scheme'].'://'.$parsed['host'].$path;
 					// en als 't laatste teken nou eens geen '/' is? anders krijgen we
@@ -350,6 +355,25 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 								}
 								$og['article:section'] = 'Retro';
 								$og['article:author'] = 'Een onzer redacteuren';
+							}
+							elseif($parsed['host'] == 'apps.nrc.nl')
+							{
+								echo 'Stijlboek?'."\n";
+								$html_str = file_get_contents($share);
+								if(empty($og['title']))
+								{
+									$title=explode('<title>',$html_str);
+									$title=$title[1];
+									$title=explode('</title>',$title);
+									$og['title'] = $title[0];
+									echo $og['title']."\n";
+								}
+								if (stristr($parsed['path'], 'stijlboek'))
+								{
+									$og['article:section'] = 'Stijlgids';
+									$og['article:author']  = 'Redactie';
+									$pubdate = date('Y-m-d');
+								}
 							}
 							else // gewoon op nrc.nl
 							{

@@ -34,51 +34,12 @@ $chart3_data = tweets_per_minute();
 // beperk tot de 30 beste artikelen van de dag
 $chart4_data = tweets_per_article();
 
-//
-// Grafiek 5 (bovenaan, prestaties van vandaag
-$chart5_data = tweets_per_day_stacked();
 ?>
 
 		<h1>nrc.nl tweets in grafieken </h1>
 <?php include ('menu.php'); ?>
 		<div class="center full">
 
-			<h2>prestaties vandaag / deze week</h2>
-			<div id="dag_progressie"></div>
-			<script>
-				$(function () {
-        	$('#dag_progressie').highcharts({
-            chart: { type: 'column' },
-            title: { text: 'Voortgang van vandaag:' },
-            xAxis: { categories: [<?php echo $chart5_data['label'];  ?>] },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: 'Tweets'
-                }
-            },
-            plotOptions: {
-            	column: {
-            		stacking: 'normal',
-            		pointPadding: 0,
-            		borderWidth: 0
-            	}
-            },
-            tooltip: {
-                shared: true
-            },
-            series: [{
-            		name: 'Rest van de dag',
-            		data: [<?php echo $chart5_data['stack'];?>]
-            }, {
-            		name: 'Tweets tot nu',
-                data: [<?php echo $chart5_data['till_now'];?>]
-
-            }
-            ]
-        	});
-	      });
-			</script>
 
 			<h2>Tweets per dag</h2>
 

@@ -118,6 +118,43 @@ $chart4_data = tweets_per_article();
         }
       });
 			</script>
+			<p>
+				<table>
+						<?php
+						$i = 0;
+						$td_stack = explode(',', $chart1_data['stack']);
+						$td_till_now = explode(',', $chart1_data['data']);
+						$td_labels = explode(',', $chart1_data['label']);
+						$tr = array();
+						foreach($td_stack as $stack)
+						{
+							$index = $i;
+							$i++;
+							if($stack == 'null')
+								continue;
+							$tr[0][] = str_replace('"', '', $td_labels[$index]);
+							$tr[1][] = $td_till_now[$index] .' ('. $stack .')';
+
+						}
+						// vandaag nog ff toevoegen
+						$tr[0][] = 'vandaag';
+						$tr[1][] = $td_till_now[count($td_till_now) - 1];
+						echo '<tr>';
+						foreach($tr[0] as $th)
+						{
+							echo '<th>'. $th .'</th>';
+						}
+						echo '</tr>';
+						echo '<tr>';
+						foreach($tr[1] as $td)
+						{
+							echo '<td align="right">'. $td .'</td>';
+						}
+						echo '</tr>';
+
+						?>
+				</table>
+			</p>
 			<p>De laatste 30 dagen</p>
 
 			<h2>Tweets per uur</h2>

@@ -246,9 +246,15 @@ function tweets_per_day($mode = '')
 	{
 		$bar_tweet_data .= $tweet_data.',';
 	}
+	$bar_stack_data = '';
+	foreach($stack as $stack_data)
+	{
+		$bar_stack_data .= $stack_data.',';
+	}
 	$bar_tweet_data = substr($bar_tweet_data, 0, strlen($bar_tweet_data) - 1);
+	$bar_stack_data = substr($bar_stack_data, 0, strlen($bar_stack_data) - 1);
 
-	$chart_data = array('data' => $bar_tweet_data, 'label' => $bar_label);
+	$chart_data = array('data' => $bar_tweet_data, 'label' => $bar_label, 'stack' => $bar_stack_data);
 	if (!$mode == 'JSON')
 		return $chart_data;
 	else

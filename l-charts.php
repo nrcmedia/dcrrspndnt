@@ -47,6 +47,11 @@ $chart4_data = tweets_per_article();
 
 			<script>
 				$(function () {
+					Highcharts.setOptions({
+						// default: colors: ['#058DC7', '#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4'],
+						colors: ['#ED561B', '#058DC7', '#50B432', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4']
+					});
+
         	day_chart = new Highcharts.Chart({
             chart: { type: 'column',
             	       renderTo: 'tot_tweets',
@@ -116,6 +121,10 @@ $chart4_data = tweets_per_article();
 			<div id="hour_tweets"></div>
 			<script>
 				$(function () {
+					Highcharts.setOptions({
+						colors: ['#058DC7', '#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4']
+					});
+
 					hour_chart = new Highcharts.Chart({
 						chart: {
 							renderTo: 'hour_tweets',

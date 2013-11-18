@@ -48,7 +48,6 @@ $chart4_data = tweets_per_article();
 			<script>
 				$(function () {
 					Highcharts.setOptions({
-						// default: colors: ['#058DC7', '#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4'],
 						colors: ['#ED561B', '#058DC7', '#50B432', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4']
 					});
 
@@ -70,7 +69,11 @@ $chart4_data = tweets_per_article();
             		stacking: 'normal',
             		pointPadding: 0,
             		borderWidth: 0,
-            		groupPadding: 0.04
+            		groupPadding: 0.04,
+            		dataLabels: {
+            			enabled: true,
+            			color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+            			}
             	}
             },
             tooltip: {
@@ -121,6 +124,7 @@ $chart4_data = tweets_per_article();
 			<div id="hour_tweets"></div>
 			<script>
 				$(function () {
+					// terugzetten op 'defaults';
 					Highcharts.setOptions({
 						colors: ['#058DC7', '#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4']
 					});

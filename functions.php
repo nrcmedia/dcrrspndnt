@@ -231,7 +231,7 @@ function tweets_per_day($mode = '')
 		}
 		$label[] = $lab;
 		$tweets[] = (int)$row['tweet_count'];
-		$stack[] = (int)$row['stack'];
+		$stack[] = (int)$row['stack'] > 0 ? (int)$row['stack'] : 'null';
 	}
 
 	$bar_label = '';
@@ -247,9 +247,11 @@ function tweets_per_day($mode = '')
 		$bar_tweet_data .= $tweet_data.',';
 	}
 	$bar_stack_data = '';
+	$stack_json = array();
 	foreach($stack as $stack_data)
 	{
 		$bar_stack_data .= $stack_data.',';
+		$stack_json[] = $stack_data == 'null' ? NULL : $stack_data;
 	}
 	$bar_tweet_data = substr($bar_tweet_data, 0, strlen($bar_tweet_data) - 1);
 	$bar_stack_data = substr($bar_stack_data, 0, strlen($bar_stack_data) - 1);
@@ -258,7 +260,7 @@ function tweets_per_day($mode = '')
 	if (!$mode == 'JSON')
 		return $chart_data;
 	else
-		return array($label, $tweets, $stack);
+		return array($label, $tweets, $stack_json);
 }
 
 /** tweets_today

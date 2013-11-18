@@ -191,15 +191,31 @@ if (! function_exists('gzdecode'))
  */
 function tweets_per_day($mode = '')
 {
-	$tot_tweets_res = mysql_query('select count(tweets.id) as tweet_count, day(tweets.created_at) as dag, month(tweets.created_at) as maand from tweets where created_at > "2013-10-13 21:00"  group by maand, dag order by year(tweets.created_at) desc, month(tweets.created_at) desc, day(tweets.created_at) desc limit 0,30');
+	$tot_tweets_res = mysql_query('select count(tweets.id) as tweet_count, day(tweets.created_at) as dag, month(tweets.created_at) as maand, 0 as stack from tweets where created_at > "2013-10-13 21:00"  group by maand, dag order by year(tweets.created_at) desc, month(tweets.created_at) desc, day(tweets.created_at) desc limit 0,30');
 
-	$label = array();
+	$label  = array();
+	$stack  = array();
 	$tweets = array();
-	$rows = array();
+	$rows   = array();
 
+	$i = 0;
 	while ($row = mysql_fetch_array($tot_tweets_res))
 	{
+		if($i % 7 == 0)
+		{
+			$week = $i / 7;
+			$till_now = mysql_fetch_array(mysql_query('select count(*) as tweets_then from tweets where date(created_at) = date_sub(curdate(), interval '.$week. ' week) and time(created_at) <= curtime() '
+			                                         )
+			                             );
+			$stack_then = mysql_fetch_array(mysql_query('select count(*) as tweets_then from tweets where date(created_at) = date_sub(curdate(), interval '.$week. ' week) and time(created_at) > curtime() '
+			                                       )
+			                             );
+			$row['tweet_count'] = $till_now['tweets_then'];
+			$row['stack'] = $stack_then['tweets_then'];
+		}
+
 		$rows[] = $row;
+		$i++;
 	}
 	$rows = array_reverse($rows);
 
@@ -215,6 +231,7 @@ function tweets_per_day($mode = '')
 		}
 		$label[] = $lab;
 		$tweets[] = (int)$row['tweet_count'];
+		$stack[] = (int)$row['stack'];
 	}
 
 	$bar_label = '';
@@ -235,7 +252,7 @@ function tweets_per_day($mode = '')
 	if (!$mode == 'JSON')
 		return $chart_data;
 	else
-		return array($label, $tweets);
+		return array($label, $tweets, $stack);
 }
 
 /** tweets_today
@@ -521,4 +538,56 @@ function tweets_per_article($mode = '')
 		return $chart_data;
 	else
 		return array($art_today_label_json, $art_today_count_json, $art_today_fenton_json);
+}
+
+function tweets_per_day_stacked($mode = '')
+{
+	$today_tweets = mysql_fetch_array(mysql_query('select count(*) as tweets_today from tweets where date(created_at) = curdate() '));
+	// vergelijk met de vorige 4 weken ...
+	$i = 4;
+	$x_week_ago = array();
+	$x_week_ago_later = array();
+	$labels = '';
+	$label_json = array();
+	while ($i > 0)
+	{
+		$x_week_ago[] = mysql_fetch_array(mysql_query(
+			'select count(*) as tweets_then
+			   from tweets
+			  where date(created_at) = date_sub(curdate(), interval '.$i. ' week) and time(created_at) <= curtime() '));
+		$x_week_ago_later[] = mysql_fetch_array(mysql_query(
+			'select count(*) as tweets_then
+			   from tweets
+			  where date(created_at) = date_sub(curdate(), interval '.$i. ' week) and time(created_at) > curtime() '));
+		$labels .= '"'.date('Y-m-d', time() - 7 * $i * 24 * 60 * 60) .'",';
+		$label_json[] = date('Y-m-d', time() - 7 * $i * 24 * 60 * 60);
+		$i--;
+	}
+	$labels .= '"'.date('Y-m-d').'"';
+	$label_json[] = date('Y-m-d');
+
+	// voor highcharts een stacked column, 5 columns
+	$i = 0;
+	$tot_till_now = '';
+	$tot_stack    = '';
+	foreach($x_week_ago as $x)
+	{
+		$tot_till_now .= $x['tweets_then'].',';
+		$till_now_json[] = $x['tweets_then'];
+		$tot_stack    .= $x_week_ago_later[$i]['tweets_then'].',';
+		$stack_json[] = $x_week_ago_later[$i]['tweets_then'];
+		$i++;
+	}
+	$tot_till_now .= $today_tweets['tweets_today'];
+	$till_now_json[] = $today_tweets['tweets_today'];
+
+	$tot_stack = substr($tot_stack, 0, strlen($tot_stack) - 1);
+
+	$chart_data = array('label'    => $labels,
+											'till_now' => $tot_till_now,
+											'stack'    => $tot_stack);
+	if (!$mode == 'JSON')
+		return $chart_data;
+	else
+		return array($label_json, $till_now_json, $stack_json);
 }

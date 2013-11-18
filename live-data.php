@@ -25,7 +25,9 @@ if(isset($_REQUEST['type']))
 		case 'per_article':
 			$data = tweets_per_article('JSON');
 			break;
-
+		case 'day_stacked':
+			$data = tweets_per_day_stacked('JSON');
+			break;
 		deafult:
 			$data = array();
 	}

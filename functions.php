@@ -348,7 +348,7 @@ function tweets_today($mode = '')
 function tweets_per_minute($mode = '')
 {
 	// Tweets per 5 minuten, vandaag
-	// vergelijken met gisteren
+	// vergelijken met vorige week
 	$comp_year  = date('Y', time()-86400 * 7);
 	$comp_month = date('m', time()-86400 * 7);
 	$comp_day   = date('d', time()-86400 * 7);
@@ -476,9 +476,7 @@ function tweets_per_article($mode = '')
 	                               select artikelen.id
 	                               from artikelen
 	                               left join tweets on tweets.art_id = artikelen.id
-	                               where year(artikelen.created_at) = year(now() )
-	                                 and month(artikelen.created_at) = month(now())
-	                                 and day(artikelen.created_at) = day(now() )
+	                               where date(artikelen.created_at) = curdate()
 	                               group by artikelen.id
 	                               order by count(tweets.id) desc
 	                               limit 0,25
@@ -500,9 +498,7 @@ function tweets_per_article($mode = '')
 		                               select artikelen.id
 		                               from artikelen
 		                               left join tweets on tweets.art_id = artikelen.id
-		                               where year(artikelen.created_at) = year(now() )
-		                                 and month(artikelen.created_at) = month(now())
-		                                 and day(artikelen.created_at) = day(now() ) - 1
+		                               where date(artikelen.created_at) = date_sub(curdate(), interval 1 day )
 		                               group by artikelen.id
 		                               order by count(tweets.id) desc
 		                               limit 0,25
@@ -548,6 +544,7 @@ function tweets_per_article($mode = '')
 		return array($art_today_label_json, $art_today_count_json, $art_today_fenton_json);
 }
 
+// not used ATM
 function tweets_per_day_stacked($mode = '')
 {
 	$today_tweets = mysql_fetch_array(mysql_query('select count(*) as tweets_today from tweets where date(created_at) = curdate() '));

@@ -144,12 +144,13 @@ $chart4_data = tweets_per_article();
 							if($stack == 'null')
 								continue;
 							$tr[0][] = str_replace('"', '', $td_labels[$index]);
-							$tr[1][] = '<strong>'. $td_till_now[$index] .'</strong> ['. $stack .']';
+							$total = $stack + $td_till_now[$index];
+							$tr[1][] = '<strong>'. $td_till_now[$index] .'</strong><br/> [tot: '. $total .']';
 
 						}
 						// vandaag nog ff toevoegen
 						$tr[0][] = 'vandaag';
-						$tr[1][] = '<strong>'. $td_till_now[count($td_till_now) - 1] .'</strong>';
+						$tr[1][] = '<strong>'. $td_till_now[count($td_till_now) - 1] .'</strong><br/>&nbsp;';
 						echo '<tr>';
 						foreach($tr[0] as $th)
 						{

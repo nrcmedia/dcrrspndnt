@@ -73,13 +73,12 @@ $chart4_data = tweets_per_article();
             		dataLabels: {
             			enabled: true,
             			color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
-            			}
+            		}
             	}
             },
             tooltip: {
 								valueSuffix: ' tweets',
-                shared: true,
-                useHTML: true
+                shared: true
             },
             legend: {
                 layout: 'vertical',
@@ -117,10 +116,11 @@ $chart4_data = tweets_per_article();
 									{
 										stack = data[2][i];
 										done = data[1][i];
-										$('.prestatie'+j).html( '<strong>'+done+'</strong> ['+stack+']' );
+										total = parseInt(stack) + parseInt(done);
+										$('.prestatie'+j).html( '<strong>'+done+'</strong><br/>[tot: '+total+']' );
 										j++;
 									}
-									$('.prestatie'+j).html('<strong>'+data[1][ data[1].length - 1] +'</strong>');
+									$('.prestatie'+j).html('<strong>'+data[1][ data[1].length - 1] +'</strong><br/>&nbsp;');
 								}
 								setTimeout(tweets_per_dayRequestData, 60000); // eens per minuut
   	      		}

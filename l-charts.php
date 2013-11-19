@@ -110,8 +110,19 @@ $chart4_data = tweets_per_article();
   	      		{
   	      			day_chart.series[1].setData(data[1]);
   	      			day_chart.series[0].setData(data[2]);
+								var j = 0;
 
-  	      			setTimeout(tweets_per_dayRequestData, 60000); // eens per minuut
+								for(var i=0, l=data[2].length; i < l; i++){
+									if ( data[2][i] != null)
+									{
+										stack = data[2][i];
+										done = data[1][i];
+										$('.prestatie'+j).html( '<strong>'+done+'</strong> ['+stack+']' );
+										j++;
+									}
+									$('.prestatie'+j).html('<strong>'+data[1][ data[1].length - 1] +'</strong>');
+								}
+								setTimeout(tweets_per_dayRequestData, 60000); // eens per minuut
   	      		}
 						});
 
@@ -133,7 +144,7 @@ $chart4_data = tweets_per_article();
 							if($stack == 'null')
 								continue;
 							$tr[0][] = str_replace('"', '', $td_labels[$index]);
-							$tr[1][] = '<strong>'. $td_till_now[$index] .'</strong> ('. $stack .')';
+							$tr[1][] = '<strong>'. $td_till_now[$index] .'</strong> ['. $stack .']';
 
 						}
 						// vandaag nog ff toevoegen
@@ -142,16 +153,17 @@ $chart4_data = tweets_per_article();
 						echo '<tr>';
 						foreach($tr[0] as $th)
 						{
-							echo '<th>'. $th .'</th>';
+							echo '<th>'. $th .'</th>'."\n";
 						}
 						echo '</tr>';
 						echo '<tr>';
+						$i = 0;
 						foreach($tr[1] as $td)
 						{
-							echo '<td align="right">'. $td .'</td>';
+							echo '<td class="prestatie'.$i.'" align="right">'. $td .'</td>'."\n";
+							$i++;
 						}
 						echo '</tr>';
-
 						?>
 				</table>
 			</p>

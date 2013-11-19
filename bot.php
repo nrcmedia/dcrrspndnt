@@ -275,6 +275,8 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 								$author = $author[0];
 								$author = explode('span>', $author);
 								$author = substr(trim($author[1]), 0, strlen(trim($author[1])) - 2);
+								$author = str_replace('Door onze redacteur', '', $author);
+								$author = str_replace('Door ', '', $author);
 								echo 'Found author: '.$author."\n";
 								if (stristr($og['article:author'], 'Door '))
 								{

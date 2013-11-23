@@ -72,7 +72,10 @@ $chart4_data = tweets_per_article();
             		groupPadding: 0.04,
             		dataLabels: {
             			enabled: true,
-            			color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+            			color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+            			style: {
+            				fontSize: '10px'
+            			}
             		}
             	}
             },

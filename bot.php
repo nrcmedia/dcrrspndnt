@@ -417,19 +417,23 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 						// publicatiedatum en tijd:
 						// <strong><time datetime="2013-10-28">28 oktober 2013</time></strong>, 20:52</a>
 						$doc = $html->innertext;
-						// nieuwsartikelen op www.nrc.nl
-						preg_match_all('/<time.datetime="(.*)">.*<\/time><\/strong>..(.*)<\/a>/uU', $doc, $matches);
+
+						// op een weblog zitten we in een multiline datumstempel
+						//<div class="datumstempel" title="27 oktober">
+						//<time pubdate datetime="2013-10-27T01:00:00+02:00" itemprop="datePublished">
+						preg_match_all('/<time.pubdate.datetime="(.*)T(..:..).*".itemprop.*<\/time>/uU', $doc, $matches);
 						if (! empty($matches[1][0]) && ! empty ($matches[2][0]))
 						{
+							echo 'zo dan?'.$matches[1][0].' '.$matches[2][0]."\n";
 							$pubdate = $matches[1][0].' '.$matches[2][0];
 						}
 						else
-						{ // op een weblog zitten we in een multiline datumstempel
-							//<div class="datumstempel" title="27 oktober">
-							//<time pubdate datetime="2013-10-27T01:00:00+02:00" itemprop="datePublished">
-							preg_match_all('/<time.pubdate.datetime="(.*)T(..:..).*".itemprop/uU', $doc, $matches);
+						{
+							// nieuwsartikelen op www.nrc.nl
+							preg_match_all('/<time.datetime="(.*)">.*<\/time><\/strong>..(.*)<\/a>/uU', $doc, $matches);
 							if (! empty($matches[1][0]) && ! empty ($matches[2][0]))
 							{
+								echo 'Toch hierlangs!'."\n";
 								$pubdate = $matches[1][0].' '.$matches[2][0];
 							}
 						}

@@ -33,10 +33,10 @@ function crawl($artikelen_res)
 		$i++;
 
 		echo str_pad($i, 3, ' ', STR_PAD_LEFT).' Querying facebook for: '.$artikel['clean_url']."\n";
-		$apicall = "https://api.facebook.com/method/links.getStats?urls=".$artikel['clean_url']."&format=json";
+		$apicall = "https://api.facebook.com/method/links.getStats?urls=".addslashes($artikel['clean_url'])."&format=json";
 		$json=file_get_contents($apicall);
 		$response = json_decode($json);
-
+		
 		// now find the record for this article
 		$fb_res = mysql_query('select ID from facebook where art_id = '.$artikel['artikelid']);
 		if(mysql_num_rows($fb_res) > 0)

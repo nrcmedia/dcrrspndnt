@@ -45,6 +45,7 @@ $tot_tweets = 0;
 $tot_fb = 0;
 while($row = mysql_fetch_array($res) )
 {
+	echo 'rw!';
 	$og = unserialize(stripslashes($row['og']));
 	$titel = empty($og['title']) ? substr($row['clean_url'],18,50) : $og['title'];
 	$description = isset($og['description']) ? $og['description'] : 'Een mysterieus artikel';

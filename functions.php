@@ -483,7 +483,7 @@ function tweets_per_article($mode = '')
 	                             ) top_arts
 	                        where artikelen.ID = top_arts.ID
 	                        group by artikelen.ID
-	                        order by artikelen.created_at	' );
+	                        order by count(tweets.id)	' );
 	$today_tweets_title = 'Artikelen van vandaag';
 	// hiermee zetten we de labels en de x-as waardes
 	$num_arts = mysql_num_rows($art_res);
@@ -505,7 +505,7 @@ function tweets_per_article($mode = '')
 		                             ) top_arts
 		                        where artikelen.ID = top_arts.ID
 		                        group by artikelen.ID
-		                        order by artikelen.created_at	' );
+		                        order by count(tweets.id)	' );
 		$today_tweets_title = 'Artikelen van gisteren';
 	}
 

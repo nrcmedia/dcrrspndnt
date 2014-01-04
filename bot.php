@@ -131,6 +131,13 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 					   ! empty($path_p[3]) &&
 					   ! empty($path_p[4])) $pubdate = $path_p[2].'-'.$path_p[3].'-'.$path_p[4];
 
+					if( !empty($path_p[2]) && $path_p[2] == 'van')
+					{
+						echo 'Krantenbak, vind pubdate'."\n";
+						$month_num = array('januari' => 1, 'februari' => 2, 'maart' => 3, 'april' => 4, 'mei' => 5, 'juni' => 6, 'juli' => 7, 'augustus' => 8, 'september' => 9, 'oktober' => 10, 'november' => 11, 'december' => 12);
+						$pubdate = $path_p[3].'-'.$month_num[$path_p[4]].'-'.$path_p[5];
+					}
+
 					$clean = $parsed['scheme'].'://'.$parsed['host'].$path;
 					// en als 't laatste teken nou eens geen '/' is? anders krijgen we
 					// http://www.nrc.nl/boeken/2013/10/27/eerste-jan-wolkers-prijs-naar-simon-van-der-geest/ en
@@ -189,6 +196,12 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 							// <span>door<a href="">auterusnaam</a></span>
 							$og['article:author'] = $author->first_child()->first_child()->innertext;
 							echo 'Found author: '.$og['article:author']."\n";
+							$author_found = 1;
+						}
+						if($author_found == 0) foreach ($html->find('a[class=auteur]') as $author)
+						{
+							$og['article:author'] = $author->innertext;
+							echo 'Found author (van): '.$og['article:author']."\n";
 							$author_found = 1;
 						}
 						if($author_found == 0)
@@ -407,7 +420,13 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 									$og['article:section'] = 'Berry';
 									$og['article:author'] = 'Peter Zantingh';
 								}
-
+								if (empty($og['article:section']) && $path_p[2] == 'van')
+								{
+									foreach($html->find('a[class=tag]') as $section)
+									{
+										$og['article:section'] = $path_p[1].':'.$section->innertext;
+									}
+								}
 								if (empty($og['article:section'])) // last resort
 									$og['article:section'] = $og['article:author'];
 							}

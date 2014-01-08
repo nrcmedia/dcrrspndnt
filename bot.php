@@ -198,7 +198,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 							echo 'Found author: '.$og['article:author']."\n";
 							$author_found = 1;
 						}
-						if($author_found == 0) foreach ($html->find('a[class=auteur]') as $author)
+						if($author_found == 0) foreach ($html->find('span[class=naam]') as $author)
 						{
 							$og['article:author'] = $author->innertext;
 							echo 'Found author (van): '.$og['article:author']."\n";
@@ -420,9 +420,10 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 									$og['article:section'] = 'Berry';
 									$og['article:author'] = 'Peter Zantingh';
 								}
+
 								if (empty($og['article:section']) && $path_p[2] == 'van')
 								{
-									foreach($html->find('a[class=tag]') as $section)
+									foreach($html->find('span[class=sectie]') as $section)
 									{
 										$og['article:section'] = $path_p[1].':'.$section->innertext;
 									}

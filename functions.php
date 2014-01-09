@@ -268,7 +268,7 @@ function tweets_per_day($mode = '')
 */
 function tweets_today($mode = '')
 {
-	$dagen_res = mysql_query("select day(tweets.created_at) as dagen from tweets group by dagen");
+	$dagen_res = mysql_query("select date(tweets.created_at) as dagen from tweets group by dagen");
 	$dagen = mysql_num_rows($dagen_res);
 
 	$graph_res = mysql_query("select count(tweets.id) as tweet_count, hour(tweets.created_at) as the_uur from tweets  group by the_uur ");

@@ -7,13 +7,15 @@ function pager($tot_row, $qsa)
 
 	// how many pages?
 	$pages = ceil($tot_row / ITEMS_PER_PAGE);
+	if($pages > 35)
+		$pages = 35;
 
 	$i = 0;
 	if ($pages > 1)
 	{
 ?>
 		<ul id="pager">
-			<li class="text">pagina:</li>
+			<li class="text">pagina: </li>
 <?php
 		while ($i < $pages)
 		{
@@ -595,4 +597,127 @@ function tweets_per_day_stacked($mode = '')
 		return $chart_data;
 	else
 		return array($label_json, $till_now_json, $stack_json);
+}
+
+function us_them_per_day($mode = '')
+{ // like tweets_per_day, but vk versus nrc
+	$tot_tweets_res = mysql_query('select count(tweets.id) as tweet_count, day(tweets.created_at) as dag, month(tweets.created_at) as maand from tweets where created_at > "2013-10-13 21:00"  group by maand, dag order by year(tweets.created_at) desc, month(tweets.created_at) desc, day(tweets.created_at) desc limit 0,30', $GLOBALS['db']);
+
+	$label    = array();
+	$tweets   = array();
+	$vktweets = array();
+	$rows     = array();
+	$vkrows   = array();
+
+	$i = 0;
+	while ($row = mysql_fetch_array($tot_tweets_res))
+	{
+		$rows[] = $row;
+		$i++;
+	}
+	$rows = array_reverse($rows);
+
+	$vk_tot_tweets_res = mysql_query('select count(tweets.id) as tweet_count, day(tweets.created_at) as dag, month(tweets.created_at) as maand from tweets where created_at > "2013-10-13 21:00"  group by maand, dag order by year(tweets.created_at) desc, month(tweets.created_at) desc, day(tweets.created_at) desc limit 0,30', $GLOBALS['vkdb']);
+
+	while ($row = mysql_fetch_array($vk_tot_tweets_res))
+	{
+		$vkrows[] = $row;
+	}
+	$vkrows = array_reverse($vkrows);
+
+	$cur_month = '';
+	$i = 0;
+	foreach($rows as $row)
+	{
+		$lab = $row['dag'];
+
+		if ( (int)$row['maand'] != (int)$cur_month)
+		{
+			$lab .= '-'.$row['maand'];
+			$cur_month = $row['maand'];
+		}
+		$label[] = $lab;
+		$tweets[] = (int)$row['tweet_count'];
+		$vktweets[] = (int)$vkrows[$i]['tweet_count'];
+		$i++;
+	}
+
+	$bar_label = '';
+	foreach($label as $lab)
+	{
+		$bar_label .= '"'.$lab.'",';
+	}
+	$bar_label = substr($bar_label, 0, strlen($bar_label) - 1);
+
+	$bar_tweet_data = '';
+	foreach($tweets as $tweet_data)
+	{
+		$bar_tweet_data .= $tweet_data.',';
+	}
+	$bar_tweet_data = substr($bar_tweet_data, 0, strlen($bar_tweet_data) - 1);
+	$bar_vktweet_data = '';
+	foreach($vktweets as $tweet_data)
+	{
+		$bar_vktweet_data .= $tweet_data.',';
+	}
+	$bar_vktweet_data = substr($bar_vktweet_data, 0, strlen($bar_vktweet_data) - 1);
+
+
+	$chart_data = array('data' => $bar_tweet_data, 'label' => $bar_label, 'vkdata' => $bar_vktweet_data);
+	if (!$mode == 'JSON')
+		return $chart_data;
+	else
+		return array($label, $tweets, $vktweets);
+
+}
+
+function us_them_today($mode = '')
+{ // like tweets today, but vk versus nrc last 24 hours
+
+	$graph_res = mysql_query("select count(tweets.id) as tweet_count, hour(tweets.created_at) as the_uur, created_at from tweets where tweets.created_at >= date_sub(now(), interval 1 day ) group by the_uur order by created_at");
+
+	$hour_label = '';
+	$hour_label_array = array();
+	$hour_tweet_data = '';
+	$hour_tweet_data_array = array();
+	$them_hour_tweet_data = '';
+	$them_hour_tweet_data_array = array();
+
+	while ($row = mysql_fetch_array($graph_res))
+	{
+		$hour_label .= $row['the_uur'].',';
+		$tot = $row['tweet_count'];
+		$hour_tweet_data .= $tot.',';
+		$hour_tweet_data_array[] = (int)$tot;
+		$hour_label_array[] = $row['the_uur'];
+	}
+
+	$hour_label = substr($hour_label, 0, strlen($hour_label) - 1);
+	$hour_tweet_data = substr($hour_tweet_data, 0, strlen($hour_tweet_data) - 1);
+
+	$them_res = mysql_query("select count(tweets.id) as tweet_count, hour(tweets.created_at) as the_uur, created_at from tweets where tweets.created_at >= date_sub(now(), interval 1 day ) group by the_uur order by created_at", $GLOBALS['vkdb']);
+
+	while ($row = mysql_fetch_array($them_res))
+	{
+		$tot = $row['tweet_count'];
+		$them_hour_tweet_data .= $tot.',';
+		$them_hour_tweet_data_array[] = (int)$tot;
+	}
+	$them_hour_today_data = substr($them_hour_today_data, 0, strlen($them_hour_today_data) - 1);
+
+	$chart_data = array('label'         => $hour_label,
+	                    'us_data'       => $hour_tweet_data,
+	                    'them_data'     => $them_hour_tweet_data);
+	if (!$mode == 'JSON')
+		return $chart_data;
+	else
+	{
+		$cur = array_shift($hour_label_array);
+		$hour_label_array[] = $cur;
+		$cur = array_shift($hour_tweet_data_array);
+		$hour_tweet_data_array[] = $cur;
+		$cur = array_shift($them_hour_tweet_data_array);
+		$them_hour_tweet_data_array[] = $cur;
+		return array($hour_label_array, $hour_tweet_data_array, $them_hour_tweet_data_array);
+	}
 }

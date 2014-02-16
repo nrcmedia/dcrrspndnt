@@ -28,6 +28,12 @@ if(isset($_REQUEST['type']))
 		case 'day_stacked':
 			$data = tweets_per_day_stacked('JSON');
 			break;
+		case 'us_them_per_day':
+			$data = us_them_per_day('JSON');
+			break;
+		case 'us_them_today':
+			$data = us_them_today('JSON');
+			break;
 		deafult:
 			$data = array();
 	}

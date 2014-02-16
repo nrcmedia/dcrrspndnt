@@ -673,8 +673,10 @@ function us_them_per_day($mode = '')
 
 function us_them_today($mode = '')
 { // like tweets today, but vk versus nrc last 24 hours
-
-	$graph_res = mysql_query("select count(tweets.id) as tweet_count, hour(tweets.created_at) as the_uur, created_at from tweets where tweets.created_at >= date_sub(now(), interval 1 day ) group by the_uur order by created_at");
+	$minutes = 23 * 60;
+	$extra = date('i');
+	$minutes = $minutes + $extra;
+	$graph_res = mysql_query("select count(tweets.id) as tweet_count, hour(tweets.created_at) as the_uur, created_at from tweets where tweets.created_at >= date_sub(now(), interval {$minutes} minute ) group by the_uur order by created_at");
 
 	$hour_label = '';
 	$hour_label_array = array();
@@ -695,7 +697,7 @@ function us_them_today($mode = '')
 	$hour_label = substr($hour_label, 0, strlen($hour_label) - 1);
 	$hour_tweet_data = substr($hour_tweet_data, 0, strlen($hour_tweet_data) - 1);
 
-	$them_res = mysql_query("select count(tweets.id) as tweet_count, hour(tweets.created_at) as the_uur, created_at from tweets where tweets.created_at >= date_sub(now(), interval 1 day ) group by the_uur order by created_at", $GLOBALS['vkdb']);
+	$them_res = mysql_query("select count(tweets.id) as tweet_count, hour(tweets.created_at) as the_uur, created_at from tweets where tweets.created_at >= date_sub(now(), interval {$minutes} minute ) group by the_uur order by created_at", $GLOBALS['vkdb']);
 
 	while ($row = mysql_fetch_array($them_res))
 	{
@@ -712,12 +714,12 @@ function us_them_today($mode = '')
 		return $chart_data;
 	else
 	{
-		$cur = array_shift($hour_label_array);
-		$hour_label_array[] = $cur;
-		$cur = array_shift($hour_tweet_data_array);
-		$hour_tweet_data_array[] = $cur;
-		$cur = array_shift($them_hour_tweet_data_array);
-		$them_hour_tweet_data_array[] = $cur;
+		//$cur = array_shift($hour_label_array);
+		//$hour_label_array[] = $cur;
+		//$cur = array_shift($hour_tweet_data_array);
+		//$hour_tweet_data_array[] = $cur;
+		//$cur = array_shift($them_hour_tweet_data_array);
+		//$them_hour_tweet_data_array[] = $cur;
 		return array($hour_label_array, $hour_tweet_data_array, $them_hour_tweet_data_array);
 	}
 }

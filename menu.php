@@ -7,6 +7,7 @@
 			<li><a href="./top.php?mode=day"><div> Populaire artikelen (vandaag)</div></a></li>
 			<li><a href="./top.php?mode=hour"><div> Populaire artikelen (dit uur)</div></a></li>
 			<li><a href="./l-charts.php"><div> Grafiekjes LIVE!!</div></a></li>
+			<li><a href="./b-charts.php"><div> NRC.nl vs. VK.nl LIVE!!</div></a></li>
 		</ul>
 	</li>
 	<li><strong> Auteurs</strong> &#9660;

@@ -25,6 +25,7 @@ $chart1_data = us_them_per_day();
 // Tweets per uur
 $chart2_data = us_them_today();
 
+$chart3_data = us_them_articles();
 
 ?>
 
@@ -238,19 +239,10 @@ $chart2_data = us_them_today();
                 borderWidth: 1,
                 backgroundColor: '#FCFFC5'
             },
-            series: [{
-								type: 'area',
-                name: 'Gemiddeld',
-                fillOpacity: 0.2,
-                marker: {
-                	radius: 2
-                },
-                lineWidth: 2,
-                data: [<?php echo $chart4_data['average_value'];?>]
-            }, {
+            series: [ {
             		type: 'column',
                 name: 'Vandaag',
-                data: [<?php echo $chart4_data['today_value'];?>]
+                data: [{name : 'artikel uno', color : '#000000', y : 20}, {name: 'moddergooien', color: '#333333', y: 100}]
             } ]
         	});
         	function tweets_per_articlerequestData()
@@ -259,10 +251,9 @@ $chart2_data = us_them_today();
   	      		url: 'live-data.php?type=per_article',
   	      		success: function(data)
   	      		{
-  	      			article_chart.series[0].setData(data[2]);
-  	      			article_chart.series[1].setData(data[1]);
-								article_chart.xAxis[0].setCategories(data[0]);
-  	      			setTimeout(tweets_per_articlerequestData, 60000); // eens per minuut
+  	      			//article_chart.series[0].setData(data[1]);
+								//article_chart.xAxis[0].setCategories(data[0]);
+  	      			//setTimeout(tweets_per_articlerequestData, 60000); // eens per minuut
   	      		}
   	      	});
   	      }

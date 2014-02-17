@@ -676,6 +676,7 @@ function us_them_today($mode = '')
 	$minutes = 23 * 60;
 	$extra = date('i');
 	$minutes = $minutes + $extra;
+	$dit_uur = date('H');
 	$graph_res = mysql_query("select count(tweets.id) as tweet_count, hour(tweets.created_at) as the_uur, created_at from tweets where tweets.created_at >= date_sub(now(), interval {$minutes} minute ) group by the_uur order by created_at");
 
 	$hour_label = '';
@@ -685,8 +686,25 @@ function us_them_today($mode = '')
 	$them_hour_tweet_data = '';
 	$them_hour_tweet_data_array = array();
 
+	$dit_uur = (int) date('H') + 1;
+	if($dit_uur == 24)
+		$dit_uur = 0;
 	while ($row = mysql_fetch_array($graph_res))
 	{
+		while((int) $row['the_uur'] > $dit_uur)
+		{
+			$hour_label .= $dit_uur.',';
+			$tot = 0;
+			$hour_tweet_data .= $tot.',';
+			$hour_tweet_data_array[] = (int)$tot;
+			$hour_label_array[] = $dit_uur;
+			$dit_uur++;
+			if($dit_uur == 24)
+				$dit_uur = 0;
+		}
+		$dit_uur++;
+		if($dit_uur == 24)
+			$dit_uur = 0;
 		$hour_label .= $row['the_uur'].',';
 		$tot = $row['tweet_count'];
 		$hour_tweet_data .= $tot.',';
@@ -705,7 +723,7 @@ function us_them_today($mode = '')
 		$them_hour_tweet_data .= $tot.',';
 		$them_hour_tweet_data_array[] = (int)$tot;
 	}
-	$them_hour_today_data = substr($them_hour_today_data, 0, strlen($them_hour_today_data) - 1);
+	$them_hour_tweet_data = substr($them_hour_tweet_data, 0, strlen($them_hour_tweet_data) - 1);
 
 	$chart_data = array('label'         => $hour_label,
 	                    'us_data'       => $hour_tweet_data,
@@ -713,13 +731,59 @@ function us_them_today($mode = '')
 	if (!$mode == 'JSON')
 		return $chart_data;
 	else
-	{
-		//$cur = array_shift($hour_label_array);
-		//$hour_label_array[] = $cur;
-		//$cur = array_shift($hour_tweet_data_array);
-		//$hour_tweet_data_array[] = $cur;
-		//$cur = array_shift($them_hour_tweet_data_array);
-		//$them_hour_tweet_data_array[] = $cur;
 		return array($hour_label_array, $hour_tweet_data_array, $them_hour_tweet_data_array);
-	}
+}
+
+function us_them_articles()
+{
+	$art_res = mysql_query('select "nrc.nl" as site, count(tweets.id) as tweets_today, "#ED561B" as color, artikelen.*
+                        from artikelen
+                        left join tweets on tweets.art_id = artikelen.id
+                        join (
+                               select artikelen.id
+                               from artikelen
+                               left join tweets on tweets.art_id = artikelen.id
+                               where date(artikelen.created_at) = curdate()
+                               group by artikelen.id
+                               order by count(tweets.id) desc
+                               limit 0,25
+                             ) top_arts
+                        where artikelen.ID = top_arts.ID
+                        group by artikelen.ID
+                        order by count(tweets.id)	', $GLOBALS['db'] );
+  $articles = array();
+  while ($row = mysql_fetch_array($art_res))
+  {
+  	$articles[] = $row;
+  }
+	$them_art_res = mysql_query('select "vk.nl" as site, count(tweets.id) as tweets_today, "#058DC7" as color, artikelen.*
+	                        from artikelen
+	                        left join tweets on tweets.art_id = artikelen.id
+	                        join (
+	                               select artikelen.id
+	                               from artikelen
+	                               left join tweets on tweets.art_id = artikelen.id
+	                               where date(artikelen.created_at) = curdate()
+	                               group by artikelen.id
+	                               order by count(tweets.id) desc
+	                               limit 0,25
+	                             ) top_arts
+	                        where artikelen.ID = top_arts.ID
+	                        group by artikelen.ID
+	                        order by count(tweets.id)	', $GLOBALS['vkdb'] );
+  while ($row = mysql_fetch_array($them_art_res))
+  {
+  	$articles[] = $row;
+  }
+  $sort    = array();
+  $records = array();
+  foreach($articles as $key => $row)
+  {
+  	$sort[$key] = $row['tweets_today'];
+  }
+  array_multisort($sort, SORT_NUMERIC, SORT_DESC, $articles);
+	// $articles now contains the records, sorted large to small
+	$articles = array_slice($articles, 0, 25);
+	$articles = array_reverse($articles);
+	$data = array();
 }

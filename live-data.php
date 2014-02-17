@@ -34,6 +34,9 @@ if(isset($_REQUEST['type']))
 		case 'us_them_today':
 			$data = us_them_today('JSON');
 			break;
+		case 'us_them_articles':
+			$data = us_them_articles('JSON');
+			break;
 		deafult:
 			$data = array();
 	}

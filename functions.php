@@ -786,4 +786,15 @@ function us_them_articles()
 	$articles = array_slice($articles, 0, 25);
 	$articles = array_reverse($articles);
 	$data = array();
+	foreach($articles as $article)
+	{
+		$og = unserialize(stripslashes($article['og']));
+		$row = array('color' => $article['color'],
+								 'y' => (int)$article['tweets_today'],
+								 'name' => trim(preg_replace('/\s\s+/', ' ', $og['title']))
+								);
+		$data[] = $row;
+	}
+	if($mode = 'JSON')
+		return $data;
 }

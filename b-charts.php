@@ -241,19 +241,19 @@ $chart3_data = us_them_articles();
             },
             series: [ {
             		type: 'column',
-                name: 'Vandaag',
-                data: [{name : 'artikel uno', color : '#000000', y : 20}, {name: 'moddergooien', color: '#333333', y: 100}]
+                name: 'Artikelen van vandaag',
+                data: []
             } ]
         	});
         	function tweets_per_articlerequestData()
   	      {
   	      	$.ajax({
-  	      		url: 'live-data.php?type=per_article',
+  	      		url: 'live-data.php?type=us_them_articles',
   	      		success: function(data)
   	      		{
-  	      			//article_chart.series[0].setData(data[1]);
+  	      			article_chart.series[0].setData(data);
 								//article_chart.xAxis[0].setCategories(data[0]);
-  	      			//setTimeout(tweets_per_articlerequestData, 60000); // eens per minuut
+  	      			setTimeout(tweets_per_articlerequestData, 60000); // eens per minuut
   	      		}
   	      	});
   	      }

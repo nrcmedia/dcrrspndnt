@@ -241,9 +241,9 @@ $chart3_data = us_them_articles();
             },
             series: [ {
             		type: 'column',
-                name: 'Artikelen van vandaag',
+                name: 'nrc.nl',
                 data: []
-            } ]
+            }, {type: 'line', name: 'vk.nl'} ]
         	});
         	function tweets_per_articlerequestData()
   	      {

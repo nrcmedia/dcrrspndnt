@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="author" content="xiffy">
-		<title>nrc.nl, de tweets in grafieken</title>
+		<title>nrc.nl versus vk.nl; de tweets in grafieken</title>
 		<link rel="stylesheet" href="./style2.css" />
 		<link rel="alternate" type="application/rss+xml" title="Artikelen van nrc.nl" href="./rss.php">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -29,7 +29,7 @@ $chart3_data = us_them_articles();
 
 ?>
 
-		<h1>nrc.nl tweets in grafieken </h1>
+		<h1>nrc.nl versus vk.nl; de tweets in grafieken (live)</h1>
 <?php include ('menu.php'); ?>
 		<div class="center full">
 
@@ -243,7 +243,10 @@ $chart3_data = us_them_articles();
             		type: 'column',
                 name: 'nrc.nl',
                 data: []
-            }, {type: 'line', name: 'vk.nl'} ]
+            }, {
+            		type: 'line',
+            		name: 'vk.nl'
+            } ]
         	});
         	function tweets_per_articlerequestData()
   	      {

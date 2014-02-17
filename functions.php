@@ -736,7 +736,7 @@ function us_them_today($mode = '')
 
 function us_them_articles()
 {
-	$art_res = mysql_query('select "nrc.nl" as site, count(tweets.id) as tweets_today, "#ED561B" as color, artikelen.*
+	$art_res = mysql_query('select "nrc.nl" as site, count(tweets.id) as tweets_today, "#D30910" as color, artikelen.*
                         from artikelen
                         left join tweets on tweets.art_id = artikelen.id
                         join (
@@ -756,7 +756,7 @@ function us_them_articles()
   {
   	$articles[] = $row;
   }
-	$them_art_res = mysql_query('select "vk.nl" as site, count(tweets.id) as tweets_today, "#058DC7" as color, artikelen.*
+	$them_art_res = mysql_query('select "vk.nl" as site, count(tweets.id) as tweets_today, "#003366" as color, artikelen.*
 	                        from artikelen
 	                        left join tweets on tweets.art_id = artikelen.id
 	                        join (

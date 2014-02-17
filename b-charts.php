@@ -41,7 +41,7 @@ $chart3_data = us_them_articles();
 			<script>
 				$(function () {
 					Highcharts.setOptions({
-						colors: ['#ED561B', '#058DC7', '#50B432', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4']
+						colors: ['#D30910', '#003366', '#50B432', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4']
 					});
 
         	day_chart = new Highcharts.Chart({
@@ -61,7 +61,7 @@ $chart3_data = us_them_articles();
             	column: {
             		pointPadding: 0,
             		borderWidth: 0,
-            		groupPadding: 0.04,
+            		groupPadding: 0,
             	}
             },
             tooltip: {

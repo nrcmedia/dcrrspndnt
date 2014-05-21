@@ -451,11 +451,11 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 						else
 						{
 							// nieuwsartikelen op www.nrc.nl
-							preg_match_all('/<time.datetime="(.*)">.*<\/time><\/strong>..(.*)<\/a>/uU', $doc, $matches);
-							if (! empty($matches[1][0]) && ! empty ($matches[2][0]))
+							preg_match_all('/<time.itemprop="datePublished".datetime="(.*)">.*<\/time>/uU', $doc, $matches);
+							if (! empty($matches[1][0]))
 							{
 								echo 'Toch hierlangs!'."\n";
-								$pubdate = $matches[1][0].' '.$matches[2][0];
+								$pubdate = $matches[1][0];
 							}
 						}
 						// maar op vorige vangen we nu veel te veel

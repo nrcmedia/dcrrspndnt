@@ -601,7 +601,7 @@ function tweets_per_day_stacked($mode = '')
 
 function us_them_per_day($mode = '')
 { // like tweets_per_day, but vk versus nrc
-	$tot_tweets_res = mysql_query('select count(tweets.id) as tweet_count, day(tweets.created_at) as dag, month(tweets.created_at) as maand from tweets where created_at > "2013-10-13 21:00"  group by maand, dag order by year(tweets.created_at) desc, month(tweets.created_at) desc, day(tweets.created_at) desc limit 0,30', $GLOBALS['db']);
+	$tot_tweets_res = mysql_query('select count(tweets.id) as tweet_count, day(tweets.created_at) as dag, month(tweets.created_at) as maand, year(tweets.created_at) as jaar from tweets where created_at > "2013-10-13 21:00"  group by jaar, maand, dag order by year(tweets.created_at) desc, month(tweets.created_at) desc, day(tweets.created_at) desc limit 0,30', $GLOBALS['db']);
 
 	$label    = array();
 	$tweets   = array();
@@ -617,7 +617,7 @@ function us_them_per_day($mode = '')
 	}
 	$rows = array_reverse($rows);
 
-	$vk_tot_tweets_res = mysql_query('select count(tweets.id) as tweet_count, day(tweets.created_at) as dag, month(tweets.created_at) as maand from tweets where created_at > "2013-10-13 21:00"  group by maand, dag order by year(tweets.created_at) desc, month(tweets.created_at) desc, day(tweets.created_at) desc limit 0,30', $GLOBALS['vkdb']);
+	$vk_tot_tweets_res = mysql_query('select count(tweets.id) as tweet_count, day(tweets.created_at) as dag, month(tweets.created_at) as maand, year(tweets.created_at) as jaar from tweets where created_at > "2013-10-13 21:00"  group by jaar, maand, dag order by year(tweets.created_at) desc, month(tweets.created_at) desc, day(tweets.created_at) desc limit 0,30', $GLOBALS['vkdb']);
 
 	while ($row = mysql_fetch_array($vk_tot_tweets_res))
 	{

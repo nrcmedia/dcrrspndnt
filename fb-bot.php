@@ -33,7 +33,7 @@ function crawl($artikelen_res)
 		$i++;
 
 		echo str_pad($i, 3, ' ', STR_PAD_LEFT).' Querying facebook for: '.$artikel['clean_url']."\n";
-		$apicall = "https://api.facebook.com/method/links.getStats?urls=".addslashes($artikel['clean_url'])."&format=json";
+		$apicall = "https://api.facebook.com/method/links.getStats?urls=".str_replace('%5C', '', addslashes($artikel['clean_url']))."&format=json";
 		$json=file_get_contents($apicall);
 		$response = json_decode($json);
 		

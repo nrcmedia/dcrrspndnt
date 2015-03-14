@@ -50,7 +50,6 @@ elseif(isset($_GET['order']) && $_GET['order'] == 'fb')
 
 $i = 0;
 $res = mysql_query('select artikelen.*, facebook.total_count as fb_total, facebook.share_count as fb_share, facebook.like_count as fb_like, facebook.comment_count as fb_comment, twitter.twitter_count as twitter_alltime from artikelen left outer join facebook on facebook.art_id = artikelen.id left join twitter on twitter.art_id = artikelen.id group by artikelen.id '.$order_by.' limit '.$start.','.ITEMS_PER_PAGE);
-echo 'select artikelen.*, facebook.total_count as fb_total, facebook.share_count as fb_share, facebook.like_count as fb_like, facebook.comment_count as fb_comment, twitter.twitter_count as twitter_alltime from artikelen left outer join facebook on facebook.art_id = artikelen.id left join twitter on twitter.art_id = artikelen.id group by artikelen.id '.$order_by.' limit '.$start.','.ITEMS_PER_PAGE
 ?>
 		<h1>Artikelen van <a href="http://www.nrc.nl/">nrc.nl</a> gevonden op Twitter</h1>
 <?php include ('menu.php'); ?>

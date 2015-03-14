@@ -219,6 +219,18 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 								$author_found = 1;
 							}
 						}
+						if($author_found == 0)
+						{
+							// handelsblad en nrcnext worden omgekat:
+							foreach($html->find('div[class=authors]') as $list) {
+								foreach($list->find('li') as $author)
+								{
+									$og['article:author'] = $author->innertext;
+									echo 'Found author (van): '.$og['article:author']."\n";
+									$author_found = 1;
+								}
+							}
+						}
 						foreach ($html->find('meta[property^=ad:categories]') as $categories)
 						{
 							$cats = explode(',', $categories->content);
@@ -281,9 +293,9 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 
 								$plaintext_html = curl_exec($ch);
 								curl_close($ch);
-								$plaintext_html = gzdecode($plaintext_html);
+								//$plaintext_html = gzdecode($plaintext_html);
 								$html = str_get_html($plaintext_html);
-								$og['title'] = $html->find('title',0)->innertext;
+								$og['title'] = @$html->find('title',0)->innertext;
 								// vorige is nog weirder, de html laat zich niet correct parsen met simple_html_dom
 								// de class is vindbaar, maar niet als object benaderbaar, dan maar met het handje ...
 								$author = explode('<div class="author">',$html->innertext);

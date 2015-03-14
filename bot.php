@@ -537,7 +537,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 					{
 						echo 'counting tweet '.$tweet->id."\n";
 						mysql_query('insert into tweets (tweet_id, art_id) values ("'.$tweet->id.'", '.$artikel_id.')');
-						mysql_query('update artikelen set tweet_count = tweet_count + 1 where artikelen.ID = '.$artikel_id);
+						mysql_query('update artikelen set tweet_count = 1 where artikelen.ID = '.$artikel_id);
 					}
 				}
 			}

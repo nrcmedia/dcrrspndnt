@@ -63,7 +63,7 @@ $th = $th_pubdate.'<th>Title / Article</th>'.$th_extra.$th_tweets.'<th>FB</th>';
 		<div class="clear"></div>
 
 <?php
-$res = mysql_query ('select artikelen.*, count(tweets.id) as tweet_count, facebook.total_count as fb_total, facebook.share_count as fb_share, facebook.like_count as fb_like, facebook.comment_count as fb_comment, twitter.twitter_count as twitter_alltime  from artikelen join meta_artikel on artikelen.ID = meta_artikel.art_id left outer join tweets on tweets.art_id = artikelen.ID left outer join facebook on facebook.art_id = artikelen.id left join twitter on twitter.art_id = artikelen.id where meta_artikel.meta_id = '.$meta_id.' group by artikelen.ID '.$order_by.' limit '.$start.','.ITEMS_PER_PAGE);
+$res = mysql_query ('select artikelen.*, facebook.total_count as fb_total, facebook.share_count as fb_share, facebook.like_count as fb_like, facebook.comment_count as fb_comment, twitter.twitter_count as twitter_alltime  from artikelen join meta_artikel on artikelen.ID = meta_artikel.art_id left  outer join facebook on facebook.art_id = artikelen.id left join twitter on twitter.art_id = artikelen.id where meta_artikel.meta_id = '.$meta_id.' group by artikelen.ID '.$order_by.' limit '.$start.','.ITEMS_PER_PAGE);
 
 if($mode == 'author')
 	$fields = array('pubdate', 'title', 'section', 'tweets', 'fb_count');

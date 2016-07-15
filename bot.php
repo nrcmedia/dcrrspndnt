@@ -26,7 +26,7 @@ echo "\n".strftime('%Y-%m-%d %H:%M').' sinds: '.$since."\n";
 $oauth = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, OAUTH_KEY, OAUTH_SECRET);
 
 // Make up a useragent
-$oauth->useragent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.9) Gecko/20071025 Firefox/13.6.0.9';
+$oauth->useragent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.9) Gecko/20071025 Firefox/43.6.0.9';
 
 $tweets_found = json_decode(
                   $oauth->get( 'https://api.twitter.com/1.1/search/tweets.json',
@@ -120,7 +120,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 					continue;
 				}
 
-				$path = $parsed['path'];
+				$path = rtrim($parsed['path'], '/');
 				$path_p = explode('/', $path);
 				if(! empty($path_p[1]))
 				{

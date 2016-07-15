@@ -9,7 +9,7 @@ include('db.php');
 
 // nieuwe artikelen eerst!
 $artikelen_res = mysql_query('select *, artikelen.ID as artikelid from artikelen left outer join facebook on artikelen.id = facebook.art_id where facebook.art_id IS NULL');
-echo 'Indexing fresh articles. ('.mysql_num_rows($artikelen_res).')'."\n";
+echo 'Indexing new articles. ('.mysql_num_rows($artikelen_res).')'."\n";
 $crawled = crawl($artikelen_res);
 
 // dan de verhalen van vandaag

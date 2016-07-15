@@ -31,7 +31,10 @@ function crawl($artikelen_res)
 	while ($artikel = mysql_fetch_array($artikelen_res))
 	{
 		$i++;
-
+		$artikel['clean_url']  = rtrim ($artikel['clean_url'], '/');
+		//if(substr($artikel['clean_url'], -1) == '/') {
+		//	$artikel['clean_url'] = substr($artikel['clean_url'], 0, -1); // remove trailing slash for facebook
+		//}
 		echo str_pad($i, 3, ' ', STR_PAD_LEFT).' Querying facebook for: '.$artikel['clean_url']."\n";
 		$apicall = "https://api.facebook.com/method/links.getStats?urls=".str_replace('%5C', '', addslashes($artikel['clean_url']))."&format=json";
 		$json=file_get_contents($apicall);

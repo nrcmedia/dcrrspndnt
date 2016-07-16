@@ -15,7 +15,7 @@ include_once ('simple_html_dom.php');
 include('db.php');
 
 $months = array('januari' => 1 ,'februari' => 2, 'maart' => 3, 'april' => 4, 'mei' => 5, 'juni' => 6, 'juli' => 7, 'augustus' => 8, 'september' => 9, 'oktober' => 10,'november' => 11,'december' => 12);
-
+update_since(0);
 
 $since = get_since();
 
@@ -26,7 +26,7 @@ echo "\n".strftime('%Y-%m-%d %H:%M').' sinds: '.$since."\n";
 $oauth = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, OAUTH_KEY, OAUTH_SECRET);
 
 // Make up a useragent
-$oauth->useragent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.9) Gecko/20071025 Firefox/13.6.0.9';
+$oauth->useragent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.9) Gecko/20071025 Firefox/43.6.0.9';
 
 $tweets_found = json_decode(
                   $oauth->get( 'https://api.twitter.com/1.1/search/tweets.json',
@@ -119,7 +119,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 					continue;
 				}
 
-				$path = $parsed['path'];
+				$path = rtrim($parsed['path'], '/');
 				$path_p = explode('/', $path);
 				if(! empty($path_p[1]))
 				{
@@ -145,9 +145,18 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 					{
 						$clean = substr($clean,0,strlen($clean) - 1);
 					}
+					// nieuwe urls_van hun -a<article_id> ontdoen
+					// we slaan clean op, niet search mind you
+					$search_url = $clean;
+					$test = substr($search_url, -10); // neem de laatste 10 karakters,
+					$test = explode('-a', $test);
+					if (is_array($test) && (int)$test[1] > 0) {
+						// yup een nieuwe url;
+						$search_url = substr($search_url, 0,  -(strlen($test[1]) + 2));
+					}
 
 					$artikel_id = 0;
-					$query = 'select * from artikelen where clean_url like "'.$clean.'%"';
+					$query = 'select * from artikelen where clean_url like "'.$search_url.'%"';
 
 					$res = mysql_query($query);
 					if(mysql_num_rows($res))

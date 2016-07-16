@@ -10,7 +10,7 @@ include('db.php');
 
 // nieuwe artikelen eerst!
 $artikelen_res = mysql_query('select *, artikelen.ID as artikelid from artikelen left outer join twitter on artikelen.id = twitter.art_id where twitter.art_id IS NULL');
-echo 'Indexing fresh articles. ('.mysql_num_rows($artikelen_res).')'."\n";
+echo 'Indexing new articles. ('.mysql_num_rows($artikelen_res).')'."\n";
 $crawled = crawl($artikelen_res);
 
 // dan de verhalen van vandaag
@@ -34,8 +34,10 @@ function crawl($artikelen_res)
 		$i++;
 
 		echo str_pad($i, 3, ' ', STR_PAD_LEFT).' Querying twitter for: '.$artikel['clean_url']."\n";
-		$apicall = 'http://urls.api.twitter.com/1/urls/count.json?url='.$artikel['clean_url'];
+		#$apicall = 'http://urls.api.twitter.com/1/urls/count.json?url='.$artikel['clean_url'];
+		$apicall = 'http://opensharecount.com/count.json?url='.$artikel['clean_url'];
 		$json=file_get_contents($apicall);
+print_r($json);
 		$response = json_decode($json);
 
 		// now find the record for this article

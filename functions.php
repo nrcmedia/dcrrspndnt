@@ -74,7 +74,7 @@ while($row = mysql_fetch_array($res) )
 			}
 			if (in_array('title', $fields)) {
 ?>
-				<td style="max-width:400px"><strong><a href="<?php echo $row['share_url'];?>" title="<?php echo $description ?>"><?php echo $titel ;?></a></strong></td>
+				<td style="max-width:400px"><strong><a href="<?php echo $row['clean_url'];?>" title="<?php echo $description ?>"><?php echo $titel ;?></a></strong></td>
 <?php
 			}
 			if(in_array('author', $fields)) {

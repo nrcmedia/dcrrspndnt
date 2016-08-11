@@ -36,7 +36,13 @@ $tweets_found = json_decode(
                               )
                             );
 
+$tweets = array();
 if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
+	$tweets[] = $tweet;
+}
+$tweets = array_reverse($tweets);
+
+foreach ($tweets as $tweet){
 	//print_r($tweet->entities->urls);
 	update_since($tweet->id);
 

@@ -122,6 +122,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 					continue;
 				}
 
+				$path = str_replace(array('/undefined/','/handelsblad/', '/next/'), '/nieuws/', $path);
 				$path = rtrim($parsed['path'], '/');
 				$path_p = explode('/', $path);
 				if(! empty($path_p[1]))

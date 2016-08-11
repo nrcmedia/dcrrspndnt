@@ -35,6 +35,7 @@ $tweets_found = json_decode(
                                       'result_type' => 'recent')
                               )
                             );
+
 if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 	//print_r($tweet->entities->urls);
 	update_since($tweet->id);
@@ -42,14 +43,14 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 	foreach($tweet->entities->urls as $url)
 	{
 		$tco = $url->url;
-
 		$share = $url->expanded_url;
+
 		if(! strstr($share, 'nrc.nl'))
-		{
+		{ // geen nrc.nl? wellicht een shorter-service ...
 			$short = $share;
 			$short_res = mysql_query('select * from unshorten where short_url = "'.addslashes($short).'"');
 			if(mysql_num_rows($short_res) == 0)
-			{
+			{ // we kennen deze nog niet
 				echo substr($short, 0, 30);
 				$share = unshorten_url($short);
 				echo ' => '.substr($share, 0, 45)."\n";
@@ -62,9 +63,11 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 				$share = $short_arr['url'];
 			}
 		}
+
 		if(strstr($share, 'nrc.nl'))
 		{
 			$parsed = parse_url ($share);
+
 			if (isset($parsed['path']))
 			{
 				if ( !strstr($parsed['host'], 'nrc.nl') && ! empty($parsed['query']))
@@ -104,6 +107,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 						 || strstr($parsed['host'], 'klik.nrc.nl')
 						 || strstr($parsed['host'], 'abonnementen.nrc.nl')
 						 || strstr($parsed['host'], 'foto.nrc.nl')
+						 || strstr($parsed['host'], 'ln.is')
 						 || strstr($parsed['host'], 'digitaleeditie.nrc.nl') )
 				{
 					echo 'skipping: '.substr($share,0,60)."\n";
@@ -131,33 +135,33 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 					   ! empty($path_p[3]) &&
 					   ! empty($path_p[4])) $pubdate = $path_p[2].'-'.$path_p[3].'-'.$path_p[4];
 
-					if( !empty($path_p[2]) && $path_p[2] == 'van')
-					{
-						echo 'Krantenbak, vind pubdate'."\n";
-						$month_num = array('januari' => 1, 'februari' => 2, 'maart' => 3, 'april' => 4, 'mei' => 5, 'juni' => 6, 'juli' => 7, 'augustus' => 8, 'september' => 9, 'oktober' => 10, 'november' => 11, 'december' => 12);
-						$pubdate = $path_p[3].'-'.$month_num[$path_p[4]].'-'.$path_p[5];
-					}
-
-					$clean = $parsed['scheme'].'://'.$parsed['host'].$path;
-					// strip any slash from the end if any,
-					if ('/' != $clean[strlen($clean) - 1])
-					{
-						$clean = substr($clean,0,strlen($clean) - 1);
-					}
-					// nieuwe urls_van hun -a<article_id> ontdoen
-					// we slaan clean op, niet search mind you
-					$search_url = $clean;
-					$test = substr($search_url, -10); // neem de laatste 10 karakters,
-					$test = explode('-a', $test);
-					if (is_array($test) && (int)$test[1] > 0) {
-						// yup een nieuwe url;
-						$search_url = substr($search_url, 0,  -(strlen($test[1]) + 2));
-					}
+					$clean = 'https://'.$parsed['host'].$path;
+					$search_url = 'https://'.$parsed['host'].$path;
 
 					$artikel_id = 0;
 					$query = 'select * from artikelen where clean_url like "'.$search_url.'%"';
-
 					$res = mysql_query($query);
+					if(! mysql_num_rows($res)) {
+						$search_url = 'http://'.$parsed['host'].$path;
+						$query = 'select * from artikelen where clean_url like "'.$search_url.'%"';
+						$res = mysql_query($query);
+					}
+					if(! mysql_num_rows($res)) {
+						echo "Still haven't found what i'm looking for\n";
+						$capi_id = explode('-a', $path);
+						//print_r($capi_id);
+						if (is_array($capi_id)
+						    && intval($capi_id[1]) === $capi_id[1]
+						    && $capi_id[1] ) {
+							// loose the end... it contains -a12345
+							$path = $capi_id[0];
+							echo "Like this: {$path} \n";
+							$search_url = 'htt%://'.$parsed['host'].$path;
+							$query = 'select * from artikelen where clean_url like "'.$search_url.'%"';
+							$res = mysql_query($query);
+						}
+					}
+
 					if(mysql_num_rows($res))
 					{
 						$art_row = mysql_fetch_array($res);

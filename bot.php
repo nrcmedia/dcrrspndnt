@@ -180,6 +180,9 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 								mysql_query('update artikelen set tweet_count = tweet_count + 1 where artikelen.ID = '.$art_row['ID']);
 
 							}
+							else {
+								echo 'Tweet exists'."\n";
+							}
 						}
 
 						$og = unserialize(stripslashes($art_row['og']));

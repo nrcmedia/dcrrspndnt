@@ -161,6 +161,7 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 							$search_url = 'htt%://'.$parsed['host'].$path;
 							$query = 'select * from artikelen where clean_url like "'.$search_url.'%"';
 							$res = mysql_query($query);
+							echo "results: ".mysql_num_rows($res)."\n";
 						}
 					}
 

@@ -151,10 +151,10 @@ if(is_object($tweets_found)) foreach ($tweets_found->statuses as $tweet){
 						$capi_id = explode('-a', $path);
 						//print_r($capi_id);
 						if (is_array($capi_id)
-						    && intval($capi_id[1]) === $capi_id[1]
-						    && $capi_id[1] ) {
+						    && intval(end($capi_id)) ) {
 							// loose the end... it contains -a12345
-							$path = $capi_id[0];
+							array_pop($capi_id);
+							$path = implode('-a', $capi_id);
 							echo "Like this: {$path} \n";
 							$search_url = 'htt%://'.$parsed['host'].$path;
 							$query = 'select * from artikelen where clean_url like "'.$search_url.'%"';

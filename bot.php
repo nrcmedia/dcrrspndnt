@@ -114,6 +114,7 @@ foreach ($tweets as $tweet){
 						 || strstr($parsed['host'], 'abonnementen.nrc.nl')
 						 || strstr($parsed['host'], 'foto.nrc.nl')
 						 || strstr($parsed['host'], 'ln.is')
+						 || strstr($parsed['host'], 'linkis.com')
 						 || strstr($parsed['host'], 'digitaleeditie.nrc.nl') )
 				{
 					echo 'skipping: '.substr($share,0,60)."\n";

@@ -130,7 +130,7 @@ foreach ($tweets as $tweet){
 				}
 
 				$path = rtrim($parsed['path'], '/');
-				$path = str_replace(array('/undefined/','/handelsblad/', '/next/'), '/nieuws/', $path);
+				$path = str_replace(array('/undefined/','/handelsblad/van/','/handelsblad/', '/next/'), '/nieuws/', $path);
 
 				$path_p = explode('/', $path);
 				if(! empty($path_p[1]))

@@ -55,7 +55,7 @@ $res = mysql_query('select artikelen.*, facebook.total_count as fb_total, facebo
 <?php include ('menu.php'); ?>
 		<div class="center">
 <?php
-$th = $th_pubdate.'<th>Titel / Artikel</th><th>Auteur</th><th>Sectie</th>'.$th_tweets.$th_facebook;
+$th = $th_pubdate.'<th>Titel / Artikel</th><th>T</th><th>Auteur</th><th>Sectie</th>'.$th_tweets.$th_facebook;
 
 show_table($res, $th);
 

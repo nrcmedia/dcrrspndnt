@@ -34,7 +34,7 @@ function pager($tot_row, $qsa)
 function show_table($res,
 									  $table_header,
 									  $show_selectors = false,
-									  $fields = array('pubdate', 'title', 'author', 'section', 'tweets', 'fb_count'),
+									  $fields = array('pubdate', 'title', 't','author', 'section', 'tweets', 'fb_count'),
 									  $extra_class = '')
 {
 	?>
@@ -51,6 +51,7 @@ while($row = mysql_fetch_array($res) )
 	$titel = empty($og['title']) ? substr($row['clean_url'],18,50) : $og['title'];
 	$description = isset($og['description']) ? $og['description'] : 'Een mysterieus artikel';
 	$auth_res = mysql_query('select * from meta where meta.waarde = "'.$og['article:author'].'" and meta.type="article:author"');
+	$twittersearch = "https://twitter.com/search?f=tweets&vertical=default&q=". urlencode($row['clean_url'])."&src=typd";
 	$author = mysql_fetch_array($auth_res);
 	$section_res = mysql_query('select * from meta where meta.waarde = "'.$og['article:section'].'" and meta.type="article:section"');
 	$section = mysql_fetch_array($section_res);
@@ -77,6 +78,11 @@ while($row = mysql_fetch_array($res) )
 				<td style="max-width:400px"><strong><a href="<?php echo $row['clean_url'];?>" title="<?php echo $description ?>"><?php echo $titel ;?></a></strong></td>
 <?php
 			}
+			if (in_array('t', $fields)) {
+?>
+				<td style="max-width:10px"><strong><a href="<?php echo $twittersearch;?>" title="search on twitter" target="_twittersearch">ts</a></strong></td>
+
+<?php }
 			if(in_array('author', $fields)) {
 ?>
 				<td><a href="./meta_art.php?id=<?php echo $author['ID'];?>" title="alle artikelen van deze auteur"><?php echo $author['waarde'];?></a></td>

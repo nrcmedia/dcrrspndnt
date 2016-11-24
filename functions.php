@@ -116,7 +116,7 @@ if ($show_selectors)
 $disp = isset($_GET['disposition']) ? (int) $_GET['disposition'] : '';
 ?>
 				<tr>
-					<td colspan="4" align="right">totaal tweets:</td><td align="right"><strong><?php echo $tot_tweets;?></strong></td>
+					<td colspan="5" align="right">totaal tweets:</td><td align="right"><strong><?php echo $tot_tweets;?></strong></td>
 					<td align="right"></td>
 				</tr>
 			<tr>

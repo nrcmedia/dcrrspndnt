@@ -12,7 +12,7 @@ echo 'Indexing new articles. ('.mysql_num_rows($artikelen_res).')'."\n";
 $crawled = crawl($artikelen_res);
 
 // dan de verhalen van vandaag
-$artikelen_res = mysql_query('select *, artikelen.ID as artikelid from artikelen left outer join facebook on artikelen.id = facebook.art_id where year(artikelen.created_at) = year(now()) and month(artikelen.created_at) = month(now()) and day(artikelen.created_at) = day(now())');
+$artikelen_res = mysql_query('select *, artikelen.ID as artikelid from artikelen left outer join facebook on artikelen.id = facebook.art_id where artikelen.created_at > date_add(now(), interval -3 day) and date_add(now(), interval -1 hour) > last_crawl');
 echo 'Indexing fresh articles. ('.mysql_num_rows($artikelen_res).')'."\n";
 $crawled += crawl($artikelen_res);
 

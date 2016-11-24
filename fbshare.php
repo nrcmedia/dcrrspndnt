@@ -46,19 +46,20 @@ function crawl($artikelen_res)
 
 			if(mysql_num_rows($fb_res) > 0)
 			{
-				mysql_query('update facebook set share_count = '.$response['share']['share_count'].', comment_count = '.$response['share']['comment_count'].', like_count = '.$likes.', total_count = '.$total.', last_crawl = now() where art_id = '.$artikel['artikelid']);
+				mysql_query('update facebook set share_count = 0, comment_count = '.$response['share']['comment_count'].', like_count = '.$likes.', total_count = '.$total.', last_crawl = now() where art_id = '.$artikel['artikelid']);
 			}
 			else
 			{
 				mysql_query('insert into facebook (art_id, share_count, comment_count, like_count, total_count, last_crawl)
 									 values
-									 ('.$artikel['artikelid'].', '.$response['share']['share_count'].', '.$response['share']['comment_count'].', '.$likes.', '.$total.', now() )');
+									 ('.$artikel['artikelid'].', 0, '.$response['share']['comment_count'].', '.$likes.', '.$total.', now() )');
 			}
 		} elseif (mysql_num_rows($fb_res) === 0) {
 			 mysql_query('insert into facebook (art_id, last_crawl) values ('.$artikel['artikelid'].', now()) ');
+			 echo "\n --inserting for last-crawl. None-response";
 		} else {
 			mysql_query ('update facebook set last_crawl = now() where art_id = '. $artikel['artikelid']);
-			echo "\n --updated last-cralw. None-response";
+			echo "\n --updated last-crawl. None-response";
 		}
 
 	}

@@ -180,12 +180,13 @@ ul#pager li {
 	padding: 0;
 	display: inline;
 	float: left;
-	width: 20px;
+	width: 44px;
 	color: #fff;
 	background:  #000;
 	text-align: center;
 	font-size: 16px;
 	}
+
 
 form.disp_selector {
 	display: inline;
@@ -195,6 +196,9 @@ ul#pager li a {
 	color: #fff;
 	font-weight: bold;
 	}
+ul#pager li.current a {
+	color: orange;
+}
 ul#pager li:hover {
 	background: #9ECECA;
 	}

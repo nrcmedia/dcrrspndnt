@@ -816,7 +816,7 @@ function us_them_articles()
 function fragmented_pager($pages, $qsa) {
 	$query = $_SERVER['PHP_SELF'];
 	$path = pathinfo( $query );
-	$adjacents = 8;
+	$adjacents = 7;
 	$current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 
 	$i = 0;

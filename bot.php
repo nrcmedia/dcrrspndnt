@@ -264,18 +264,19 @@ foreach ($tweets as $tweet){
 						foreach ($html->find('meta[property^=ad:categories]') as $categories)
 						{
 							$cats = explode(',', $categories->content);
-							echo 'Found categories: '.$categories."\n";
 							foreach($cats as $cat)
 							{
 								$cat = trim($cat);
 								if($cat == 'Nieuws' || $cat == 'Beste van het web' || $cat == 'None')
 									continue;
 								$og['article:section'] = $cat;
+								echo "Assigning section: {$cat}\n";
 							}
 						}
 						if (empty($og['article:section'])) {
 							foreach ($html->find('h1[class=section__heading]') as $section) {
 								$og['article:section'] = $section->innertext;
+								echo "Assigning section: {$section->innertext} -article_type- \n";
 							}
 						}
 						if (empty($og['article:section']))

@@ -73,6 +73,13 @@ foreach ($tweets as $tweet){
 		if(strstr($share, 'nrc.nl'))
 		{
 			$parsed = parse_url ($share);
+			 // google for fuck sake, .co.il, .nl, .com make up your mind hiosting our content behind 100ths of urls
+			if (strstr($parsed['host'], 'google') && strstr($parsed['path'], '/amp/s/')) {
+				// strips both /amp/s/ from the fronat as /amp from the end.
+				$share = 'https://'. substr($parsed['path'],7, strlen($parsed['path']) - 11);
+				$parsed = parse_url ($share);
+				echo 'Amp url shortened? '.$share."\n";			
+                	}
 
 			if (isset($parsed['path']))
 			{
@@ -261,10 +268,15 @@ foreach ($tweets as $tweet){
 							foreach($cats as $cat)
 							{
 								$cat = trim($cat);
-								if($cat == 'Nieuws' || $cat == 'Beste van het web')
+								if($cat == 'Nieuws' || $cat == 'Beste van het web' || $cat == 'None')
 									continue;
 								$og['article:section'] = $cat;
 							}
+						}
+						if (empty($og['article:section'])) {
+							foreach ($html->find('h1[class=section__heading]') as $section) {
+								$og['article:section'] = $section;
+                                                        }
 						}
 						if (empty($og['article:section']))
 						{ // blog-slug dan als categorie gebruiken, als die er ook niet is, dan is er altijd nog een auteur

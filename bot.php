@@ -78,7 +78,7 @@ foreach ($tweets as $tweet){
 				// strips both /amp/s/ from the fronat as /amp from the end.
 				$share = 'https://'. substr($parsed['path'],7, strlen($parsed['path']) - 11);
 				$parsed = parse_url ($share);
-				echo 'Amp url shortened? '.$share."\n";			
+				echo 'Amp url shortened? '.$share."\n";
                 	}
 
 			if (isset($parsed['path']))
@@ -275,8 +275,8 @@ foreach ($tweets as $tweet){
 						}
 						if (empty($og['article:section'])) {
 							foreach ($html->find('h1[class=section__heading]') as $section) {
-								$og['article:section'] = $section;
-                                                        }
+								$og['article:section'] = $section->innertext;
+							}
 						}
 						if (empty($og['article:section']))
 						{ // blog-slug dan als categorie gebruiken, als die er ook niet is, dan is er altijd nog een auteur

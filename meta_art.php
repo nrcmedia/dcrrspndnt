@@ -141,10 +141,19 @@ $bar_tweet_data = substr($bar_tweet_data, 0, strlen($bar_tweet_data) - 1);
 		</div>
 
 		<table class="related">
-			<tr><th>Alle <?php echo $th_related;?></th></tr>
+			<tr><th>Top 50 <?php echo $th_related;?></th></tr>
 <?php
 			$i = 0;
-			$metatype_res = mysql_query('select * from meta where meta.type = "'.$meta_row['type'].'" order by waarde limit 0,50');
+
+			$metatype_res = mysql_query(
+			'select count(artikelen.id) as aantal_art, meta.*
+				from meta
+				join meta_artikel on meta.id = meta_id
+				left join artikelen on artikelen.id = art_id
+				where meta.type = "'.$meta_row['type'].'"
+				group by meta.id
+				order by count(artikelen.id) desc, waarde
+				limit 0,50');
 			while($rel_row = mysql_fetch_array($metatype_res))
 			{
 				?>

@@ -1,7 +1,7 @@
 <?php
 $query = 'nrc.nl/';
 error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
-
+date_default_timezone_set('Europe/Amsterdam');
 // passwords, keys, db-settings
 require_once('settings.local.php');
 // Create our twitter API object
